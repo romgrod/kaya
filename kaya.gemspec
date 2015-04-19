@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email                  = ["roman.g.rodriguez@gmail.com"]
   spec.summary                = %q{Exposes Cucumber suites in a web service to make them run}
   spec.description            = %q{You can run your cucumber suites easily, save and see the execution results}
-  spec.homepage               = "http://qqq.akjsdh"
+  spec.homepage               = "https://github.com/romgrod/kaya"
   spec.license                = "MIT"
   spec.required_ruby_version  = ">= 2.0.0"
 
