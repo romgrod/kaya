@@ -82,44 +82,53 @@ Reference about configuration
 kaya/kaya_conf file reference:
 
 {
-    "USE_GIT" : true,
 
-    "MONGO_HOST" : "localhost",
+  "USE_GIT" : true,
 
-    "APP_PORT" : 8080,
+  "HOSTNAME" : "your-host-name",
 
-    "PROJECT_URL" : "http://your.project.url",
+  "APP_PORT" : 8080,
 
-    "INACTIVITY_TIMEOUT" : 60,
+  "DATABASE" : {
 
-    "KILL_INACTIVE_EXECUTIONS_AFTER" : 300,
+    "TYPE" : "mongodb",
+    "HOST" :"localhost",
+    "PORT" : 27017,
+    "USERNAME" : null,
+    "PASSWORD" : null},
 
-    "FORMAT_DATETIME" : "%d/%m/%Y %H:%M:%S",
+  "PROJECT_NAME" : "Awesome Project",
 
-    "REFRESH_TIME" : 10,
+  "PROJECT_URL" : "http://your.project.url",
 
+  "INACTIVITY_TIMEOUT" : 60,
+
+  "KILL_INACTIVE_EXECUTIONS_AFTER" : 300,
+
+  "FORMAT_DATETIME" : "%d/%m/%Y %H:%M:%S",
+
+  "REFRESH_TIME" : 10,
+
+  "NOTIFICATION" : {
     "USE_GMAIL" : false,
+    "USERNAME" : null,
+    "PASSWORD" : null,
+    "RECIPIENTS" : "your@email.com",
+    "ATTACH_REPORT" : false
+  },
 
-    "NOTIFICATION" : {
-      "USE_GMAIL" : false,
-      "USERNAME" : null,
-      "PASSWORD" : null,
-      "RECIPIENTS" : "your@email.com",
-      "ATTACH_REPORT" : false
-    },
+  "FOOTER" : "Tests by a great and funny team",
 
-  	"FOOTER" : "A footer text",
+  "AUTO_EXECUTION_ID" : {
+    "datetime" : true,
+    "format" : "%d%^b%y-%H%M",
+    "default" : null
+  },
 
-    "AUTO_EXECUTION_ID" : {
-      "datetime" : true,
-      "format" : "%d%^b%y-%H%M",
-      "default" : null},
-
-    "AUTO_EXECUTION_ID" : {
-      "datetime" : true,
-      "format" : "%d%^b%y-%H%M",
-      "default" : null}
-
+  "HEADLESS" : {
+    "active" : false,
+    "resolution" : "1024x768",
+    "size":"24"}
 }
 
 
