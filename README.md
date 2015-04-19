@@ -1,7 +1,7 @@
 Kaya
 ==============
 
-#### **NOT FINISHED YET**
+
 #### *This gem was created in order to expose tests easily so anybody is allowed to execute them.*
 
 
