@@ -1,0 +1,106 @@
+
+<? text = result.bundle_output.split("\n").join("</p><p>") + result.console_output.split("\n").join("</p><p>") unless result.console_output.nil?
+if text.empty?
+  lines = []
+  begin
+    File.open("ls_#{result.id}.out","r").each_line do |line|
+      lines << line
+    end
+  rescue
+    lines << "Could not get console output"
+  end
+  text = lines.join("</small></p><p><small>")
+end
+
+suite = Kaya::Suites::Suite.get(result.suite_id)
+
+custom_params = result.custom_params.empty? ? 'Not Defined' : result.custom_params_values.gsub('kaya_custom_params=',"")
+
+execution_name = result.execution_name.empty? ? 'Not Defined' : result.execution_name.gsub('-_-',' ')
+
+git_log = result.git_log.split('Author').first
+
+javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
+
+?>
+
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta http-equiv='refresh' content='{{Kaya::Support::Configuration.refresh_time}}'>
+    <link rel='icon' href='../../favicon.ico'>
+    <title>Result for {{result.suite_name}}</title>
+    <!-- Bootstrap core CSS -->
+    <link href='https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css' rel='stylesheet'>
+    <!-- Custom styles for this template -->
+    <link href='https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/jumbotron-narrow.css' rel='stylesheet'>
+    {{javascript}}
+
+  </head>
+
+  <body>
+    <div class='container'>
+      <div class='well'>
+        <h3>Result for <b>{{result.suite_name}}</b> execution {{result.stopped? ? '(Stopped)' : ''}}</h3>
+        <h6><b>Result ID:</b> {{result.id}}</h6>
+      % if Kaya::Support::Configuration.use_git?
+        <h6><b>Git log:</b> {{git_log}}</h6>
+      % end
+        <h6><b>Status: </b>{{result.status}}</h6>
+      % if result.timeout
+        <h6><b>Timeout:</b> Stopped After {{result.timeout}} seconds</h6>
+      % end
+      % if result.started_at
+        <h6><b>Duration:</b> {{result.elapsed_time}} seconds</h6>
+      % end
+        <h6><b>Execution Name: </b>{{execution_name}}</h6>
+        <h6><b>Custom parameters:</b>{{custom_params}}</h6>
+        <h6>&nbsp;</h6>
+        <h6>
+          <div>
+            <a href='#' class='label label-default' onclick='window.close();'>
+              Close this window</a>
+            <a href='#' class='label label-info' onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result.id}}', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-default'>
+              Result Data</a>
+            <a href='#' class='label label-warning' onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result.id}}/data', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-default'>
+              Execution Data</a>
+          % unless result.status =~ /finished|stopped/
+            <a href='#' onclick="get_and_close('/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result.id}}/reset');" class='label label-danger'>
+              Stop execution</a>
+          % end
+          </div>
+        </h6>
+
+
+      % if (result.process_running? or result.running?) and (result.seconds_without_changes > Kaya::Support::Configuration.inactivity_timeout) and Kaya::Support::Configuration.reset_execution_availability?
+          % elapsed = Kaya::View.formatted_for(result.seconds_without_changes)
+          <p>There is no changes in this execution since more than {{elapsed}}.</p>
+          <p>If the suite you asked is still running, you can stop it by pressing the following button</p>
+          <p><a class='label label-danger' onclick='get_and_close("/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result.id}}/reset");' role='button'>Stop execution <b>{{result.suite_name}}</b></a>&nbsp;&nbsp;</p>
+          </p>
+      % end
+      </div>
+      <div>
+        <div class='page-header'>
+          <h4>Console Output</h4>
+        </div>
+        <button type='button' class='btn btn-default' title='Go down' onclick='go_to_bottom()' style='float: right'><span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span> Go down</button>
+        <h6>
+          <small style='color:DarkSlateGray '>{{text}}</small>
+        </h6>
+        <button type='button' class='btn btn-default' title='Go up' onclick='go_to_top()' style='float: right'><span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span> Go up</button><br><br>
+      </div>
+      <div>
+        <a href='#' class='label label-default' onclick='window.close();'>Close this window</a>
+      </div>
+
+      <br>
+      <br>
+    </div>
+  </body>
+</html>
+
+
+

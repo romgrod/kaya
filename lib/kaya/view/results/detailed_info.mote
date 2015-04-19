@@ -1,0 +1,112 @@
+
+<div class='container-inner'>
+  <div class='starter-template'>
+    <div class='panel panel-default'>
+      <div class='panel-heading' data-toggle='collapse' data-target='#{{result["_id"]}}'>
+      <h4><small>Execution name &nbsp; <b>{{result["execution_name"]}}</b>&nbsp;(Result id: {{result["_id"]}})</small></h4></div>
+      <div class='panel-body collapse in' id='{{result["_id"]}}'>
+        % unless result["status"] =~ /finished|stopped/
+          <div class='pull-right' title='It seems that the execution gone wrong. Click here to force execution stop'>
+            <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result["_id"]}}/reset' class='label label-danger'>
+              Stop execution
+            </a>
+          </div>
+        % end
+
+        <table class="table">
+          <tbody>
+            <tr>
+              <th style="width:130px;">
+                <small>Suite name</small>
+              </th>
+              <th>
+                {{result["suite"]["name"]}}
+                <small>
+                  (Suite id: {{result["suite"]["id"]}})
+                </small>
+              </th>
+            </tr>
+
+            <tr>
+              <th style="width:130px;">
+                <small>Command</small>
+              </th>
+              <th>
+                {{result["command"]}}
+              </th>
+            </tr>
+
+            <tr>
+              <th style="width:130px;">
+                <small>Execution date</small>
+              </th>
+              <th>
+                {{Time.at(result["started_at"]).strftime(Kaya::Support::Configuration.formatted_datetime)}}
+              </th>
+            </tr>
+
+            <tr>
+              <th style="width:130px;">
+                <small>Summary</small>
+              </th>
+              <th>
+                {{Kaya::View.label_color_for(result)}}
+              </th>
+            </tr>
+
+            <tr>
+              <th style="width:130px;">
+                <small>Status</small>
+              </th>
+              <th>
+                {{result["status"]}}
+              </th>
+            </tr>
+
+          % if result["custom_params"]
+
+            <tr>
+              <th style="width:130px;">
+                <small>Custom Parameters</small>
+              </th>
+              <th>
+                {{result["custom_params"]}}
+              </th>
+            </tr>
+          % end
+
+          % if result["execution_data"]
+            <tr>
+              <th style="width:130px;">
+                <small>Execution data</small>
+              </th>
+              <th>
+                <a href="#" class='label label-default' onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result["_id"]}}/data', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');">Click here to see</a>
+              </th>
+            </tr>
+
+        % end
+
+
+          </tbody>
+        </table>
+
+        % if result["status"] == 'finished'
+          <a onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/results/report/{{result["_id"]}}', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-{{Kaya::View.color(result["show_as"])}}'>
+            See Report
+          </a>
+        % end
+
+        <a onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{result["_id"]}}', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-info'>
+          Console Log
+        </a>
+
+        <a onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result["_id"]}}', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-default'>
+          Raw
+        </a>
+
+
+      </div>
+    </div>
+  </div>
+</div>

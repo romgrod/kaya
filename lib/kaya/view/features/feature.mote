@@ -1,0 +1,14 @@
+% feature_path.gsub!(" ","/")
+% unless (feature_path.start_with? "features")
+  <h3>Could not find the requestes feature file</h3>
+% else
+  % name = feature_path.split("/").last.split(".").first.capitalize.gsub("_"," ")
+  % content = IO.read("#{Dir.pwd}/#{feature_path}").gsub("\n\n\n","======#=====")
+  <div class="well">
+    % content.each_line do |line|
+      <div class="small">{{line.gsub("<","&lt").gsub(">","&gt").gsub('"',"&quot;").gsub("&lt","&lt<strong>").gsub("&gt","</strong>&gt").gsub(" ","&nbsp;").gsub("======#=====","<br><br>")}}</div>
+    % end
+  </pre>
+% end
+
+<!-- % content = IO.read("#{Dir.pwd}/#{feature_path}").each_line{|line| line.gsub("<","%LT&").gsub(">","%GT&").gsub("'","").gsub('"',"").gsub("\n","<br>")} -->

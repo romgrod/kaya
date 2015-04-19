@@ -1,0 +1,10 @@
+% features_files_list = Kaya::Cucumber::Features.feature_files_names
+<table class='table table-hover'>
+  % features_files_list.each do |file_name|
+    <tr>
+      <td>
+        <a aria-hidden='true' href='/{{Kaya::Support::Configuration.hostname}}/kaya/features/file?path={{file_name.gsub("/"," ")}}'>{{file_name}}</a>
+      </td>
+    </tr>
+  % end
+</table>

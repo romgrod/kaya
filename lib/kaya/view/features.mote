@@ -1,0 +1,57 @@
+% title = h1 = section = "features"
+
+<!--partials -->
+
+% feature_path = query_string.path
+
+% javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
+
+% styles = Mote.parse(File.read("#{Kaya::View.path}/styles.mote"), self, []).call()
+
+% modals = Mote.parse(File.read("#{Kaya::View.path}/modals.mote"), self, []).call()
+
+% git_information = Mote.parse(File.read("#{Kaya::View.path}/git_information.mote"), self, [:section]).call(section:section)
+
+% footer = Mote.parse(File.read("#{Kaya::View.path}/footer.mote"), self, []).call()
+
+% if feature_path
+  % content = Mote.parse(File.read("#{Kaya::View.path}/features/feature.mote"), self, [:feature_path]).call(feature_path:feature_path)
+% else
+  % content = Mote.parse(File.read("#{Kaya::View.path}/features/features_list.mote"), self, []).call()
+% end
+% section = section.gsub(" ","_").downcase
+
+% navigation_bar = Mote.parse(File.read("#{Kaya::View.path}/navigation_bar.mote"), self, [:section]).call(section:section)
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns ="http://www.w3.org/1999/xhtml"><head><meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>'
+  <head>
+    <title>{{Kaya::Support::Configuration.project_name}} through Kaya - {{title.capitalize}}</title>
+
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='shortcut icon' href='/favicon'>
+    <link href='https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css' rel='stylesheet'>
+
+    {{javascript}}
+
+    {{styles}}
+
+  </head>
+    <body class='padding-top: 50px;'>
+
+      {{modals}}
+
+      {{navigation_bar}}
+
+      <div class='container'>
+      <br>
+        {{git_information}}
+
+        <p>{{content}}</p>
+
+        {{footer}}
+
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,96 @@
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+<script src='https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js'></script>
+<script type='text/javascript'>
+
+  function my_alert(title, text){
+    info(title,text);
+    url = 'http://' + window.location.host + window.location.pathname;
+    $('#myModal').modal('show');
+  }
+  function starter_link(formId){
+    var form = document.getElementById(formId);
+    var link = window.location.origin + '/{{Kaya::Support::Configuration.hostname}}/kaya/suites/' + formId + '/run?';
+    var elements = form.getElementsByClassName('customParam');
+    for(i=0; i < elements.length; i++){
+      if(elements[i].value.length > 0){
+        link += elements[i].getAttribute('name') + '=' + elements[i].value + '&';
+      }
+    }
+    info_for_link('Use to the following link to start execution, share it!', link.slice(0,link.length-1));
+  }
+  function info(title, text){
+    document.getElementById('myModalLabel').innerHTML= title;
+    document.getElementById('my-modal').innerHTML= text;
+  }
+  function featureInfo(title, text){
+    start_html = '<pre lang="ruby" style="height:400px; overflow:scroll; white-space:pre; word-wrap:normal;">';
+    end_html = '</pre>'
+    replaced_text = text.replace(/%LT&/g,'&lt;')
+    replaced_text = replaced_text.replace(/%GT&/g,'&gt;')
+    all_html = start_html + replaced_text + end_html;
+    document.getElementById('myLargeModalLabel').innerHTML= title;
+    document.getElementById('my-largeModal').innerHTML= all_html;
+  }
+  function go_clean(){
+    window.location.href = url;
+  }
+  function refresh_and_open(url){
+      window.open(url, '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');
+      location.reload();
+  }
+  function selectLink(){
+    document.getElementById('link-text-area').focus();
+    document.getElementById('link-text-area').select();
+  }
+  function info_for_link(title, text){
+    document.getElementById('myModalLabel').innerHTML= title;
+    content = "<textarea id='link-text-area' rows='3' cols='63' style='resize: none; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; font-weight:normal;' onfocus='selectLink()'>" + text + "</textarea><br>";
+    content += '<small>Click to select.<small>';
+    document.getElementById('my-modal').innerHTML= content;
+  }
+  function isInArray(value, array) {
+    return array.indexOf(value) > -1;
+  }
+  function addTextInput(selectId, plusFields, index){
+    for (var key in plusFields){
+        document.getElementById(plusFields[key] + index).style.display = 'none';
+      }
+    if(plusFields.hasOwnProperty(document.getElementById(selectId + index).options[document.getElementById(selectId + index).selectedIndex].value)) {
+      document.getElementById(plusFields[document.getElementById(selectId + index).options[document.getElementById(selectId + index).selectedIndex].value] + index).style.display = 'block';
+    }
+  }
+
+  function get_and_close(url){
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( 'GET', url, false );
+    xmlHttp.send();
+    window.close();
+  }
+
+  function go_to_bottom(){
+    window.scrollTo(0,document.body.scrollHeight);
+  }
+
+  function go_to_top(){
+    window.scrollTo(0,0);
+  }
+
+
+  var collapsed = false;
+  function auto_collapse(){
+    if(collapsed) {
+      collapsed = false;
+      document.getElementById('collapse_icon').innerHTML = "<span class='glyphicon glyphicon-minus' aria-hidden='true' style='font-size:18px;'></span>";
+    } else {
+      collapsed = true;
+      document.getElementById('collapse_icon').innerHTML = "<span class='glyphicon glyphicon-plus' aria-hidden='true' style='font-size:18px;'></span>";
+    }
+    $('.panel-body').collapse('toggle');
+  }
+
+
+  function PrintScreenshot(path){
+     var win = window.open(path , "win");
+     win.onload = win.print;
+  }
+</script>

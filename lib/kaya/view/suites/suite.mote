@@ -1,0 +1,73 @@
+  <div class='starter-template'>
+    <div class='panel panel-{{Kaya::View.color(suite["status"])}}'>
+      <div class='panel-heading' data-toggle='collapse' data-target='#{{suite["name"].gsub(' ','')}}'>
+        <h4 class='panel-title'>{{suite["name"]}}</h4>
+    % unless suite["status"]=="READY"
+        <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+    % end
+    </div>
+
+    <div class='panel-body collapse in' id='{{suite["name"].gsub(' ','')}}'>
+      <ul class='list-group'>
+        <li class='list-group-item'>
+          Command: {{suite["command"]}}
+        </li>
+  % if suite["last_result"]
+      % unless suite["status"] == "RUNNING"
+        <li class='list-group-item'>
+          Last result:&nbsp;{{Kaya::View.label_color_for_result_id suite["last_result"]}}
+        </li>
+        <li class='list-group-item'>
+          Started on:&nbsp;{{Kaya::Support::TimeHelper.formatted_time_for suite["last_result"]}}
+        </li>
+      % end
+  % end
+    % if suite["status"] == "RUNNING"
+        <li class='list-group-item'>
+          <a href='#' class='btn btn-info' onclick="refresh_and_open('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{suite['last_result']}}');">
+            See progress
+          </a>
+        </li>
+    % else
+        <li class='list-group-item'>
+          <form name='run' id='{{suite["name"]}}' method='get' action='/{{Kaya::Support::Configuration.hostname}}/kaya/suites/{{suite["name"]}}/run'>
+
+      % unless suite["custom"].empty?
+        % custom_template = Mote.parse(File.read("#{Kaya::View.path}/custom/params.mote"), self, [:custom_params])
+        {{custom_template.call(custom_params:suite["custom"])}}
+      % end
+      <br><br>
+            <input type='submit' class='btn btn-success' value='Execute Suite'>&nbsp;
+            <input type='text' name='execution_name' class='customParam' title='This value could be used to identify the result execution from other execution of this suite. E.g: You could use the release your are going to test' placeholder='Identify your execution' value='{{Kaya::Support::Configuration.auto_execution_id}}' style='height: 34px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; font-weight:normal;' />
+            <button type='button' class='btn btn-default' aria-label='Left Align' data-toggle='modal' data-target='#myModal' onclick='javascript:starter_link("{{suite["name"]}}");'>
+              <span class='glyphicon glyphicon-star' aria-hidden='true'>
+                Link
+              </span>
+            </button>
+            % unless suite["info"].empty?
+            <div style="text-align:right">
+              <a href='#'><span title='{{suite["info"]}}' class='glyphicon glyphicon-info-sign' aria-hidden='true' data-toggle='modal' data-target='#myModal' onclick="javascript:info('Information about {{suite["name"]}}','{{suite["info"].gsub('\n','<br>')}}', null);"></span>
+             </a><b>Information</b>&nbsp;&nbsp;
+            </div>
+            % end
+
+          </form>
+        </li>
+    % end
+        </li>
+      </ul>
+
+  % if suite["last_result"] # There is at least one result
+    % if suite["results"]["size"] > 0
+      <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/suite/{{suite["name"].gsub(' ','%20')}}' class='btn btn-default pull-center'>All results({{suite["results"]["size"]}})</a>
+    % end
+  % else
+      &nbsp;
+  % end
+    </div>
+  </div>
+</div>

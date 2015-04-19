@@ -1,0 +1,21 @@
+<div class='well'>
+% if Kaya::Support::Configuration.use_git?
+    <h4>
+      Working on branch <strong>{{Kaya::Support::Git.branch}}</strong>
+    </h4>
+    <h4>
+      <small>
+        <span title='{{Kaya::Support::Git.log_last_commit}}'>Commit ID:{{Kaya::Support::Git.get_last_commit_id}}</span>
+      </small>
+% end
+    % unless ["help","logs", "features"].include? section.downcase
+    <div class='btn-group pull-right' role='group'>
+      <button type='button' class='btn btn-default' aria-label='Left Align' title='Toggle collapse' onclick="auto_collapse()" title='collapse all panels'>
+        <div id='collapse_icon'>
+          <span class='glyphicon glyphicon-minus' aria-hidden='true' style='font-size:18px;'></span>
+        </div>
+      </button>
+    </div>
+    </h4>
+    % end
+</div>

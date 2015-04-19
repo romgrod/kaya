@@ -1,0 +1,49 @@
+{
+
+  "USE_GIT" : true,
+
+  "HOSTNAME" : "your-host-name",
+
+  "APP_PORT" : 8080,
+
+  "DATABASE" : {
+
+    "TYPE" : "mongodb",
+    "HOST" :"localhost",
+    "PORT" : 27017,
+    "USERNAME" : null,
+    "PASSWORD" : null},
+
+  "PROJECT_NAME" : "Awesome Project",
+
+  "PROJECT_URL" : "http://your.project.url",
+
+  "INACTIVITY_TIMEOUT" : 60,
+
+  "KILL_INACTIVE_EXECUTIONS_AFTER" : 300,
+
+  "FORMAT_DATETIME" : "%d/%m/%Y %H:%M:%S",
+
+  "REFRESH_TIME" : 10,
+
+  "NOTIFICATION" : {
+    "USE_GMAIL" : false,
+    "USERNAME" : null,
+    "PASSWORD" : null,
+    "RECIPIENTS" : "your@email.com",
+    "ATTACH_REPORT" : false
+  },
+
+  "FOOTER" : "Tests by a great and funny team",
+
+  "AUTO_EXECUTION_ID" : {
+    "datetime" : true,
+    "format" : "%d%^b%y-%H%M",
+    "default" : null
+  },
+
+  "HEADLESS" : {
+    "active" : false,
+    "resolution" : "1024x768",
+    "size":"24"}
+}

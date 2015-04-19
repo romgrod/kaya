@@ -1,0 +1,40 @@
+% javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
+
+% styles = Mote.parse(File.read("#{Kaya::View.path}/styles.mote"), self, []).call()
+
+% navigation_bar = Mote.parse(File.read("#{Kaya::View.path}/navigation_bar.mote"), self, [:section]).call(section:"help")
+
+
+error_title = error_msg = Kaya::Support::ErrorHandlerHelper.evaluate exception
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns ="http://www.w3.org/1999/xhtml">
+
+  <head>
+    <title>{{Kaya::Support::Configuration.project_name}} through Kaya - Error</title>
+
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='shortcut icon' href='/favicon'>
+    <link href='https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css' rel='stylesheet'>
+
+    {{javascript}}
+
+    {{styles}}
+
+  </head>
+  <body class='padding-top: 50px;'>
+
+    {{navigation_bar}}
+
+    <div class='container'>
+      <br>
+      <div class='starter-template'>
+        <div class='panel-body' style='align=center;'>
+          <span style='font-size:35px; alignment=center'>404</span><br>
+          <span style='font-size:35px;alignment=center'><small>Page Not Found</small></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

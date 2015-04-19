@@ -1,0 +1,59 @@
+<?
+  key = query_string.keyword if (query_string.keyword and !query_string.keyword.empty?)
+  status = query_string.status if (query_string.status and !query_string.status.empty?)
+
+  results = Kaya::API::Results.show()
+  results_list = results["results"]
+  if key
+    keyword = key.downcase
+    results_list.select! do |result_data|
+      result_data["execution_name"].downcase.include? keyword or
+      result_data["summary"].downcase.include? keyword or
+      result_data["suite"].inspect.downcase.include? keyword or
+      result_data["command"].downcase.include? keyword or
+      result_data["execution_data"].inspect.downcase.include? keyword or
+      result_data["custom_params"].inspect.downcase.include? keyword
+    end
+
+    results_list.select!{|result_data| result_data["_id"]==key} if key.is_a? Fixnum
+
+  end
+
+  if status
+    results_list.select! do |res|
+      res["status"].downcase==status.downcase or (res["summary"].split("step").first.downcase.include? status.downcase and res["summary"].split("step").first.scan(/\(\d.+\)/).first.scan(/[a-z]+/).first == status )
+    end
+  end
+
+  results_size_text = if (key or status)
+    "#{results_list.size} result#{'s' if results_list.size>1} found"
+  else
+    "Showing #{results_list.size} results."
+  end
+?>
+
+<div class='well'>
+  <form name='search' method='get' action='/{{Kaya::Support::Configuration.hostname}}/kaya/results/all'>
+    <input type='text' name='keyword' title='' placeholder='Search' value='{{key}}' style='height: 34px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px;' />
+    <select id='status' name='status' style='height: 34px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px;'>
+      <option value='' {{'selected' if status.nil?}}>Any status</option>
+      <option value='passed' {{'selected' if status=='passed'}}>Passed</option>
+      <option value='failed' {{'selected' if status=='failed'}}>Failed</option>
+      <option value='stopped' {{'selected' if status=='stopped'}}>Stopped</option>
+    </select>
+    <input type='submit' class='btn btn-success' value='Search'>&nbsp;&nbsp;
+  % if key or status
+    <a class='btn btn-danger' href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/all' role='button'>Clear</a>
+  % end
+  </form>
+  <br>
+  <p style='text-align:right'>{{results_size_text}}</p>
+</div>
+<div class='well'>
+
+% if results_list.size > 0
+  % result_info = Mote.parse(File.read("#{Kaya::View.path}/results/detailed_info.mote"), self, [:result])
+  % results_list.each do |result_data|
+    {{result_info.call(result:result_data)}}
+  % end
+% end

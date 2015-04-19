@@ -1,0 +1,29 @@
+% help_search_resut = Kaya::Database::MongoConnector.help_search(query).delete_if{|res| res["title"]=="README"}
+</p><h3>Results for <b>"{{query}}"</b></h3></p>
+<br>
+<p style='display:none;'>strong fix</p>
+% if help_search_resut.size.zero?
+  No result where found for "{{query}}\"</div></div>
+% else
+  % help_search_resut.each do |result|
+    <div class='panel panel-primary'>
+      <div class='panel-heading'>
+        <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/help/{{result["title"]}}' style='display: block;color: white !important;'>
+          <h3 class='panel-title'>
+            <span class='glyphicon glyphicon-file' aria-hidden='true'></span>
+            {{result["title"].to_s.gsub('_', ' ').capitalize}}
+          </h3>
+        </a>
+      </div>
+      <ul class='list-group'>
+      % result["body"].split(/\n/).each do |line|
+        % if (line.include? query)
+          <li class='list-group-item'>
+            <div style='font-weight:normal;'>... {{line.to_s.gsub("#{query}", "<span style='background-color: #FFFF00'>#{query}</span>")}} ...</div>
+          </li>
+        % end
+      % end
+      </ul>
+    </div>
+  % end
+% end

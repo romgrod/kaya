@@ -1,0 +1,72 @@
+
+
+
+% title = (page == "main")? page : Kaya::Database::MongoConnector.help_title(page)
+
+% javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
+
+% styles = Mote.parse(File.read("#{Kaya::View.path}/styles.mote"), self, []).call()
+
+% available_pages = Kaya::Database::MongoConnector.get_all_documentation.map{|doc| doc["title"].downcase}
+
+% navigation_bar = Mote.parse(File.read("#{Kaya::View.path}/navigation_bar.mote"), self, [:section]).call(section:"help")
+
+% query = query_string
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns ="http://www.w3.org/1999/xhtml">
+
+  <head>
+    <title>{{Kaya::Support::Configuration.project_name}} through Kaya - {{title}}</title>
+
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='shortcut icon' href='/favicon'>
+    <link href='https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css' rel='stylesheet'>
+
+    {{javascript}}
+
+    {{styles}}
+
+
+
+  </head>
+    <body class='padding-top: 50px;'>
+
+
+      {{navigation_bar}}
+
+      <div class='container'>
+        <br>
+
+        <div class='jumbotron'>
+          <div class='container'>
+          <h1>
+            <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/help'>Help</a>
+            {{page.capitalize.gsub("_"," ")}}
+            <div class='col-sm-3 col-md-3 pull-right'>
+              <form class='navbar-form' role='search' action='/{{Kaya::Support::Configuration.hostname}}/kaya/help/main' method='get'>
+                <div class='input-group'>
+                  <input type='text' class='form-control' placeholder='Search' name='s' value="{{query}}">
+                  <div class='input-group-btn'>
+                    <button  class='btn btn-info' type='submit'><i class='glyphicon glyphicon-search'></i></button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </h1>
+          <!-- inicio content-->
+          % if query and !query.empty?
+            {{Mote.parse(File.read("#{Kaya::View.path}/help/search_result.mote"), self, [:query]).call(query:query)}}
+          % else
+            % if available_pages.include? page
+              {{Mote.parse(File.read("#{Kaya::View.path}/help/page.mote"), self, [:page]).call(page:page)}}
+            % else
+              {{Mote.parse(File.read("#{Kaya::View.path}/help/main.mote"), self, []).call()}}
+            % end
+          % end
+          <!-- fin content -->
+      </div>
+    </div>
+  </body>
+</html>

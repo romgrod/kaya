@@ -1,0 +1,52 @@
+% suites_list = Kaya::API::Suites.list({})
+% $K_LOG.error "results.mote suite_name=#{suite_name}" if $K_LOG
+% unless suites_list["suites"].empty?
+  % suites_list["suites"].select!{|suite| suite["name"]==suite_name} if suite_name
+  % suites_list["suites"].each do |suite|
+    % results_list = Kaya::API::Result.results_list_for(suite["_id"])
+    % if results_list.size > 0
+      <div class="panel panel-primary">
+        <div class="panel-heading" data-toggle="collapse" data-target="#at_world">
+                <h3 class="panel-title">
+                  {{suite["name"]}}
+                <div class="pull-right">{{results_list.size}} Results</div>
+                </h3>
+                <div></div>
+              </div>
+            <div class="panel-body collapse in" id="at_world">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="font-weight: bold;">When</th>
+                    <th style="font-weight: bold;">Label</th>
+                    <th style="font-weight: bold;">Duration (sec)</th>
+                    <th style="font-weight: bold; text-align: center;">Unviewed</th>
+                    <th style="font-weight: bold;">Console</th>
+                    <th style="font-weight: bold;">Status</th>
+                  </tr>
+                </thead>
+                % result_template = Mote.parse(File.read("#{Kaya::View.path}/results/result.mote"), self, [:result])
+                % results_list_size = results_list.size
+                % results_list = results_list[0..2] unless suite_name
+                % results_list.each do |result_data|
+                  {{result_template.call(result:result_data)}}
+                % end
+              </table>
+              <div class="text-center">
+                <a href="/{{Kaya::Support::Configuration.hostname}}/kaya/suites/{{suite["name"]}}" class="btn btn-info">
+                  Go to suite
+                </a>
+              % unless suite_name
+                <a href="/{{Kaya::Support::Configuration.hostname}}/kaya/results/suite/{{suite["name"]}}" class="btn btn-default">
+                  &nbsp;&nbsp;All results for this suite&nbsp;
+                  <span class="label label-info label-as-badge">
+                    {{results_list_size}}
+                  </span>
+                </a>
+              % end
+              </div>
+            </div>
+          </div>
+      % end
+    % end
+% end

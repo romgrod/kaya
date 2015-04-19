@@ -1,0 +1,23 @@
+<div title="Command: {{result['command']}}">
+  <tr class="small">
+    <th>{{Kaya::Support::TimeHelper.formatted_time_for(result["started_at"])}}</th>
+    % execution_name = !result["execution_name"].empty? ? result["execution_name"].gsub("-_-"," ") : '<small>Not defined</small>'
+    <th>{{execution_name}}</th>
+    <th>{{Kaya::View.formatted_for(result["elapsed_time"])}}</th>
+    <th style="text-align: center;" >
+      % if result["saw"]
+        No
+      % else
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+      % end
+    </th>
+    <th>
+      <a onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{result["_id"]}}', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class="label label-default">
+        Console Log
+      </a>
+    </th>
+    <th>
+      {{Kaya::View.label_color_for(result)}}
+    </th>
+  </tr>
+</div>

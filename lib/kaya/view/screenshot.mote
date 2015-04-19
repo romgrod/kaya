@@ -1,0 +1,42 @@
+<?
+file_path = if File.exist?("#{Dir.pwd}/kaya/screenshot/#{file_name}") and file_name.count(".") == 1 and ["jpeg","jpg","png"].include? file_name.split(".").last
+  "#{Dir.pwd}/kaya/screenshot/#{file_name}"
+else
+  nil
+end
+
+javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
+
+?>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='icon' href='../../favicon.ico'>
+    <title>Screenshot</title>
+    <!-- Bootstrap core CSS -->
+    <link href='https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css' rel='stylesheet'>
+    <!-- Custom styles for this template -->
+    <link href='https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/jumbotron-narrow.css' rel='stylesheet'>
+    {{javascript}}
+
+  </head>
+
+  <body>
+
+
+% if file_path
+    <img src="{{file_path}}" alt="Que mirás?" height="300" width="500">
+% else
+    <div class='jumbotron'>
+      <h1>Screenshot does not exist</h1>
+      <p><a class='btn btn-lg btn-success' href='#' onclick='javascript:window.history.back();' role='button'>Back</a></p>
+    </div>
+% end
+  </body>
+</html>
+
+
+
+

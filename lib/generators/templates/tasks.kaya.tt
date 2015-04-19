@@ -1,0 +1,10 @@
+{
+  "kaya":{
+    "tasks":{
+      "task_name":{
+        "command":"echo 'this is the command you can perform by calling task_name on your get request'"
+      }
+    },
+    "update_command":""
+  }
+}

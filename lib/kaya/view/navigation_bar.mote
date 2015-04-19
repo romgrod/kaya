@@ -1,0 +1,48 @@
+<div class='navbar navbar-inverse navbar-fixed-top'>
+  <div class='container'>
+    <div class='navbar-header'>
+      <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
+        <span class='icon-bar'></span>
+        <span class='icon-bar'></span>
+        <span class='icon-bar'></span>
+        <span class='icon-bar'></span>
+        <span class='icon-bar'></span>
+        <span class='icon-bar'></span>
+      </button>
+      <a class='navbar-brand' href='#'>{{Kaya::Support::Configuration.project_name}}</a>
+    </div>
+    <div class='collapse navbar-collapse'>
+      <ul class='nav navbar-nav'>
+        <li class='{{'active' if section == "test_suites"}}'>
+          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/suites'>Test Suites</a>
+        </li>
+        <li class='{{'active' if section == "features"}}'>
+          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/features'>Features</a>
+        </li>
+        <li class='{{'active' if section == "results"}}'>
+          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results'>Results</a>
+        </li>
+        <li class='{{'active' if section == "all_results"}}'>
+          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/all'>All Results</a>
+        </li>
+        <li class='{{'active' if section == "repo"}}'>
+          <a title='Open repository url' href='{{Kaya::Support::Configuration.project_url}}' target='_blank'>Repo</a>
+        </li>
+        <li class='{{'active' if section == "logs"}}'>
+          <a href='#' class='dropdown-toggle' data-toggle='dropdown' role= 'button' aria-expanded='false'>
+            Logs
+          </a>
+          <ul class='dropdown-menu' role='menu'>
+            % Kaya::Support::Logs.all.keys.each do |log|
+              <li><a href='/{{Kaya::Support::Configuration.hostname}}/kaya/logs/{{log}}'>{{log.split('_').first.capitalize}}</a></li>
+            % end
+          </ul>
+        </li>
+        <li class='{{section == "help" ? 'active' : ''}}'>
+          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/help'>Help</a>
+        </li>
+      </ul>
+    </div>
+    <!--/.nav-collapse -->
+  </div>
+</div>
