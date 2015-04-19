@@ -6,7 +6,6 @@ require 'github/markup'
 require 'redis'
 require 'sidekiq'
 require 'mote'
-require 'byebug'
 
 require_relative "generators/task_rack"
 

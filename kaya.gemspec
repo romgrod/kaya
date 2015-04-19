@@ -30,7 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'colorize'
   spec.add_dependency 'github-markup'
   spec.add_dependency 'redcarpet'
-  spec.add_dependency 'byebug'
   spec.add_dependency 'gmail'
   spec.add_dependency 'mote'
 
