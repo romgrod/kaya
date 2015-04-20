@@ -136,6 +136,56 @@ module Kaya
             "Commit: #{self.commits.first}"
           end
 
+          def self.last_commit
+            self.commits.first
+          end
+
+          # # Returns information about commit
+          # # @return [Hash]
+          # # {
+          # #   "_id":Fixnum,
+          # #   "commit_id":Fixnum,
+          # #   "author":String,
+          # #   "date":String,
+          # #   "message":String
+          # # }
+          # def self.last_commit_info
+          #   commits = self.log
+          #   last_commit_raw = commits.split("\n\ncommit ").first.split("\n")
+          #   {
+          #     "_id" => self.generate_id,
+          #     "commit_id" => self.extract_id(last_commit_raw),
+          #     "author" => self.extract_author(last_commit_raw),
+          #     "date" => self.extract_date(last_commit_raw),
+          #     "message" => self.extract_message(last_commit_raw)
+          #   }
+          # end
+
+          # def self.last_commit_id
+          #   self.last_commit_info["commit_id"]
+          # end
+
+          # # returns commit id
+          # # @return [String] commit
+          # def self.extract_id commit_info
+          #   commit_id = commit_info.select{|line| line.start_with? "commit "}.first
+          #   commit_id.split(" ").last
+          # end
+
+          # def self.extract_author commit_info
+          #   author = commit_info.select{|line| line.start_with? "Author: " }
+          #   author.first.split("Author: ").last
+          # end
+
+          # def self.extract_date commit_info
+          #   date = commit_info.select{|line| line.start_with? "Date:  "}.first
+          #   date.split("   ").last
+          # end
+
+          # def self.extract_message commit_info
+          #   info = commit_info.last
+          # end
+
           def self.is_there_commit_id_diff? obtained_commit
               obtained_commit != self.last_commit_id
           end

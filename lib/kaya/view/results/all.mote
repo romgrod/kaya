@@ -25,11 +25,16 @@
     end
   end
 
+
   results_size_text = if (key or status)
     "#{results_list.size} result#{'s' if results_list.size>1} found"
   else
-    "Showing #{results_list.size} results."
+    total_of_results = results_list.size
+    results_list = results_list[0..19] if total_of_results > 20
+    "Showing #{results_list.size} results of #{total_of_results}."
   end
+
+
 ?>
 
 <div class='well'>

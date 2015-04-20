@@ -7,33 +7,57 @@ module Kaya
       include Mongo
 
       def initialize(opts={host: "localhost", port: 27017, username: nil, pass: nil})
+        set_db_name
+        set_client(opts)
+        set_db
+        authenticate(opts)
+        set_suite_collection
+        set_results_collection
+        set_commits_collection
+        set_documentation_collection
+      end
 
+      def set_db_name
         project_name = Dir.pwd.split("/").last
         @@db_name = "#{project_name}_kaya"
+      end
 
+      def set_client opts
         @@client    = MongoClient.new(opts[:host], opts[:port])
+      end
 
+      def set_db
+        @@db = @@client.db(@@db_name)
+      end
 
-        @@db      = @@client.db(@@db_name)
+      def authenticate opts
         @@auth = @@db.authenticate(opts[:username], opts[:pass]) if opts[:username] and opts[:pass]
+      end
 
+      def set_suite_collection
         @@suites  = @@db.collection("suites")
         @@suites.ensure_index({"last_result" => 1})
+      end
 
+      def set_commits_collection
+        @@commits   = @@db.collection("commits")
+      end
+
+      def set_results_collection
         @@results   = @@db.collection("results")
         @@results.ensure_index({"_id" => 1})
         @@results.ensure_index({"started_at" => 1, "_id" => 1})
+      end
 
+      def set_documentation_collection
         @@documentation = @@db.collection("documentation")
       end
 
-      def self.connected?
-        begin
-          @@db and true
-        rescue
-          false
-        end
-      end
+
+      ##########################
+      # DOCUMENTATION
+      #
+      #
 
       # Removes all documents of documentation from the DB
       def self.clean_documentation
@@ -67,6 +91,20 @@ module Kaya
         @@documentation.find({:$or => [{ "title" => /#{title}/ },{ "title" => /#{title.upcase}/ },{ "body" => /#{title}/ }]}).to_a
       end
 
+
+      ###########################
+      # COMMONS
+      #
+      #
+
+      def self.connected?
+        begin
+          @@db and true
+        rescue
+          false
+        end
+      end
+
       def self.generate_id
         Time.now.to_f.to_s.gsub( ".","")[0..12].to_i
       end
@@ -88,58 +126,80 @@ module Kaya
         MongoClient.new().db(@@db_name)
       end
 
-      # Update suites collection with suites that comes from cucumber.yml file
-      # All given suites will be active. Others will be deactivated
-      # @param [Hash] cucumber_yml_suites
-      def self.update_suites cucumber_yml_suites
 
-        existing_suites = self.suites
-
-        existing_suites_name_list = existing_suites.map{|suite| suite["name"]}
-
-        cucumber_yml_suites.each_with_index do |cucumber_suite, index|
-
-          suite_data = existing_suites.select{|suite| suite["name"]==cucumber_suite["name"]}.first
-
-          # if exist, so update it, else creates a new one
-          if suite_data
-            #Delete it from list and update it
-            existing_suites.delete(suite_data)
-            suite_data["command"]   = cucumber_suite["command"]
-            suite_data["custom"]   = cucumber_suite["custom"]
-            suite_data["active"]    = true
-            suite_data["index"]     = index
-
-            # Updates register with new data
-            self.update_suite(suite_data)
-            print "UPDATED: #{suite_data['_id']}\n\n"
-          else
-            # Creates a new one
-            suite_data = self.suite_data_structure
-            suite_data["name"]      = cucumber_suite["name"]
-            suite_data["command"]   = cucumber_suite["command"]
-            suite_data["custom"]   = cucumber_suite["custom"]
-            suite_data["branch"]    = Kaya::Support::Git.actual_branch
-
-            # Saves register with new data
-            id = self.insert_suite(suite_data)
-
-            print "INSERTED: #{id}\n\n"
-
-          end
+      ##################################
+      # COMMITS
+      #
+      #
 
 
-        end
-
-        # If at least one existing suite isn't con cucumber yml file, so deactivate them
-        unless existing_suites.empty?
-          existing_suites.each do |suite|
-
-            print "DEACTIVATED: #{suite['_id']}\n\n"
-            deactivate_suite(suite["_id"])
-          end
-        end
+      # Saves commit information
+      # @param [Hash] commit_info = {"_id" => Fixnum, "commit_id" => String, "info" => String}
+      def self.insert_commit commit_info
+        @@commits.insert({"_id" => self.generate_id, "log" => commit_info})
       end
+
+      # Returns last saved commit info
+      # @return [Hash] if exist
+      def self.last_commit
+        data = @@commits.find({}).to_a.first
+        data["log"] if data
+      end
+
+      ##################################
+      # SUITES
+      #
+      #
+
+      # # Update suites collection with suites that comes from cucumber.yml file
+      # # All given suites will be active. Others will be deactivated
+      # # @param [Hash] cucumber_yml_suites
+      # def self.update_suites cucumber_yml_suites
+
+      #   existing_suites = self.suites
+
+      #   existing_suites_name_list = existing_suites.map{|suite| suite["name"]}
+
+      #   cucumber_yml_suites.each_with_index do |cucumber_suite, index|
+
+      #     suite_data = existing_suites.select{|suite| suite["name"]==cucumber_suite["name"]}.first
+
+      #     # if exist, so update it, else creates a new one
+      #     if suite_data
+      #       #Delete it from list and update it
+      #       existing_suites.delete(suite_data)
+      #       suite_data["command"]   = cucumber_suite["command"]
+      #       suite_data["custom"]   = cucumber_suite["custom"]
+      #       suite_data["active"]    = true
+      #       suite_data["index"]     = index
+
+      #       # Updates register with new data
+      #       self.update_suite(suite_data)
+      #       print "UPDATED: #{suite_data['_id']}\n\n"
+      #     else
+      #       # Creates a new one
+      #       suite_data = self.suite_data_structure
+      #       suite_data["name"]      = cucumber_suite["name"]
+      #       suite_data["command"]   = cucumber_suite["command"]
+      #       suite_data["custom"]   = cucumber_suite["custom"]
+      #       suite_data["branch"]    = Kaya::Support::Git.actual_branch
+
+      #       # Saves register with new data
+      #       id = self.insert_suite(suite_data)
+
+      #       print "INSERTED: #{id}\n\n"
+      #     end
+      #   end
+
+      #   # If at least one existing suite isn't con cucumber yml file, so deactivate them
+      #   unless existing_suites.empty?
+      #     existing_suites.each do |suite|
+
+      #       print "DEACTIVATED: #{suite['_id']}\n\n"
+      #       deactivate_suite(suite["_id"])
+      #     end
+      #   end
+      # end
 
 
       # Inserts a suite in suites collection
@@ -147,7 +207,6 @@ module Kaya
       def self.insert_suite suite_data
         @@suites.insert(suite_data)
       end
-
 
       # Update record for a given suite
       # @param [Hash] suite_data
@@ -192,8 +251,10 @@ module Kaya
 
 
 
-
-    # RESULTS COLLECTION METHODS
+    ######################################3
+    # RESULTS
+    #
+    #
 
       # Creates a result data andc
       # returns de id for that register

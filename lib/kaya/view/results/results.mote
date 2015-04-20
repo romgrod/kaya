@@ -1,5 +1,5 @@
 % suites_list = Kaya::API::Suites.list({})
-% $K_LOG.error "results.mote suite_name=#{suite_name}" if $K_LOG
+% $K_LOG.debug "Results for suite name #{suite_name}" if $K_LOG and suite_name
 % unless suites_list["suites"].empty?
   % suites_list["suites"].select!{|suite| suite["name"]==suite_name} if suite_name
   % suites_list["suites"].each do |suite|
