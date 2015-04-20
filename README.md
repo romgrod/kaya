@@ -81,92 +81,69 @@ Reference about configuration
 
 kaya/kaya_conf file reference:
 
-{
-
-  "USE_GIT" : true,
-
-  "HOSTNAME" : "your-host-name",
-
-  "APP_PORT" : 8080,
-
-  "DATABASE" : {
-
+    {
+    "USE_GIT" : true,
+    "HOSTNAME" : "your-host-name",
+    "APP_PORT" : 8080,
+    "DATABASE" : {
     "TYPE" : "mongodb",
     "HOST" :"localhost",
     "PORT" : 27017,
     "USERNAME" : null,
     "PASSWORD" : null},
-
-  "PROJECT_NAME" : "Awesome Project",
-
-  "PROJECT_URL" : "http://your.project.url",
-
-  "INACTIVITY_TIMEOUT" : 60,
-
-  "KILL_INACTIVE_EXECUTIONS_AFTER" : 300,
-
-  "FORMAT_DATETIME" : "%d/%m/%Y %H:%M:%S",
-
-  "REFRESH_TIME" : 10,
-
-  "NOTIFICATION" : {
+    "PROJECT_NAME" : "Awesome Project",
+    "PROJECT_URL" : "http://your.project.url",
+    "INACTIVITY_TIMEOUT" : 60,
+    "KILL_INACTIVE_EXECUTIONS_AFTER" : 300,
+    "FORMAT_DATETIME" : "%d/%m/%Y %H:%M:%S",
+    "REFRESH_TIME" : 10,
+    "NOTIFICATION" : {
     "USE_GMAIL" : false,
     "USERNAME" : null,
     "PASSWORD" : null,
     "RECIPIENTS" : "your@email.com",
     "ATTACH_REPORT" : false
-  },
-
-  "FOOTER" : "Tests by a great and funny team",
-
-  "AUTO_EXECUTION_ID" : {
+    },
+    "FOOTER" : "Tests by a great and funny team",
+    "AUTO_EXECUTION_ID" : {
     "datetime" : true,
     "format" : "%d%^b%y-%H%M",
     "default" : null
-  },
-
-  "HEADLESS" : {
+    },
+    "HEADLESS" : {
     "active" : false,
     "resolution" : "1024x768",
     "size":"24"}
-}
-
-
-
-
+    }
 
 This file is where you can configure:
 
-    "USE_GIT": (Boolean) set as true if you are using git
+  "USE_GIT": (Boolean) set as true if you are using git
 
-    "MONGO_HOST" : (String) The host where mongodb is running
+  "MONGO_HOST" : (String) The host where mongodb is running
 
-    "APP_PORT" : (Fixnum/Int) The http port that Kaya will be listening
+  "APP_PORT" : (Fixnum/Int) The http port that Kaya will be listening
 
-  	"PROJECT_NAME" : (String) The name of your Cucumber project
+	"PROJECT_NAME" : (String) The name of your Cucumber project
 
-    "PROJECT_URL" : (String) The url of your project (basically the url of the repository)
+  "PROJECT_URL" : (String) The url of your project (basically the url of the repository)
 
-    "INACTIVITY_TIMEOUT" : (Fixnum/Int) The time in seconds to consider an execution as inactive. This will show you the option to reset an inactive execution
+  "INACTIVITY_TIMEOUT" : (Fixnum/Int) The time in seconds to consider an execution as inactive. This will show you the option to reset an inactive execution
 
-    "KILL_INACTIVE_EXECUTIONS_AFTER" : (Fixnum/Int) The time in seconds to wait for killing automatically those inactive executions
+  "KILL_INACTIVE_EXECUTIONS_AFTER" : (Fixnum/Int) The time in seconds to wait for killing automatically those inactive executions
 
-    "FORMAT_DATETIME" : "%d/%m/%Y %H:%M:%S"
+  "FORMAT_DATETIME" : "%d/%m/%Y %H:%M:%S"
 
-    "REFRESH_TIME" : (Fixnum/Int) The time in seconds to refresh result window in console view
+  "REFRESH_TIME" : (Fixnum/Int) The time in seconds to refresh result window in console view
 
-    "NOTIFICATION" : (Boolean) This is a flag to use notifications through gmail service. You should have a gmail account to use it.
+  "NOTIFICATION" : (Boolean) This is a flag to use notifications through gmail service. You should have a gmail account to use it.
 
-  	"FOOTER" : (String) A text you want to see at the footer like "Tests by a great team (team_name@domain.com"
+	"FOOTER" : (String) A text you want to see at the footer like "Tests by a great team (team_name@domain.com"
 
-    "AUTO_EXECUTION_ID" : (JSON) If you want to use a simple execution id given by the actual time you can set the value of "datetime" to true (Boolean), with this option you can use a strftime format and it will put the execution id automatically.
-    If you set "datetime" to false (Boolean) you can use "default" value. Setting "datetime" as false and "default" as null you will have to (if you need it) set the execution id manually each time you run a suite.
+  "AUTO_EXECUTION_ID" : (JSON) If you want to use a simple execution id given by the actual time you can set the value of "datetime" to true (Boolean), with this option you can use a strftime format and it will put the execution id automatically.
+  If you set "datetime" to false (Boolean) you can use "default" value. Setting "datetime" as false and "default" as null you will have to (if you need it) set the execution id manually each time you run a suite.
 
-    "HEADLESS" (JSON) : Set active as true to use headless mode
-
-
-
-
+  "HEADLESS" (JSON) : Set active as true to use headless mode
 
 
 Available Commands
@@ -197,8 +174,6 @@ Available Commands
     $ kaya restart
 
 
-
-
 Get (what you need!)
 ---------------------
 
@@ -215,8 +190,6 @@ Get (what you need!)
 - /kaya/results/`<result_id>`
 
 - /kaya/help
-
-
 
 
 Tip
@@ -256,16 +229,9 @@ Returns the result for a given result id
 
     kaya/api/results/<result_id>
 
+Returns the data you've added to result from execution
 
-
-
-
-Kaya
----------------------
-
-[listen](https://www.youtube.com/watch?v=Zgww4QtntnQ "Kaya")
-
-[listen](https://www.youtube.com/watch?v=4t7ghwxuUVo "Kaya")
+    kaya/api/results/<result_id>/data
 
 
 
