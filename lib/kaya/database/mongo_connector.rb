@@ -149,58 +149,6 @@ module Kaya
       ##################################
       # SUITES
       #
-      #
-
-      # # Update suites collection with suites that comes from cucumber.yml file
-      # # All given suites will be active. Others will be deactivated
-      # # @param [Hash] cucumber_yml_suites
-      # def self.update_suites cucumber_yml_suites
-
-      #   existing_suites = self.suites
-
-      #   existing_suites_name_list = existing_suites.map{|suite| suite["name"]}
-
-      #   cucumber_yml_suites.each_with_index do |cucumber_suite, index|
-
-      #     suite_data = existing_suites.select{|suite| suite["name"]==cucumber_suite["name"]}.first
-
-      #     # if exist, so update it, else creates a new one
-      #     if suite_data
-      #       #Delete it from list and update it
-      #       existing_suites.delete(suite_data)
-      #       suite_data["command"]   = cucumber_suite["command"]
-      #       suite_data["custom"]   = cucumber_suite["custom"]
-      #       suite_data["active"]    = true
-      #       suite_data["index"]     = index
-
-      #       # Updates register with new data
-      #       self.update_suite(suite_data)
-      #       print "UPDATED: #{suite_data['_id']}\n\n"
-      #     else
-      #       # Creates a new one
-      #       suite_data = self.suite_data_structure
-      #       suite_data["name"]      = cucumber_suite["name"]
-      #       suite_data["command"]   = cucumber_suite["command"]
-      #       suite_data["custom"]   = cucumber_suite["custom"]
-      #       suite_data["branch"]    = Kaya::Support::Git.actual_branch
-
-      #       # Saves register with new data
-      #       id = self.insert_suite(suite_data)
-
-      #       print "INSERTED: #{id}\n\n"
-      #     end
-      #   end
-
-      #   # If at least one existing suite isn't con cucumber yml file, so deactivate them
-      #   unless existing_suites.empty?
-      #     existing_suites.each do |suite|
-
-      #       print "DEACTIVATED: #{suite['_id']}\n\n"
-      #       deactivate_suite(suite["_id"])
-      #     end
-      #   end
-      # end
-
 
       # Inserts a suite in suites collection
       # @param [Hash] suite_data (see suite_data_structure method)
