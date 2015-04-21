@@ -284,11 +284,6 @@ module Kaya
           end.map{|result| result["_id"]}
         end
       end
-
-      def self.find_by criteria={}
-        search_criteria = {}
-      end
-
     end
   end
 end
