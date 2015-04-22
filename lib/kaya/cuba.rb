@@ -194,7 +194,7 @@ Cuba.define do
 
       on "#{HOSTNAME}/kaya/api/suites/running" do
         output = Kaya::API::Suites.list({running:true})
-        res.write output
+        res.write output.to_json
       end
 
       on "#{HOSTNAME}/kaya/api/suites/active" do
