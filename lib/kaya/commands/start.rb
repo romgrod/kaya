@@ -80,7 +80,7 @@ or set HEADLESS active value as false if you do not use browser in your tests."
 
         # Start kaya app
         $K_LOG.debug "Starting Kaya" if $K_LOG
-        kaya_start_output = Kaya::Support::Console.execute "unicorn -c #{Dir.pwd}/kaya/unicorn.rb -p #{Kaya::Support::Configuration.port} #{kaya_arg} kaya/config.ru"
+        Kaya::Support::Console.execute "unicorn -c #{Dir.pwd}/kaya/unicorn.rb -p #{Kaya::Support::Configuration.port} #{kaya_arg} kaya/config.ru"
 
         $K_LOG.debug "Kaya started" if $K_LOG
 

@@ -24,18 +24,19 @@ module Kaya
         $K_LOG.debug "Task started" if $K_LOG
 
 
-        if result = Results::Result.get(result_id)
+        # Performed by background job
+        # if result = Results::Result.get(result_id)
 
-          result.append_result_to_console_output!
+        #   result.append_result_to_console_output!
 
-          result.save_report!
+        #   result.save_report!
 
-          result.get_summary!
+        #   result.get_summary!
 
-          result.get_status!
+        #   result.get_status!
 
-          result =  nil
-        end
+        #   result =  nil
+        # end
 
         result_id
 

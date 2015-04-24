@@ -22,7 +22,7 @@
           Last result:&nbsp;{{Kaya::View.label_color_for_result_id suite["last_result"]}}
         </li>
         <li class='list-group-item'>
-          Started on:&nbsp;{{Kaya::Support::TimeHelper.formatted_time_for suite["last_result"]}}
+          Started on:&nbsp;{{Kaya::Support::TimeHelper.formatted_time_for(Kaya::Results::Result.get(suite["last_result"]).started_at)}}
         </li>
       % end
   % end

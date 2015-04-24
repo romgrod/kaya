@@ -41,21 +41,17 @@ module Kaya
               "git_log"         => git_log
             }
 
-
             suite.last_result = Kaya::Execution.run!(execution_request_data) # Returns result_id
 
             suite.set_running!
 
-            $K_LOG.debug "Suite #{suite_name} setted as running" if $K_LOG
-
             suite.save!
+
+            $K_LOG.debug "Suite #{suite_name} setted as running" if $K_LOG
 
             # Starts workers
             Kaya::Workers::ExecutionChecker.perform_async(suite.id) # Work until execution finish
 
-            # Kaya::Workers::GarbageCleaner.perform_async # Clean all zombies files
-
-            # suite_id = suite.id
             execution_id = suite.last_result
             started = true
             message = "Suite%20#{suite.name}%20started"
@@ -73,7 +69,6 @@ module Kaya
 
         else # No suite for  suite_name
           $K_LOG.error "Suite not found for name #{suite_name}" if $K_LOG
-          # suite_id = nil
           started = false
           execution_id = nil
           status = 404

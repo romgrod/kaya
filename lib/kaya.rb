@@ -84,6 +84,7 @@ require_relative "kaya/support/query_string"
 require_relative "kaya/support/if_config"
 require_relative "kaya/support/time_helper"
 require_relative "kaya/support/logs"
+require_relative "kaya/support/change_inspector"
 
 
 # Background jobs

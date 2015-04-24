@@ -52,20 +52,18 @@ module Kaya
 
     def self.update_suites
 
-      if Kaya::Support::Configuration.use_git?
-        last_saved_commit = Kaya::Database::MongoConnector.last_commit
-        last_repo_commit  = Kaya::Support::Git.last_commit
-        if last_saved_commit.nil? or (last_saved_commit != last_repo_commit)
-          Kaya::Support::Git.reset_hard
-          Kaya::Support::Git.pull
-          self.update!
-          Kaya::Database::MongoConnector.insert_commit(last_repo_commit)
-        else
-          $K_LOG.debug "No git changes!"
-        end
-      else
-        self.update!
-      end
+      # if Kaya::Support::Configuration.use_git?
+      #   if Kaya::Database::MongoConnector.last_commit != (last_repo_commit  = Kaya::Support::Git.last_commit)
+      #     Kaya::Support::Git.reset_hard_and_pull
+      #     self.update!
+      #     Kaya::Database::MongoConnector.insert_commit(last_repo_commit)
+      #   else
+      #     $K_LOG.debug "No git changes!"
+      #   end
+      # else
+      #   self.update!
+      # end
+      self.update! if Kaya::Support::ChangeInspector.is_there_a_change?
     end
 
     def self.update!

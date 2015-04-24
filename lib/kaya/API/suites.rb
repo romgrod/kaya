@@ -23,10 +23,10 @@ module Kaya
         if suites.size.zero?
           response["message"] = options[:running] ? "No running suites found" : "No suites found"
         else
-          suites.each do |suite_id|
-            suite = Kaya::Suites::Suite.get(suite_id)
-            response["suites"] << suite.api_response
-          end
+          start = Time.now.to_f
+          response["suites"] = suites.map{|suite_id| Kaya::Suites::Suite.get(suite_id).api_response}
+          $K_LOG.debug "#{suites.size} retrieved in (#{Time.now.to_f - start} s)" if $K_LOG
+
           response["size"] = suites.size
         end
         response
