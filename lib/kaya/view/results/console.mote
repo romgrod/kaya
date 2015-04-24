@@ -73,14 +73,6 @@ javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, [
           </div>
         </h6>
 
-
-      % if (result.process_running? or result.running?) and (result.seconds_without_changes > Kaya::Support::Configuration.inactivity_timeout) and Kaya::Support::Configuration.reset_execution_availability?
-          % elapsed = Kaya::View.formatted_for(result.seconds_without_changes)
-          <p>There is no changes in this execution since more than {{elapsed}}.</p>
-          <p>If the suite you asked is still running, you can stop it by pressing the following button</p>
-          <p><a class='label label-danger' onclick='get_and_close("/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result.id}}/reset");' role='button'>Stop execution <b>{{result.suite_name}}</b></a>&nbsp;&nbsp;</p>
-          </p>
-      % end
       </div>
       <div>
         <div class='page-header'>

@@ -26,7 +26,7 @@ module Kaya
 
 
         # Adding _id=result.id to use inside execution the posiibility to add information to the result
-        result.kaya_command= "#{Kaya::Support::Configuration.headless?} bundle exec cucumber #{result.command} -f pretty -f html -o kaya/temp/#{result.kaya_report_file_name} #{result.custom_params_values} _id=#{result.id} "
+        result.kaya_command= "#{Kaya::Support::Configuration.headless?} cucumber #{result.command} -f pretty -f html -o kaya/temp/#{result.kaya_report_file_name} #{result.custom_params_values} _id=#{result.id} "
 
         result.console_output_file_name= "kaya_co_#{result.id}.out"
 
