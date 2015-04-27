@@ -3,10 +3,15 @@
     <h4>
       Working on branch <strong>{{Kaya::Support::Git.branch}}</strong>
     </h4>
-    <h4>
+
       <small>
         <span title='{{Kaya::Support::Git.log_last_commit}}'>Commit ID:{{Kaya::Support::Git.get_last_commit_id}}</span>
       </small>
+% else
+  <h4>
+      Working on server with local files
+    </h4>
+
 % end
     % unless ["help","logs", "features"].include? section.downcase
     <div class='btn-group pull-right' role='group'>
@@ -16,6 +21,5 @@
         </div>
       </button>
     </div>
-    </h4>
     % end
 </div>

@@ -1,10 +1,12 @@
-<footer>
-  <div style='width: 100%; display: table;'>
-    <div style='display: table-row'>
-      <div style='width: 600px; display: table-cell;'>{{Kaya::Support::Configuration.company}}</div>
-      <div align='right' style='display: table-cell;'>
-        <p>Kaya {{Kaya::VERSION}}</p>
+<div class="well">
+  <footer>
+    <div style='width: 100%; display: table;'>
+      <div style='display: table-row'>
+        <div style='width: 600px; display: table-cell;'>{{Kaya::Support::Configuration.company}}</div>
+        <div align='right' style='display: table-cell;'>
+          <p>Kaya {{Kaya::VERSION}}</p>
+        </div>
       </div>
     </div>
-  </div>
-</footer>
+  </footer>
+</div>

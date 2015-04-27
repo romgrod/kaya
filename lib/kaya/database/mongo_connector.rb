@@ -142,7 +142,7 @@ module Kaya
       # Returns last saved commit info
       # @return [Hash] if exist
       def self.last_commit
-        data = @@commits.find({}).to_a.first
+        data = @@commits.find({}).to_a.last
         data["log"] if data
       end
 

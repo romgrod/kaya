@@ -21,11 +21,12 @@ module Kaya
           if File.exist?("#{path}")
             FileUtils.cp(path, "#{path}~")
             all_content = IO.read("#{path}~")
-            content = if all_content.split("\n").size > 500
-               all_content.split("\n")[-500..-1].join("<br>")
-            else
-              all_content.gsub("\n","<br>")
-            end
+            # content = if all_content.split("\n").size > 1000
+            #    all_content.split("\n")[-1000..-1].join("<br>")
+            # else
+            #   all_content.gsub("\n","<br>")
+            # end
+            content = all_content.gsub("\n","<br>")
             File.delete("#{path}~")
           else
             content = ""

@@ -54,7 +54,6 @@
   <br>
   <p style='text-align:right'>{{results_size_text}}</p>
 </div>
-<div class='well'>
 
 % if results_list.size > 0
   % result_info = Mote.parse(File.read("#{Kaya::View.path}/results/detailed_info.mote"), self, [:result])
