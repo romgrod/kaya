@@ -1,8 +1,9 @@
   <div class='starter-template'>
     <div class='panel panel-{{Kaya::View.color(suite["status"])}}'>
       <div class='panel-heading'">
-        <h3 class='panel-title' onclick="go_clean('/{{Kaya::Support::Configuration.hostname}}/kaya/suites/{{suite["name"].gsub(' ','%20')}}');">{{suite["name"]}}</h3>
-        <h6>30 results</h6>
+        <h3 class='panel-title' onclick="go_clean('/{{Kaya::Support::Configuration.hostname}}/kaya/suites/{{suite["name"].gsub(' ','%20')}}');">
+          {{suite["name"]}}
+        </h3>
     % unless suite["status"]=="READY"
         <div class="spinner">
         <div class="bounce1"></div>
@@ -11,5 +12,12 @@
       </div>
     % end
     </div>
+      <div class="panel-body">
+        <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/suites/{{suite["name"].gsub(' ','%20')}}' class='label label-success'>
+          Open</a>
+        <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/suite/{{suite["name"].gsub(' ','%20')}}' class='label label-info'>
+          {{Kaya::Results.results_ids_for(suite["_id"]).size}} results</a>
+
+      </div>
   </div>
 </div>
