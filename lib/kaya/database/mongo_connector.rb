@@ -197,6 +197,10 @@ module Kaya
         @@suites.find({"active" => true}).to_a
       end
 
+      def self.active_suites
+        self.suites true
+      end
+
 
 
     ######################################3

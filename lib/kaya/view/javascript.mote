@@ -31,7 +31,7 @@
     document.getElementById('myLargeModalLabel').innerHTML= title;
     document.getElementById('my-largeModal').innerHTML= all_html;
   }
-  function go_clean(){
+  function go_clean(url){
     window.location.href = url;
   }
   function refresh_and_open(url){

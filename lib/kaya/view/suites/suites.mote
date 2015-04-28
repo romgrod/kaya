@@ -1,10 +1,17 @@
 % suites_list = Kaya::API::Suites.list({active:true})
 % number_of_suites = suites_list["suites"].size
-<div class="bs-callout bs-callout-danger">
-    <h4>&nbsp;&nbsp;&nbsp;Showing {{number_of_suites}} suites</h4>
+% unless suite_name
+  <div class="bs-callout bs-callout-danger">
+    <h4>&nbsp;&nbsp;&nbsp;Showing {{number_of_suites}} suites<small>&nbsp;&nbsp;Click on any suite to open it</small></h4>
+
   </div>
+% end
 % if number_of_suites > 0
-  % suite_template = Mote.parse(File.read("#{Kaya::View.path}/suites/suite.mote"), self, [:suite])
+  % if suite_name
+    % suite_template = Mote.parse(File.read("#{Kaya::View.path}/suites/suite.mote"), self, [:suite])
+  % else
+    % suite_template = Mote.parse(File.read("#{Kaya::View.path}/suites/suite_item.mote"), self, [:suite])
+  % end
   % suites_list = suites_list["suites"]
   % suites_list.select!{|suite| suite["name"]==suite_name} if suite_name
   % suites_list.each do |suite_data|

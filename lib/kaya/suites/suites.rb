@@ -51,7 +51,7 @@ module Kaya
     end
 
     def self.update_suites
-      self.update! if Kaya::Support::ChangeInspector.is_there_a_change?
+      self.update! if Kaya::Support::ChangeInspector.is_there_a_change? or Kaya::Database::MongoConnector.active_suites.size.zero?
     end
 
     def self.update!

@@ -1,0 +1,15 @@
+  <div class='starter-template'>
+    <div class='panel panel-{{Kaya::View.color(suite["status"])}}'>
+      <div class='panel-heading'">
+        <h3 class='panel-title' onclick="go_clean('/{{Kaya::Support::Configuration.hostname}}/kaya/suites/{{suite["name"].gsub(' ','%20')}}');">{{suite["name"]}}</h3>
+        <h6>30 results</h6>
+    % unless suite["status"]=="READY"
+        <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+    % end
+    </div>
+  </div>
+</div>
