@@ -41,9 +41,9 @@ module Kaya
 
     def self.access_report? result
       if result["status"] =~ /stopped|running/
-        "onclick=\"javascript:refresh_and_open('/#{Kaya::Support::Configuration.hostname}/kaya/results/log/#{result["_id"]}');\""
+        "onclick=\"javascript:refreshAndOpen('/#{Kaya::Support::Configuration.hostname}/kaya/results/log/#{result["_id"]}');\""
       else
-        "onclick=\"javascript:refresh_and_open('/#{Kaya::Support::Configuration.hostname}/kaya/results/report/#{result['_id']}');\"" if result["status"]=='finished' and result["has_report"]
+        "onclick=\"javascript:refreshAndOpen('/#{Kaya::Support::Configuration.hostname}/kaya/results/report/#{result['_id']}');\"" if result["status"]=='finished' and result["has_report"]
       end
     end
 

@@ -1,6 +1,6 @@
 
 
-% message = query_string.msg ? " onload=\"javascript:my_alert('Attention!','#{query_string.msg}');\"" : nil
+% message = query_string.msg ? " onload=\"javascript:startedAlert('Attention!','#{query_string.msg}');\"" : nil
 
 % title = h1 = section.split.map{|w| w.capitalize}.join " "
 

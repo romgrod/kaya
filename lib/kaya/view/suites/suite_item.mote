@@ -1,7 +1,7 @@
   <div class='starter-template'>
     <div class='panel panel-{{Kaya::View.color(suite["status"])}}'>
       <div class='panel-heading'">
-        <h3 class='panel-title' onclick="go_clean('/{{Kaya::Support::Configuration.hostname}}/kaya/suites/{{suite["name"].gsub(' ','%20')}}');">
+        <h3 class='panel-title' onclick="goClean('/{{Kaya::Support::Configuration.hostname}}/kaya/suites/{{suite["name"].gsub(' ','%20')}}');">
           {{suite["name"]}}
         </h3>
     % unless suite["status"]=="READY"
@@ -17,7 +17,15 @@
           Open</a>
         <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/suite/{{suite["name"].gsub(' ','%20')}}' class='label label-info'>
           {{Kaya::Results.results_ids_for(suite["_id"]).size}} results</a>
-
+      % unless suite["info"].empty?
+        <a href='#' title='{{suite["info"]}}' class='label label-default' aria-hidden='true' data-toggle='modal' data-target='#myModal' onclick="javascript:info('Information about {{suite["name"]}}','{{suite["info"].gsub('\n','<br>')}}', null);">
+          Information</a>
+      % end
+      % if suite["status"]=="RUNNING"
+        <a href='#' title='See execution progress' class='label label-warning' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{suite['last_result']}}');">
+          See progress</a>
+      % end
       </div>
   </div>
 </div>
+

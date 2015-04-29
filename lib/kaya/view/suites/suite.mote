@@ -28,7 +28,7 @@
   % end
     % if suite["status"] == "RUNNING"
         <li class='list-group-item'>
-          <a href='#' class='btn btn-info' onclick="refresh_and_open('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{suite['last_result']}}');">
+          <a href='#' class='btn btn-info' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{suite['last_result']}}');">
             See progress
           </a>
         </li>
@@ -43,7 +43,7 @@
       <br><br>
             <input type='submit' class='btn btn-success' value='Execute Suite'>&nbsp;
             <input type='text' name='execution_name' class='customParam' title='This value could be used to identify the result execution from other execution of this suite. E.g: You could use the release your are going to test' placeholder='Identify your execution' value='{{Kaya::Support::Configuration.auto_execution_id}}' style='height: 34px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; font-weight:normal;' />
-            <button type='button' class='btn btn-default' aria-label='Left Align' data-toggle='modal' data-target='#myModal' onclick='javascript:starter_link("{{suite["name"]}}");'>
+            <button type='button' class='btn btn-default' aria-label='Left Align' data-toggle='modal' data-target='#myModal' onclick='javascript:starterLink("{{suite["name"]}}");'>
               <span class='glyphicon glyphicon-star' aria-hidden='true'>
                 Link
               </span>

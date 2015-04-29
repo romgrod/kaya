@@ -67,7 +67,7 @@ javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, [
             <a href='#' class='label label-warning' onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result.id}}/data', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-default'>
               Execution Data</a>
           % unless result.status =~ /finished|stopped/
-            <a href='#' onclick="get_and_close('/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result.id}}/reset');" class='label label-danger'>
+            <a href='#' onclick="getAndClose('/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result.id}}/reset');" class='label label-danger'>
               Stop execution</a>
           % end
           </div>
@@ -78,11 +78,11 @@ javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, [
         <div class='page-header'>
           <h4>Console Output</h4>
         </div>
-        <button type='button' class='btn btn-default' title='Go down' onclick='go_to_bottom()' style='float: right'><span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span> Go down</button>
+        <button type='button' class='btn btn-default' title='Go down' onclick='goToBottom()' style='float: right'><span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span> Go down</button>
         <h6>
           <small style='color:DarkSlateGray '>{{text}}</small>
         </h6>
-        <button type='button' class='btn btn-default' title='Go up' onclick='go_to_top()' style='float: right'><span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span> Go up</button><br><br>
+        <button type='button' class='btn btn-default' title='Go up' onclick='goToTop()' style='float: right'><span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span> Go up</button><br><br>
       </div>
       <div>
         <a href='#' class='label label-default' onclick='window.close();'>Close this window</a>

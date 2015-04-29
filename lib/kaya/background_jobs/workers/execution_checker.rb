@@ -12,7 +12,7 @@ module Kaya
           suite = Kaya::Suites::Suite.get(suite_id)
           begin
             suite.check_last_result!
-            sleep 10
+            sleep 5
           end while not suite.is_ready?
         end
     end
