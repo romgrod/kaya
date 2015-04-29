@@ -106,6 +106,7 @@ Cuba.define do
         query_string = Kaya::Support::QueryString.new req
         (Kaya::Support::Git.reset_hard and Kaya::Support::Git.pull) if Kaya::Support::Configuration.use_git?
         Kaya::Suites.update_suites
+        suite_name.gsub!("%20"," ")
         template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name])
         res.write template.call(section:"Test Suites", query_string:query_string, suite_name:suite_name, log_name:nil)
       end
