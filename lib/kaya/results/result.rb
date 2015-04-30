@@ -26,7 +26,8 @@ module Kaya
         :pid,
         :last_check_time,
         :configuration_values,
-        :timeout
+        :timeout,
+        :ip
 
       attr_reader :console_output
 
@@ -65,6 +66,7 @@ module Kaya
           @last_check_time          = now_in_seconds
           @execution_data           = {}
           @configuration_values     = Kaya::Support::Configuration.pretty_configuration_values
+          @ip                       = data_for_result["ip"]
         end
       end
 
@@ -106,7 +108,8 @@ module Kaya
           "pid"                       => pid,
           "last_check_time"           => last_check_time,
           "execution_data"            => execution_data,
-          "configuration_values"      => configuration_values
+          "configuration_values"      => configuration_values,
+          "ip"                        => ip
         }
       end
 
@@ -167,7 +170,6 @@ module Kaya
           self.finished!
           $K_LOG.debug "[#{@id}] Values updated" if $K_LOG
           finished = true
-
         elsif (self.seconds_without_changes > Kaya::Support::Configuration.execution_time_to_live)
           self.finished_by_timeout!
           finished = true
@@ -268,6 +270,8 @@ module Kaya
       end
 
       def append_result_to_console_output!
+        $K_LOG.debug "console retrived #{Time.now.to_i}" if $K_LOG
+        $K_LOG.debug "without changes #{self.seconds_without_changes}" if $K_LOG
         if is_there_console_output_file?
           begin
             output = []
@@ -278,6 +282,7 @@ module Kaya
             if (text.size > @console_output.size )
               save_console_output(text)
               @last_check_time = now_in_seconds
+              self.save!
             end
             true
           rescue
@@ -445,7 +450,7 @@ module Kaya
       end
 
       # Returns the seconds that there is no console output changes only if it is not finished, else returns 0
-      # This is aimed to help to detect if execution is freezed (or may have a debugger statement)
+      # This is aimed to help to detect if execution is freezed (or has a debugger statement)
       def seconds_without_changes
         (self.finished? or self.stopped?) ? 0 : (now_in_seconds - @last_check_time)
       end

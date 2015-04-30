@@ -1,10 +1,21 @@
-  <div class='starter-template'>
-    <div class='panel panel-{{Kaya::View.color(suite["status"])}}'>
+<?
+last_result_for_ip = Kaya::Results.results_for_suite_id_and_ip(suite["_id"], ip).first
+status = if last_result_for_ip
+   last_result_for_ip["status"]
+else
+  "READY"
+end
+
+color = Kaya::View.color(status)
+
+?>
+<div class='starter-template'>
+    <div class='panel panel-{{color}}'>
       <div class='panel-heading'">
         <h3 class='panel-title' onclick="goClean('/{{Kaya::Support::Configuration.hostname}}/kaya/suites/{{suite["name"].gsub(' ','%20')}}');">
           {{suite["name"]}}
         </h3>
-    % unless suite["status"]=="READY"
+    % if status=="running"
         <div class="spinner">
         <div class="bounce1"></div>
         <div class="bounce2"></div>
@@ -21,8 +32,8 @@
         <a href='#' title='{{suite["info"]}}' class='label label-default' aria-hidden='true' data-toggle='modal' data-target='#myModal' onclick="javascript:info('Information about {{suite["name"]}}','{{suite["info"].gsub('\n','<br>')}}', null);">
           Information</a>
       % end
-      % if suite["status"]=="RUNNING"
-        <a href='#' title='See execution progress' class='label label-warning' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{suite['last_result']}}');">
+      % if status=="running"
+        <a href='#' title='See execution progress' class='label label-warning' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{last_result_for_ip["_id"]}}');">
           See progress</a>
       % end
       </div>

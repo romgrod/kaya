@@ -243,6 +243,15 @@ module Kaya
         end
       end
 
+      def self.results_for_suite_id_and_ip suite_id, ip
+        results = self.find_results_for_ip(ip)
+        if results
+          results.select{|result| result["suite"]["id"]==suite_id}
+        else
+          []
+        end
+      end
+
       def self.result_data_for_id(result_id)
         @@results.find({"_id" => ensure_int(result_id)}).to_a.first
       end
@@ -278,6 +287,10 @@ module Kaya
             result["suite"]["name"].include?(key) or result["execution_name"].include?(key) or result["summary"].include?(key) or result["command"].include?(key)
           end
         end
+      end
+
+      def self.find_results_for_ip ip
+        @@results.find({"ip" => ip}, :sort =>["started_at", -1]).to_a
       end
 
       def self.find_results_for_status status

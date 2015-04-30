@@ -2,8 +2,10 @@ module Kaya
   module API
     module Suites
 
-      # @param [hash] options = {:running, :active}
+      # @param [hash] options = {:running, :active, :ip}
       def self.list(options ={})
+
+        start = Time.now.to_f
 
         response = {
           "project_name" => Dir.pwd.split("/").last,
@@ -23,8 +25,19 @@ module Kaya
         if suites.size.zero?
           response["message"] = options[:running] ? "No running suites found" : "No suites found"
         else
-          start = Time.now.to_f
-          response["suites"] = suites.map{|suite_id| Kaya::Suites::Suite.get(suite_id).api_response}
+          # Gets the executions for given ip
+          suites = suites.map{|suite_id| Kaya::Suites::Suite.get(suite_id).api_response}
+
+          suites = suites.map do |suite|
+            unless Kaya::Results.results_for_suite_id_and_ip(suite["_id"], options[:ip]).empty?
+              suite["status"]="RUNNING"
+              suite
+            else
+              suite
+            end
+          end
+
+          response["suites"] = suites
           $K_LOG.debug "#{suites.size} retrieved in (#{Time.now.to_f - start} s)" if $K_LOG
 
           response["size"] = suites.size

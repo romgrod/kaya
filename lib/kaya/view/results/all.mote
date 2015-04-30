@@ -1,6 +1,7 @@
 <?
   key = query_string.keyword if (query_string.keyword and !query_string.keyword.empty?)
   status = query_string.status if (query_string.status and !query_string.status.empty?)
+  mine = query_string.mine if query_string.mine
 
   results = Kaya::API::Results.show()
   results_list = results["results"]
@@ -21,7 +22,22 @@
 
   if status
     results_list.select! do |res|
-      res["status"].downcase==status.downcase or (res["summary"].split("step").first.downcase.include? status.downcase and res["summary"].split("step").first.scan(/\(\d.+\)/).first.scan(/[a-z]+/).first == status )
+      by_status = res["status"].downcase==status.downcase
+      by_first_part_summary = res["summary"].split("step").first.downcase.include? status.downcase
+      first_part = res["summary"].split("step").first
+      if first_part
+        scenarios = first_part.scan(/\(\d.+\)/).first
+        if scenarios
+          by_partial_summary = scenarios.scan(/[a-z]+/).first == status
+        end
+      end
+      by_status or (by_first_part_summary and by_partial_summary)
+    end
+  end
+
+  if mine
+    results_list.select! do |res|
+      res["ip"] == ip
     end
   end
 
@@ -50,14 +66,24 @@
   % if key or status
     <a class='btn btn-danger' href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/all' role='button'>Clear</a>
   % end
+    <input type='checkbox' {{'checked="checked"' if mine=="on"}} name="mine" onclick="form.submit();" /><label>&nbsp;Only mine</label>
+
+  <div class='btn-group pull-right' role='group'>
+    <button type='button' class='btn btn-default' aria-label='Left Align' title='Toggle collapse' onclick="autoCollapse()" title='collapse all panels'>
+      <div id='collapse_icon'>
+        <span class='glyphicon glyphicon-minus' aria-hidden='true' style='font-size:18px;'></span>
+      </div>
+    </button>
+  </div>
   </form>
+
   <br>
   <p style='text-align:right'>{{results_size_text}}</p>
 </div>
 
 % if results_list.size > 0
-  % result_info = Mote.parse(File.read("#{Kaya::View.path}/results/detailed_info.mote"), self, [:result])
+  % result_info = Mote.parse(File.read("#{Kaya::View.path}/results/detailed_info.mote"), self, [:result, :ip])
   % results_list.each do |result_data|
-    {{result_info.call(result:result_data)}}
+    {{result_info.call(result:result_data, ip:ip)}}
   % end
 % end

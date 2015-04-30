@@ -5,13 +5,6 @@
       <div class='panel-heading' data-toggle='collapse' data-target='#{{result["_id"]}}'>
       <h4><small>Execution name &nbsp; <b>{{result["execution_name"]}}</b>&nbsp;(Result id: {{result["_id"]}})</small></h4></div>
       <div class='panel-body collapse in' id='{{result["_id"]}}'>
-        % unless result["status"] =~ /finished|stopped/
-          <div class='pull-right' title='It seems that the execution gone wrong. Click here to force execution stop'>
-            <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result["_id"]}}/reset' class='label label-danger'>
-              Stop execution
-            </a>
-          </div>
-        % end
 
         <table class="table">
           <tbody>
@@ -104,6 +97,16 @@
         <a onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result["_id"]}}', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-default'>
           Raw
         </a>
+
+        % unless result["status"] =~ /finished|stopped/
+          % if result["ip"]==ip
+
+              <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result["_id"]}}/reset' class='btn btn-danger'>
+                Stop execution
+              </a>
+
+          % end
+        % end
 
 
       </div>

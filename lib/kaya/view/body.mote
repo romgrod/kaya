@@ -4,9 +4,6 @@
 
 % title = h1 = section.split.map{|w| w.capitalize}.join " "
 
-
-<!--partials -->
-
 % javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
 
 % styles = Mote.parse(File.read("#{Kaya::View.path}/styles.mote"), self, []).call()
@@ -20,7 +17,7 @@
 
 % template_file_path = File.read("#{Kaya::View.path}/#{Kaya::View::Sections.path_for(section)}.mote")
 
-% content = Mote.parse(template_file_path, self, [:query_string, :suite_name, :log_name]).call(query_string:query_string, suite_name:suite_name, log_name:log_name)
+% content = Mote.parse(template_file_path, self, [:query_string, :suite_name, :log_name, :ip]).call(query_string:query_string, suite_name:suite_name, log_name:log_name, ip:ip)
 
 % section = section.gsub(" ","_").downcase
 

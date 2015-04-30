@@ -31,6 +31,21 @@ module Kaya
       Kaya::Database::MongoConnector.find_results_for_key key
     end
 
+    def self.all_results_for_ip ip_address
+      Kaya::Database::MongoConnector.find_results_for_ip ip_address
+    end
+
+    def self.results_for_suite_id_and_ip suite_id, ip
+      Kaya::Database::MongoConnector.results_for_suite_id_and_ip suite_id, ip
+    end
+
+    def self.running_for_suite_id_and_ip? suite_id, ip
+      results = self.results_for_suite_id_and_ip suite_id, ip
+      not results.select do |res|
+        res["status"]=="running"
+      end.empty?
+    end
+
     # Resets all results with running status
     def self.reset_defuncts
       Kaya::Database::MongoConnector.all_results.select do |result|

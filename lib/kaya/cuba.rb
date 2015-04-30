@@ -49,8 +49,8 @@ Cuba.define do
         result = Kaya::Results::Result.get(result_id)
         res.redirect "/#{HOSTNAME}/kaya/404/There%20is%20no%20result%20for%20id=#{result_id}" if result.nil?
         result.mark_as_saw! if (result.finished? or result.stopped?)
-        template = Mote.parse(File.read("#{Kaya::View.path}/results/console.mote"),self, [:result])
-        res.write template.call(result:result)
+        template = Mote.parse(File.read("#{Kaya::View.path}/results/console.mote"),self, [:result, :ip])
+        res.write template.call(result:result, ip:request.ip)
       end
 
 
@@ -67,32 +67,32 @@ Cuba.define do
       end
 
       on "#{HOSTNAME}/kaya/results/:result_id/reset" do |result_id|
-        result = Kaya::API::Execution.reset(result_id)
+        result = Kaya::API::Execution.reset(result_id, request.ip)
         res.redirect "/#{HOSTNAME}/kaya/results?msg=#{result['message']}"
       end
 
       on "#{HOSTNAME}/kaya/results/suite/:suite_name" do |suite_name|
         query_string = Kaya::Support::QueryString.new req
         suite_name.gsub!("%20"," ")
-        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name])
-        res.write template.call(section:"Results", query_string:query_string, suite_name:suite_name, log_name:nil)
+        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name, :ip])
+        res.write template.call(section:"Results", query_string:query_string, suite_name:suite_name, log_name:nil, ip:request.ip)
       end
 
       on "#{HOSTNAME}/kaya/results/all" do
         query_string = Kaya::Support::QueryString.new req
-        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name])
-        res.write template.call(section:"All Results", query_string:query_string, suite_name:nil, log_name:nil)
+        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name, :ip])
+        res.write template.call(section:"All Results", query_string:query_string, suite_name:nil, log_name:nil, ip:request.ip)
       end
 
       on "#{HOSTNAME}/kaya/results" do
         query_string = Kaya::Support::QueryString.new req
-        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name])
-        res.write template.call(section:"Results", query_string:query_string, suite_name:nil, log_name:nil)
+        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name, :ip])
+        res.write template.call(section:"Results", query_string:query_string, suite_name:nil, log_name:nil, ip:request.ip)
       end
 
       on "#{HOSTNAME}/kaya/suites/:suite/run" do |suite_name|
         query_string = Kaya::Support::QueryString.new req
-        result = Kaya::API::Execution.start suite_name, query_string.values
+        result = Kaya::API::Execution.start suite_name, query_string.values, request.ip
 
         path = "/#{HOSTNAME}/kaya/suites"
         path += "?msg=#{result['message']}. " if result["message"]
@@ -107,21 +107,21 @@ Cuba.define do
         (Kaya::Support::Git.reset_hard and Kaya::Support::Git.pull) if Kaya::Support::Configuration.use_git?
         Kaya::Suites.update_suites
         suite_name.gsub!("%20"," ")
-        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name])
-        res.write template.call(section:"Test Suites", query_string:query_string, suite_name:suite_name, log_name:nil)
+        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name, :ip])
+        res.write template.call(section:"Test Suites", query_string:query_string, suite_name:suite_name, log_name:nil, ip:request.ip)
       end
 
       on "#{HOSTNAME}/kaya/suites" do
         query_string = Kaya::Support::QueryString.new req
         Kaya::Suites.update_suites
-        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name])
-        res.write template.call(section:"Test Suites", query_string:query_string, suite_name:nil, log_name:nil)
+        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name, :ip])
+        res.write template.call(section:"Test Suites", query_string:query_string, suite_name:nil, log_name:nil, ip:request.ip)
       end
 
       on "#{HOSTNAME}/kaya/logs/:log_name" do |log_name|
         query_string = Kaya::Support::QueryString.new req
-        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name])
-        res.write template.call(section:"Logs", query_string:query_string, suite_name:nil, log_name:log_name)
+        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name, :ip])
+        res.write template.call(section:"Logs", query_string:query_string, suite_name:nil, log_name:log_name, ip:request.ip)
       end
 
 # ========================================================================
@@ -178,13 +178,13 @@ Cuba.define do
       end
 
       on "#{HOSTNAME}/kaya/api/results/:id/reset" do |result_id|
-        result = Kaya::API::Execution.reset(result_id)
+        result = Kaya::API::Execution.reset(result_id, request.ip)
         res.write result.to_json
       end
 
       on "#{HOSTNAME}/kaya/api/suites/:suite/run" do |suite_name|
         query_string = Kaya::Support::QueryString.new req
-        result = Kaya::API::Execution.start suite_name, query_string.values
+        result = Kaya::API::Execution.start suite_name, query_string.values, request.ip
         res.write result.to_json
       end
 
@@ -216,7 +216,7 @@ Cuba.define do
       on "#{HOSTNAME}/kaya/api/suites" do
         (Kaya::Support::Git.reset_hard and Kaya::Support::Git.pull) if Kaya::Support::Configuration.use_git?
         Kaya::Suites.update_suites
-        output = Kaya::API::Suites.list({"active" => true})
+        output = Kaya::API::Suites.list({active:true, ip:request.ip})
         res.write output.to_json
       end
 

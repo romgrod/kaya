@@ -1,7 +1,7 @@
 module Kaya
   module API
     class Execution
-      def self.start suite_name, query_string
+      def self.start suite_name, query_string, ip
         $K_LOG.debug "Starting suite #{suite_name}" if $K_LOG
 
         suite_name.gsub!("%20", " ")
@@ -29,7 +29,9 @@ module Kaya
 
           suite = Kaya::Suites::Suite.get_suite_with(suite_name)
 
-          if suite.is_ready?
+          suite_is_ready_for_ip = !Kaya::Results.running_for_suite_id_and_ip?(suite.id, ip)
+
+          if suite_is_ready_for_ip
 
             $K_LOG.debug "Suite #{suite_name} is ready to run" if $K_LOG
 
@@ -38,7 +40,8 @@ module Kaya
               "suite"           => {"id" => suite.id, "name" => suite.name},
               "execution_name"  => execution_name,
               "custom_params"   => custom_params,
-              "git_log"         => git_log
+              "git_log"         => git_log,
+              "ip"              => ip
             }
 
             suite.last_result = Kaya::Execution.run!(execution_request_data) # Returns result_id
@@ -91,7 +94,7 @@ module Kaya
       # Kill associated process to the running execution
       # Sets as finished the result and associated suite as READY
       #
-      def self.reset(result_id)
+      def self.reset(result_id, ip)
 
         $K_LOG.debug "Reset execution request for #{result_id}"
 
@@ -99,35 +102,40 @@ module Kaya
 
         suite = Kaya::Suites::Suite.get(result.suite_id)
 
-        if result.process_running? or !result.finished? or !result.stopped?
+        #
+        if result.ip == ip # is the owner of execution
 
-          begin
-            Kaya::Support::Processes.kill_by_result_id(result.id)
-            killed = true
-            $K_LOG.debug "Execution (id=#{results.id}) killed"
-          rescue => e
-            $K_LOG.error "#{e}#{e.backtrace}"
-          end
+          if result.process_running? or !result.finished? or !result.stopped?
+            begin
+              Kaya::Support::Processes.kill_by_result_id(result.id)
+              killed = true
+              $K_LOG.debug "Execution (id=#{results.id}) killed"
+            rescue => e
+              $K_LOG.error "#{e}#{e.backtrace}"
+            end
 
-          begin
-            Kaya::Support::FilesCleanner.delete_report_which_has(result.id)
-            $K_LOG.debug "Execution files(id=#{result.id}) cleanned"
-            cleanned = true
-          rescue
-          end
+            begin
+              Kaya::Support::FilesCleanner.delete_report_which_has(result.id)
+              $K_LOG.debug "Execution files(id=#{result.id}) cleanned"
+              cleanned = true
+            rescue
+            end
 
-          result.append_result_to_console_output!
-          result.save_report!
-          result.reset!("forced"); $K_LOG.debug "Execution stopped! Kaya restarted"
-          result.show_as = "pending"
-          result.save!
-          # Reset if suite is setted as "RUNNING" and its result_id value corresponds to the result reset request
-          suite.set_ready! if suite.last_result == result.id
-          if killed and cleanned
-            {"message" => "Execution stopped"}
-          else
-            {"message" => "Could not stop execution. Process killing: #{filled}. Files cleanned: #{celanned}"}
+            result.append_result_to_console_output!
+            result.save_report!
+            result.reset!("forced"); $K_LOG.debug "Execution stopped! Kaya restarted"
+            result.show_as = "pending"
+            result.save!
+            # Reset if suite is setted as "RUNNING" and its result_id value corresponds to the result reset request
+            suite.set_ready! if suite.last_result == result.id
+            if killed and cleanned
+              {"message" => "Execution stopped"}
+            else
+              {"message" => "Could not stop execution. Process killing: #{filled}. Files cleanned: #{celanned}"}
+            end
           end
+        else
+          {"message" => "You are not the owner of this execution"}
         end
       end
 

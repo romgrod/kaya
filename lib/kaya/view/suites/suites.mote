@@ -8,13 +8,13 @@
 % end
 % if number_of_suites > 0
   % if suite_name
-    % suite_template = Mote.parse(File.read("#{Kaya::View.path}/suites/suite.mote"), self, [:suite])
+    % suite_template = Mote.parse(File.read("#{Kaya::View.path}/suites/suite.mote"), self, [:suite, :ip])
   % else
-    % suite_template = Mote.parse(File.read("#{Kaya::View.path}/suites/suite_item.mote"), self, [:suite])
+    % suite_template = Mote.parse(File.read("#{Kaya::View.path}/suites/suite_item.mote"), self, [:suite, :ip])
   % end
   % suites_list = suites_list["suites"]
   % suites_list.select!{|suite| suite["name"]==suite_name} if suite_name
   % suites_list.each do |suite_data|
-    {{suite_template.call(suite:suite_data)}}
+    {{suite_template.call(suite:suite_data, ip:ip)}}
   % end
 % end

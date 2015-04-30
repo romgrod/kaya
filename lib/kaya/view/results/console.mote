@@ -67,8 +67,10 @@ javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, [
             <a href='#' class='label label-warning' onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result.id}}/data', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-default'>
               Execution Data</a>
           % unless result.status =~ /finished|stopped/
-            <a href='#' onclick="getAndClose('/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result.id}}/reset');" class='label label-danger'>
-              Stop execution</a>
+            % if result.ip == ip
+              <a href='#' onclick="getAndClose('/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result.id}}/reset');" class='label label-danger'>
+                Stop execution</a>
+            % end
           % end
           </div>
         </h6>

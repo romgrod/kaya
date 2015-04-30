@@ -1,8 +1,19 @@
-  <div class='starter-template'>
-    <div class='panel panel-{{Kaya::View.color(suite["status"])}}'>
+<?
+last_result_for_ip = Kaya::Results.results_for_suite_id_and_ip(suite["_id"], ip).first
+status = if last_result_for_ip
+   last_result_for_ip["status"]=="running" ? "running" : "finished"
+else
+  "READY"
+end
+
+color = Kaya::View.color(status)
+
+?>
+<div class='starter-template'>
+    <div class='panel panel-{{color}}'>
       <div class='panel-heading' data-toggle='collapse' data-target='#{{suite["name"].gsub(' ','')}}'>
         <h4 class='panel-title'>{{suite["name"]}}</h4>
-    % unless suite["status"]=="READY"
+    % if status=="running"
         <div class="spinner">
         <div class="bounce1"></div>
         <div class="bounce2"></div>
@@ -16,19 +27,19 @@
         <li class='list-group-item'>
           Command: {{suite["command"]}}
         </li>
-  % if suite["last_result"]
-      % unless suite["status"] == "RUNNING"
+  % if last_result_for_ip
+      % unless status == "running"
         <li class='list-group-item'>
-          Last result:&nbsp;{{Kaya::View.label_color_for_result_id suite["last_result"]}}
+          Last result:&nbsp;{{Kaya::View.label_color_for_result_id last_result_for_ip["_id"]}}
         </li>
         <li class='list-group-item'>
-          Started on:&nbsp;{{Kaya::Support::TimeHelper.formatted_time_for(Kaya::Results::Result.get(suite["last_result"]).started_at)}}
+          Started on:&nbsp;{{Kaya::Support::TimeHelper.formatted_time_for(Kaya::Results::Result.get(last_result_for_ip["_id"]).started_at)}}
         </li>
       % end
   % end
-    % if suite["status"] == "RUNNING"
+    % if status == "running"
         <li class='list-group-item'>
-          <a href='#' class='btn btn-info' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{suite['last_result']}}');">
+          <a href='#' class='btn btn-info' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{last_result_for_ip["_id"]}}');">
             See progress
           </a>
         </li>
