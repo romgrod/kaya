@@ -1,7 +1,11 @@
 <?
 last_result_for_ip = Kaya::Results.results_for_suite_id_and_ip(suite["_id"], ip).first
 status = if last_result_for_ip
-   last_result_for_ip["status"]
+  if last_result_for_ip["status"]=="running"
+    "running"
+  else
+    "finished"
+  end
 else
   "READY"
 end
