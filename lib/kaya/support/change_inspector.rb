@@ -10,7 +10,7 @@ module Kaya
 
       def self.is_there_a_change?
         if Kaya::Support::Configuration.use_git?
-          if Kaya::Database::MongoConnector.last_commit != (last_repo_commit  = Kaya::Support::Git.last_commit)
+          if Kaya::Database::MongoConnector.last_commit != (last_repo_commit  = Kaya::Support::Git.last_remote_commit)
             $K_LOG.debug "Git has been changed. Perform code update" if $K_LOG
             Kaya::Support::Git.reset_hard_and_pull
             Kaya::Database::MongoConnector.insert_commit(last_repo_commit)

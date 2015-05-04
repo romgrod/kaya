@@ -13,23 +13,31 @@ Kaya
   - MongoDb (version >= 2.6) See http://www.mongodb.org/downloads
 
     $ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+
     $ sudo apt-get update
+
     $ sudo apt-get install mongodb
+
     $ sudo service mongodb start
 
   - Redis (http://tosbourn.com/install-latest-version-redis-ubuntu/)
 
     $ sudo apt-get install -y python-software-properties
+
     $ sudo add-apt-repository -y ppa:rwky/redis
+
     $ sudo apt-get update
+
     $ sudo apt-get install -y redis-server
 
   - If you want to run GUI tests using WebDriver in headless mode you should install xvfb package
+
     $sudo apt-get intall xvfb
 
   - While running in headless mode you may face an error like:
     LIBDBUSMENU-GLIB-WARNING **: Unable to get session bus: Error spawning command line `dbus-launch --autolaunch
   This coulb be solved by installing dbus-x11 package
+
     $apt-get install dbus-x11
 
 

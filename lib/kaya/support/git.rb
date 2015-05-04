@@ -132,6 +132,20 @@ module Kaya
             line.start_with? "commit "
           end
 
+          def self.last_remote_commit
+            self.remote_commits.first
+          end
+
+          def self.remote_commits
+            self.remote_log.split("commit")[1..-1]
+          end
+
+          def self.remote_log
+            self.fetch
+            # Kaya::Support::Console.execute "git log HEAD origin"
+            Kaya::Support::Console.execute "git log origin/#{self.actual_branch}"
+          end
+
           def self.log
             Kaya::Support::Console.execute "git log"
           end
