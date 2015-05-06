@@ -92,22 +92,12 @@ module Kaya
         send_email message_subject, body, path_to_file
       end
 
-
-
-
-
       def execution_stopped result, additional_text=nil
         body = "Execution stopped \n#{additional_text}"
         message_subject = "Execution stopped (#{result.id})"
         send_email message_subject, body
       end
-
     end
-
-
-
-
-
 
     class NoEmail
 

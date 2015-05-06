@@ -142,7 +142,6 @@ module Kaya
 
           def self.remote_log
             self.fetch
-            # Kaya::Support::Console.execute "git log HEAD origin"
             Kaya::Support::Console.execute "git log origin/#{self.actual_branch}"
           end
 

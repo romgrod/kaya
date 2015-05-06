@@ -16,27 +16,13 @@ module Kaya
         $K_LOG.debug "Result created with id => #{result.id}" if $K_LOG
 
         result_id = result.id
+        result.save!
 
       if execution_request_data["type"] == "cucumber"
         $K_LOG.debug "Execution type: Cucumber" if $K_LOG
         Kaya::Cucumber::Task.run(result)
 
         $K_LOG.debug "Task started" if $K_LOG
-
-
-        # Performed by background job
-        # if result = Results::Result.get(result_id)
-
-        #   result.append_result_to_console_output!
-
-        #   result.save_report!
-
-        #   result.get_summary!
-
-        #   result.get_status!
-
-        #   result =  nil
-        # end
 
         result_id
 
