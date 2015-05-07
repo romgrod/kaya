@@ -53,7 +53,7 @@ module Kaya
             $K_LOG.debug "Suite #{suite_name} setted as running" if $K_LOG
 
             # Starts workers
-            Kaya::Workers::ExecutionChecker.perform_async(suite.id) # Work until execution finish
+            # Kaya::Workers::ExecutionChecker.perform_async(suite.id) # Work until execution finish
 
             execution_id = suite.last_result
             started = true

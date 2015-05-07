@@ -88,7 +88,6 @@ require_relative "kaya/support/change_inspector"
 
 
 # Background jobs
-require_relative "kaya/background_jobs/workers/execution_checker"
 require_relative "kaya/background_jobs/workers/execution_performer"
 require_relative "kaya/background_jobs/workers/garbage_cleaner"
 require_relative "kaya/background_jobs/sidekiq"
