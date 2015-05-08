@@ -56,7 +56,7 @@ module Kaya
 
     def self.update!
       $K_LOG.debug "Updating suites" if $K_LOG
-      existing_suites_ids = self.suite_ids
+      existing_suites_ids = self.suites.map{|suite| suite["_id"]}
 
       self.cucumber_yml.each do |suite_data|
         # If is there a suite for the given name suite_id will be setted
@@ -94,11 +94,9 @@ module Kaya
     # Returns a list of suites id
     # @param [Boolean] actives or not
     # @return [Array] a list of suite ids
-    def self.suite_ids active=nil
+    def self.suites active=nil
       $K_LOG.debug "Suites:Getting all suites ids" if $K_LOG
-      Kaya::Database::MongoConnector.suites(active).map do |suite_data|
-        suite_data["_id"]
-      end
+      Kaya::Database::MongoConnector.suites(active)
     end
 
     # Returns the id for given suite name
@@ -111,17 +109,18 @@ module Kaya
 
     # Returns the ids for running suites
     # @return [Array] of suite ids
-    def self.all_running_suites
+    def self.running_suites
       $K_LOG.debug "Suites: Getting all runnnig suites" if $K_LOG
-      Kaya::Database::MongoConnector.all_suites.select do |suite|
-        suite["status"] == "RUNNING"
-      end.map{|suite| suite["_id"]}
+      # Kaya::Database::MongoConnector.all_suites.select do |suite|
+      #   suite["status"] == "RUNNING"
+      # end.map{|suite| suite["_id"]}
+      Kaya::Database::MongoConnector.running_suites
     end
 
     def self.reset_statuses
       $K_LOG.debug "Resetting suites status" if $K_LOG
-      self.all_running_suites.each do |suite_id|
-        if suite = Kaya::Suites::Suite.get(suite_id)
+      self.running_suites.each do |suite|
+        if suite = Kaya::Suites::Suite.get(suite["_id"])
           if result = Kaya::Results::Result.get(suite.last_result)
             result.update_values! # update_values! true means result got finished status
           end

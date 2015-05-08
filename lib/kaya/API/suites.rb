@@ -15,18 +15,25 @@ module Kaya
         }
         suites = if options[:running]
           response["request"] = "Running Suites"
-          Kaya::Suites.all_running_suites
+          Kaya::Suites.running_suites
         else
           response["request"] = options[:active] ? "Active Suites" : "Suites"
-          Kaya::Suites.suite_ids options[:active]
+          Kaya::Suites.suites options[:active]
         end
 
 
         if suites.size.zero?
-          response["message"] = options[:running] ? "No running suites found" : "No suites found"
+          response["message"] = options[:running] ? "Running suites not found" : "Suites not found"
         else
           # Gets the executions for given ip
-          suites = suites.map{|suite_id| Kaya::Suites::Suite.get(suite_id).api_response}
+          suites = suites.map do |suite|
+            results_for_suite = Kaya::Results.results_ids_for suite["_id"]
+            suite["results"]={
+              "size" => results_for_suite.size,
+              "ids" => results_for_suite
+            }
+            suite
+          end
 
           suites = suites.map do |suite|
             unless Kaya::Results.results_for_suite_id_and_ip(suite["_id"], options[:ip]).empty?

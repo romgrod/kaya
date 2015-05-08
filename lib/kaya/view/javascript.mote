@@ -8,7 +8,7 @@
     $('#myModal').modal('show');
   }
 
-  function startedAlert(title, text){
+  function startedAlert(title, text, suiteName){
     startedInfo(title,text);
     url = 'http://' + window.location.host + window.location.pathname;
     $('#startedModal').modal('show');

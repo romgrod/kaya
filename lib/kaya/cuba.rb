@@ -8,8 +8,7 @@ Cuba.define do
 
   request = Kaya::Support::Request.new(req)
 
-  $K_LOG.debug "REQUEST '#{request.path}#{request.path_info}' FROM IP: '#{request.ip}'" if $K_LOG
-
+  $K_LOG.debug "REQUEST '#{request.path}#{request.path_info}' => : '#{request.x_uow}'" if $K_LOG
   begin
 
 
@@ -93,19 +92,16 @@ Cuba.define do
       on "#{HOSTNAME}/kaya/suites/:suite/run" do |suite_name|
         query_string = Kaya::Support::QueryString.new req
         result = Kaya::API::Execution.start suite_name, query_string.values, request.ip
-
+        suite_name.gsub!("%20"," ")
         path = "/#{HOSTNAME}/kaya/suites"
         path += "?msg=#{result['message']}. " if result["message"]
         path += "Execution id=#{result["execution_id"]}" if result["execution_id"]
-
         res.status= result["status"]
         res.redirect path
       end
 
       on "#{HOSTNAME}/kaya/suites/:suite_name" do |suite_name|
         query_string = Kaya::Support::QueryString.new req
-        (Kaya::Support::Git.reset_hard and Kaya::Support::Git.pull) if Kaya::Support::Configuration.use_git?
-        Kaya::Suites.update_suites
         suite_name.gsub!("%20"," ")
         template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :query_string, :suite_name, :log_name, :ip])
         res.write template.call(section:"Test Suites", query_string:query_string, suite_name:suite_name, log_name:nil, ip:request.ip)

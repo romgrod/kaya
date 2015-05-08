@@ -97,7 +97,7 @@ or set HEADLESS active value as false if you do not use browser in your tests."
 
       rescue => e
         $K_LOG.error "Error starting Kaya: #{e}#{e.backtrace}" if $K_LOG
-        puts "An error ocurred while starting Kaya. See kaya log for more information.".red
+        puts "An error ocurred while starting Kaya. See kaya log for more information.#{e} #{e.backtrace}".red
       end
     end
   end
