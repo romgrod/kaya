@@ -33,9 +33,9 @@ module Kaya
 
 
       #  data_for_result = {
-      #      :suite_name,
-      #      :execution_name,
-      #      :type:}
+      #      "suite" => {"name":String, "id":Fixnum},
+      #      "execution_name" => String
+      #      "type" => String}
       def initialize data_for_result
 
         if data_for_result["_id"]
@@ -274,16 +274,11 @@ module Kaya
         $K_LOG.debug "without changes #{self.seconds_without_changes}" if $K_LOG
         if is_there_console_output_file?
           begin
-            output = []
-            open_console_output_file.each_line do |line|
-              output << line
+            text = ""
+            console_output_content.each_line do |line|
+              text += line + "\n"
             end
-            text = output.join "\n"
-            if (text.size > @console_output.size )
-              save_console_output(text)
-              @last_check_time = now_in_seconds
-              self.save!
-            end
+            save_console_output(text) if (text.size > @console_output.size)
             true
           rescue
             false
@@ -291,16 +286,11 @@ module Kaya
         end
       end
 
-
       def is_there_console_output_file?
-        begin
-          open_console_output_file and true
-        rescue
-          false
-        end
+        File.exist? "#{Dir.pwd}/kaya/temp/#{console_output_file_name}"
       end
 
-      def open_console_output_file
+      def console_output_content
         begin
           FileUtils.cp("#{Dir.pwd}/kaya/temp/#{console_output_file_name}", "#{Dir.pwd}/kaya/temp/#{console_output_file_name}~")
           file_content = File.open "#{Dir.pwd}/kaya/temp/#{console_output_file_name}~", "r"
@@ -315,6 +305,7 @@ module Kaya
       # @param [String] text = the text to be appended
       def append_to_console_output text
         @console_output += text
+        @last_check_time = now_in_seconds
         self.save!
       end
 

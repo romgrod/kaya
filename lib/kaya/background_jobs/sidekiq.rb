@@ -5,7 +5,7 @@ module Kaya
 
         workers_dir = workers_dir = __FILE__.split("/")[0..-2].join("/")+ "/workers"
 
-        output = Kaya::Support::Console.execute "sidekiq -r #{workers_dir}/execution_performer.rb -d -L kaya/sidekiq_log -P kaya/sidekiq_pid"
+        Kaya::Support::Console.execute "sidekiq -r #{workers_dir}/execution_performer.rb -d -L kaya/sidekiq_log -P kaya/sidekiq_pid"
 
         print "\n* Sidekiq:"
         raise "Could not start Sidekiq correctly. Read kaya/sidekiq_log file for more information" if not started?
