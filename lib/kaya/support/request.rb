@@ -18,8 +18,8 @@ module Kaya
         @req.env["REMOTE_ADDR"]
       end
 
-      def x_uow
-        @req.env["HTTP_X_UOW"]
+      def request
+        @req.env
       end
 
       def method_missing(method_name, *args, &block)

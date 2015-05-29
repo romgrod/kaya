@@ -1,18 +1,21 @@
 
+<?
 
+page = args[:page]
 
-% title = (page == "main")? page : Kaya::Database::MongoConnector.help_title(page)
+title = (page == "main")? page : Kaya::Database::MongoConnector.help_title(page)
 
-% javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
+javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
 
-% styles = Mote.parse(File.read("#{Kaya::View.path}/styles.mote"), self, []).call()
+styles = Mote.parse(File.read("#{Kaya::View.path}/styles.mote"), self, []).call()
 
-% available_pages = Kaya::Database::MongoConnector.get_all_documentation.map{|doc| doc["title"].downcase}
+available_pages = Kaya::Database::MongoConnector.get_all_documentation.map{|doc| doc["title"].downcase}
 
-% navigation_bar = Mote.parse(File.read("#{Kaya::View.path}/navigation_bar.mote"), self, [:section]).call(section:"help")
+navigation_bar = Mote.parse(File.read("#{Kaya::View.path}/navigation_bar.mote"), self, [:section]).call(section:"help")
 
-% query = query_string
+query = args[:query_string]
 
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns ="http://www.w3.org/1999/xhtml">
 

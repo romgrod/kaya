@@ -1,11 +1,25 @@
-% javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
+<?
+javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
 
-% styles = Mote.parse(File.read("#{Kaya::View.path}/styles.mote"), self, []).call()
+styles = Mote.parse(File.read("#{Kaya::View.path}/styles.mote"), self, []).call()
 
-% navigation_bar = Mote.parse(File.read("#{Kaya::View.path}/navigation_bar.mote"), self, [:section]).call(section:"help")
+navigation_bar = Mote.parse(File.read("#{Kaya::View.path}/navigation_bar.mote"), self, [:section]).call(section:"help")
+
+error_title = error_msg = ""
+
+exception = args[:exception]
+query_string = args[:query_string]
 
 
-% error_title , error_msg = Kaya::Support::ErrorHandlerHelper.evaluate exception
+
+if exception
+  error_title , error_msg = Kaya::Support::ErrorHandlerHelper.evaluate exception
+else
+  error_title = " An error ocurred"
+  error_msg = query_string.msg
+end
+
+?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns ="http://www.w3.org/1999/xhtml">

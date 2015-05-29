@@ -1,0 +1,15 @@
+% form_template = Mote.parse(File.read("#{Kaya::View.path}/custom/params/delete_form.mote"), self, [:args])
+
+<div class="panel panel-info">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><h2>Delete Custom Parameter</h2></div>
+  <div class="panel-body">
+    <h4>Are you sure you want to delete this custom parameter?</h4>
+  </div>
+
+  <div class="panel-success">
+    <div class="panel-body">
+      {{form_template.call(args:args)}}
+    </div>
+  </div>
+</div>

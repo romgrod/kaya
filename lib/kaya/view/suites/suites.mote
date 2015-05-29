@@ -1,20 +1,28 @@
-% suites_list = Kaya::API::Suites.list({active:true})
-% number_of_suites = suites_list["suites"].size
-% unless suite_name
+<?
+  if args[:suite_name]
+    template = Mote.parse(File.read("#{Kaya::View.path}/suites/suite.mote"), self, [:suite_data])
+    suite_data = Kaya::API::Suite.info_for_name(args[:suite_name])
+    content = template.call(suite_data:suite_data)
+  else
+    template = Mote.parse(File.read("#{Kaya::View.path}/suites/suite_item.mote"), self, [:suite])
+    suites_list = Kaya::API::Suites.list
+
+  end
+
+?>
+
+% unless args[:suite_name]
+  % number_of_suites = suites_list["suites"].size
   <div class="bs-callout bs-callout-danger">
     <h4>&nbsp;&nbsp;&nbsp;Showing {{number_of_suites}} suites<small>&nbsp;&nbsp;Click on any suite to open it</small></h4>
-
   </div>
 % end
-% if number_of_suites > 0
-  % if suite_name
-    % suite_template = Mote.parse(File.read("#{Kaya::View.path}/suites/suite.mote"), self, [:suite, :ip])
-  % else
-    % suite_template = Mote.parse(File.read("#{Kaya::View.path}/suites/suite_item.mote"), self, [:suite, :ip])
-  % end
+% if args[:suite_name]
+  {{content}}
+% else
+
   % suites_list = suites_list["suites"]
-  % suites_list.select!{|suite| suite["name"]==suite_name} if suite_name
   % suites_list.each do |suite_data|
-    {{suite_template.call(suite:suite_data, ip:ip)}}
+    {{template.call(suite:suite_data)}}
   % end
 % end

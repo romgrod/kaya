@@ -26,7 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'redis'
   spec.add_dependency 'sidekiq'
   spec.add_dependency 'bson_ext'
-  spec.add_dependency 'syntax'
   spec.add_dependency 'colorize'
   spec.add_dependency 'github-markup'
   spec.add_dependency 'redcarpet'

@@ -63,7 +63,7 @@
                 <small>Custom Parameters</small>
               </th>
               <th>
-                {{result["custom_params"]}}
+                <small>{{result["custom_params"]}}</small>
               </th>
             </tr>
           % end
@@ -99,13 +99,11 @@
         </a>
 
         % unless result["status"] =~ /finished|stopped/
-          % if result["ip"]==ip
 
-              <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result["_id"]}}/reset' class='btn btn-danger'>
-                Stop execution
-              </a>
+          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result["_id"]}}/reset' class='btn btn-danger'>
+            Stop execution
+          </a>
 
-          % end
         % end
 
 

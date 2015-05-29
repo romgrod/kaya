@@ -11,6 +11,10 @@ module Kaya
       end
     end
 
+    def self.running_results_for_suite_id suite_id
+      Kaya::Database::MongoConnector.running_results_for_suite_id suite_id
+    end
+
     def self.all_results_ids
       Kaya::Database::MongoConnector.all_results_ids
     end
@@ -29,21 +33,6 @@ module Kaya
 
     def self.find_all_for_key key
       Kaya::Database::MongoConnector.find_results_for_key key
-    end
-
-    def self.all_results_for_ip ip_address
-      Kaya::Database::MongoConnector.find_results_for_ip ip_address
-    end
-
-    def self.results_for_suite_id_and_ip suite_id, ip
-      Kaya::Database::MongoConnector.results_for_suite_id_and_ip suite_id, ip
-    end
-
-    def self.running_for_suite_id_and_ip? suite_id, ip
-      results = self.results_for_suite_id_and_ip suite_id, ip
-      not results.select do |res|
-        res["status"]=="running"
-      end.empty?
     end
 
     # Resets all results with running status

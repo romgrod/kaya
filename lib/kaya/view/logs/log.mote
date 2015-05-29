@@ -1,3 +1,3 @@
-<h3>{{log_name.gsub("_"," ").capitalize}}</h3>
-% content = Kaya::Support::Logs.read_log_file_content_for log_name
+<h3>{{args[:log_name].gsub("_"," ").capitalize}}</h3>
+% content = Kaya::Support::Logs.read_log_file_content_for args[:log_name]
 <pre style="height:400px; overflow:scroll; white-space:pre; word-wrap:normal;">{{content}}</pre>

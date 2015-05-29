@@ -10,6 +10,10 @@ module Kaya
         "Console" => "results/console",
         "Report" => "results/report",
         "All Results"=> "results/all",
+        "Custom Params" => "custom/params/list",
+        "New Custom Param" => "custom/params/new",
+        "Edit Custom Param" => "custom/params/edit",
+        "Delete Custom Param" => "custom/params/delete",
         "Repo" => "",
         "Logs" => "logs/log",
         "Help" => ""

@@ -8,6 +8,7 @@
         <span class='icon-bar'></span>
         <span class='icon-bar'></span>
         <span class='icon-bar'></span>
+        <span class='icon-bar'></span>
       </button>
       <a class='navbar-brand' href='#'>{{Kaya::Support::Configuration.project_name}}</a>
     </div>
@@ -15,6 +16,14 @@
       <ul class='nav navbar-nav'>
         <li class='{{'active' if section == "test_suites"}}'>
           <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/suites'>Test Suites</a>
+        </li>
+        <li class='{{'active' if section =~ /custom/}}'>
+          <a href='#' class='dropdown-toggle' data-toggle='dropdown' role= 'button' aria-expanded='false'>
+            Custom
+          </a>
+          <ul class='dropdown-menu' role='menu'>
+            <li><a href='/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params'>Params</a></li>
+          </ul>
         </li>
         <li class='{{'active' if section == "features"}}'>
           <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/features'>Features</a>

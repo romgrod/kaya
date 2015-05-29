@@ -1,10 +1,8 @@
 module Kaya
   module API
     class Execution
-      def self.start suite_name, query_string, ip
+      def self.start suite_name, query_string
         $K_LOG.debug "Starting suite #{suite_name}" if $K_LOG
-
-        suite_name.gsub!("%20", " ")
 
         git_log = Kaya::Support::Configuration.use_git? ? Kaya::Support::Git.log_last_commit : ""
 
@@ -22,16 +20,17 @@ module Kaya
           custom_params = {}
         end
 
-        if Kaya::Suites.is_there_suite_with? suite_name
-          $K_LOG.debug "Suite #{suite_name} found" if $K_LOG
+        error = false
 
-          # suite_id = Kaya::Suites.suite_id_for suite_name
+        if Kaya::Suites.is_there_suite_with? suite_name
+          $K_LOG.debug "Starting working with suite #{suite_name}" if $K_LOG
 
           suite = Kaya::Suites::Suite.get_suite_with(suite_name)
 
-          suite_is_ready_for_ip = !Kaya::Results.running_for_suite_id_and_ip?(suite.id, ip)
+          suite_id = suite.id
 
-          if suite_is_ready_for_ip
+          # if Kaya::Suites.execution_running_for_suite(suite_name) < suite.maximum_execs
+          if Kaya::Suites.execution_running_for_suite(suite_name) < 3 # HARDCODED
 
             $K_LOG.debug "Suite #{suite_name} is ready to run" if $K_LOG
 
@@ -40,8 +39,7 @@ module Kaya
               "suite"           => {"id" => suite.id, "name" => suite.name},
               "execution_name"  => execution_name,
               "custom_params"   => custom_params,
-              "git_log"         => git_log,
-              "ip"              => ip
+              "git_log"         => git_log
             }
 
             suite.last_result = Kaya::Execution.run!(execution_request_data) # Returns result_id
@@ -52,39 +50,39 @@ module Kaya
 
             $K_LOG.debug "Suite #{suite_name} setted as running" if $K_LOG
 
-            # Starts workers
-            # Kaya::Workers::ExecutionChecker.perform_async(suite.id) # Work until execution finish
 
             execution_id = suite.last_result
             started = true
             message = "Suite%20#{suite.name}%20started"
             status = 200
-            $K_LOG.error "Suite #{suite.name} started" if $K_LOG
+            $K_LOG.debug "Suite #{suite.name} started" if $K_LOG
 
           else
-            # suite_id = suite.id
+
             execution_id = nil
             started = false
             status = 423
-            message = "Requested%20suite%20#{suite.name}%20is%20still%20running"
-            $K_LOG.error "Suite #{suite_name} not started. It is still running" if $K_LOG
+            message = "Max number of concurrent execution reached. Please wait until one is finalized"
+            $K_LOG.error "Cannot run more than #{suite.maximum_execs} executions simultaneously" if $K_LOG
           end
 
         else # No suite for  suite_name
           $K_LOG.error "Suite not found for name #{suite_name}" if $K_LOG
           started = false
-          execution_id = nil
+          execution_id = suite_id = nil
           status = 404
+          error = true
           message = "Suite #{suite_name} not found"
         end
           {
             "suite" => {
               "name" => suite_name,
-              "id" => suite.id,
+              "id" => suite_id,
               "started" => started
               },
             "execution_id" => execution_id,
             "message" => message,
+            "error" => error,
             "status" => status
           }
       end
@@ -94,16 +92,13 @@ module Kaya
       # Kill associated process to the running execution
       # Sets as finished the result and associated suite as READY
       #
-      def self.reset(result_id, ip)
+      def self.reset(result_id)
 
         $K_LOG.debug "Reset execution request for #{result_id}"
 
         result = Kaya::Results::Result.get(result_id)
 
         suite = Kaya::Suites::Suite.get(result.suite_id)
-
-        #
-        if result.ip == ip # is the owner of execution
 
           if result.process_running? or !result.finished? or !result.stopped?
             begin
@@ -131,12 +126,12 @@ module Kaya
             if killed and cleanned
               {"message" => "Execution stopped"}
             else
-              {"message" => "Could not stop execution. Process killing: #{filled}. Files cleanned: #{celanned}"}
+              {"message" => "Could not stop execution. Process killing: #{killed}. Files cleanned: #{celanned}"}
             end
           end
-        else
-          {"message" => "You are not the owner of this execution"}
-        end
+        # else
+        #   {"message" => "You are not the owner of this execution"}
+        # end
       end
 
     end

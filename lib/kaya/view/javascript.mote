@@ -3,17 +3,42 @@
 <script type='text/javascript'>
 
   function my_alert(title, text){
-    startedInfo(title,text);
+    info(title,text);
     url = 'http://' + window.location.host + window.location.pathname;
     $('#myModal').modal('show');
   }
 
-  function startedAlert(title, text, suiteName){
-    startedInfo(title,text);
-    url = 'http://' + window.location.host + window.location.pathname;
-    $('#startedModal').modal('show');
+  function disableElements(){
+    var selectedValue = document.getElementById("type").value
+    var options = document.getElementById("options")
+    var value = document.getElementById("value")
+    if (selectedValue == "select_list"){
+      options.disabled=false;
+      options.placeholder="";
+      value.disabled=true;
+      value.value="";
+      value.placeholder="";
+      options.placeholder="Separate values with commas ,";
+    }
+    else
+    {
+      options.disabled=true;
+      options.placeholder="";
+      value.disabled=false;
+      value.placeholder="Type here values for text field"
+    }
   }
 
+  function deleteConfirmation(url, customParamName){
+
+    if(confirm("Are you sure want to delete "+customParamName+"?") == true){
+      window.location.href= url;}
+   }
+
+  function simpleAlert(title, text, suiteName){
+    startedInfo(title,text);
+    $('#startedModal').modal('show');
+  }
 
   function starterLink(formId){
     var form = document.getElementById(formId);
@@ -35,6 +60,7 @@
     document.getElementById('startedModalLabel').innerHTML= title;
     document.getElementById('started-modal').innerHTML= text;
   }
+
   function featureInfo(title, text){
     start_html = '<pre lang="ruby" style="height:400px; overflow:scroll; white-space:pre; word-wrap:normal;">';
     end_html = '</pre>'
@@ -44,11 +70,17 @@
     document.getElementById('myLargeModalLabel').innerHTML= title;
     document.getElementById('my-largeModal').innerHTML= all_html;
   }
+
   function goClean(url){
     window.location.href = url;
   }
+
+  function openBlank(url){
+    window.open(url, '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');
+  }
+
   function refreshAndOpen(url){
-      window.open(url, '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');
+      openBlank(url);
       location.reload();
   }
   function selectLink(){

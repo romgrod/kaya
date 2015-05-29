@@ -14,6 +14,8 @@ if text.empty?
   end
   text = lines.join("</small></p><p><small>")
 end
+size_of_lines = text.split("</p>").size
+
 
 suite = Kaya::Suites::Suite.get(result.suite_id)
 
@@ -70,10 +72,11 @@ javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, [
             <a href='#' class='label label-warning' onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result.id}}/data', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-default'>
               Execution Data</a>
           % unless result.status =~ /finished|stopped/
-            % if result.ip == ip
-              <a href='#' onclick="getAndClose('/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result.id}}/reset');" class='label label-danger'>
-                Stop execution</a>
-            % end
+
+            <a href='#' onclick="getAndClose('/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result.id}}/reset');" class='label label-danger'>
+              Stop execution
+            </a>
+
           % end
           </div>
         </h6>
@@ -83,11 +86,15 @@ javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, [
         <div class='page-header'>
           <h4>Console Output</h4>
         </div>
-        <button type='button' class='btn btn-default' title='Go down' onclick='goToBottom()' style='float: right'><span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span> Go down</button>
+        % if size_of_lines > 15
+          <button type='button' class='btn btn-default' title='Go down' onclick='goToBottom()' style='float: right'><span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span> Go down</button>
+        % end
         <h6>
           <small style='color:DarkSlateGray '>{{text}}</small>
         </h6>
+      % if size_of_lines > 15
         <button type='button' class='btn btn-default' title='Go up' onclick='goToTop()' style='float: right'><span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span> Go up</button><br><br>
+      % end
       </div>
       <div>
         <a href='#' class='label label-default' onclick='window.close();'>Close this window</a>

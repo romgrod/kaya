@@ -35,13 +35,11 @@ module Kaya
       end
     end
 
-    # Raised when there is an error related to Results
-    class CucumberYML < StandardError
-
-      def initialize()
-        super("Could not find cucumber.yml file to get test suites from")
+    class SuiteNotFound < StandardError
+      def initialize(message=nil)
+        message ="Suite not foun" if message.nil?
+        super(message)
       end
-
     end
 
     # Raised when there is an error related to Help.

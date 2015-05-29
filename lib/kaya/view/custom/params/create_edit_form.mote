@@ -1,0 +1,80 @@
+<?
+
+query_string = args[:query_string]
+
+action = args[:action]
+if action=="edit"
+  custom_param = Kaya::Suites::Custom::Param.get(args[:custom_param_id]).structure
+  name = custom_param["name"]
+  type = custom_param["type"]
+  value = custom_param["value"]
+  options = custom_param["options"]
+  required = custom_param["required"]
+
+  value = if value.is_a? Hash
+    value.to_json
+  else
+    value.gsub('"=>"','":"') if type=="json"
+  end
+
+
+end
+
+
+name = query_string.name if query_string.name
+options = query_string.options if query_string.options
+value = query_string.value if query_string.value
+type = query_string.type if query_string.type
+required = query_string.required if query_string.required
+
+types = Kaya::Suites::Custom::Param.types
+types.unshift("Select...") unless types.include? "Select..."
+
+
+?>
+
+
+<nav class="navbar navbar-default">
+  <form name="custom-param" id="custom-param" action="/{{Kaya::Support::Configuration.hostname}}/kaya/custom-param" method="POST">
+    <div class='form-group'>
+      <br>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'>
+        Name
+      </label>
+      <input type="hidden" name="action" id="action" value="{{action}}" />
+      % if action=="edit"
+        <input type="hidden" name="_id" id="_id" value="{{custom_param["_id"]}}" />
+      % end
+      <input class='customParam' {{"required title='This value is Required!'"}} type='text' name='name' id='name' placeholder='{{"Enter value here"}}'  value="{{name}}" />
+    </div>
+    <div class='form-group'>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Type</label>
+      <select id='type' name='type' class='customParam' onchange="javascript:disableElements();">
+        % types.each do |valid_type|
+        % selected = 'selected="selected"' if custom_param and (valid_type == type)
+        <option value='{{valid_type}}' {{selected}}>{{valid_type.gsub(/-|_/," ").capitalize}}</option>
+        % end
+      </select>
+    </div>
+    <div class='form-group'>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Value for text/JSON type</label>
+      <textarea class='customParam' type='text' name='value' id='value' placeholder='Default value Text type'  >{{value}}</textarea>
+    </div>
+    <div class='form-group'>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Options for Select list type</label>
+      %  options = ((action == "edit") and (options.is_a? Array)) ? "#{options.join(",").gsub('none,','')}" : ""
+      <textarea class='customParam' type='text' name='options' id='options' placeholder='Options for Select list type' >{{options}}</textarea>
+    </div>
+
+    <div class='form-group'>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Required</label>
+      <input type="checkbox" name="required" id="required" />
+    </div>
+    <br>
+    <div class='form-group'>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'></label>
+      <input type="submit" class="btn btn-success" value="Save">&nbsp;<a class="btn btn-danger" href="/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params">Cancel</a>
+    </div>
+    <br>
+  </form>
+</nav>

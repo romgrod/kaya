@@ -1,7 +1,7 @@
 <?
-  key = query_string.keyword if (query_string.keyword and !query_string.keyword.empty?)
-  status = query_string.status if (query_string.status and !query_string.status.empty?)
-  mine = query_string.mine if query_string.mine
+  key = args[:query_string].keyword if (args[:query_string].keyword and !args[:query_string].keyword.empty?)
+  status = args[:query_string].status if (args[:query_string].status and !args[:query_string].status.empty?)
+
 
   results = Kaya::API::Results.show()
   results_list = results["results"]
@@ -35,13 +35,6 @@
     end
   end
 
-  if mine
-    results_list.select! do |res|
-      res["ip"] == ip
-    end
-  end
-
-
   results_size_text = if (key or status)
     "#{results_list.size} result#{'s' if results_list.size>1} found"
   else
@@ -66,8 +59,8 @@
   % if key or status
     <a class='btn btn-danger' href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/all' role='button'>Clear</a>
   % end
-    <input type='checkbox' {{'checked="checked"' if mine=="on"}} name="mine" onclick="form.submit();" /><label>&nbsp;Only mine</label>
 
+% if results_list.size > 0
   <div class='btn-group pull-right' role='group'>
     <button type='button' class='btn btn-default' aria-label='Left Align' title='Toggle collapse' onclick="autoCollapse()" title='collapse all panels'>
       <div id='collapse_icon'>
@@ -75,6 +68,7 @@
       </div>
     </button>
   </div>
+% end
   </form>
 
   <br>
@@ -82,8 +76,8 @@
 </div>
 
 % if results_list.size > 0
-  % result_info = Mote.parse(File.read("#{Kaya::View.path}/results/detailed_info.mote"), self, [:result, :ip])
+  % result_info = Mote.parse(File.read("#{Kaya::View.path}/results/detailed_info.mote"), self, [:result])
   % results_list.each do |result_data|
-    {{result_info.call(result:result_data, ip:ip)}}
+    {{result_info.call(result:result_data)}}
   % end
 % end

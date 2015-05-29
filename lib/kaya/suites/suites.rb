@@ -34,12 +34,11 @@ module Kaya
 
             custom_params = command.scan(/custom\=\[(.*)\]/).flatten.first
 
-            custom = Kaya::Suites::Custom::Params.new(custom_params)
+            custom = Kaya::Suites::Custom::Param.new(custom_params)
 
             command.gsub!(/custom\=\[(.*)\]/,"")
-            $K_LOG.debug "{suite_name => #{suite_name}, command => #{command}, custom => #{custom.params}, info => #{suite_info}}" if $K_LOG
 
-            {"suite_name" => suite_name, "command" => command, "custom" => custom.params, "info" => suite_info}
+            {"suite_name" => suite_name, "command" => command, "custom" => {}, "info" => suite_info}
           end
         else
           []
@@ -56,12 +55,12 @@ module Kaya
 
     def self.update!
       $K_LOG.debug "Updating suites" if $K_LOG
-      existing_suites_ids = self.suites.map{|suite| suite["_id"]}
+      existing_suites_ids = self.suites
 
       self.cucumber_yml.each do |suite_data|
         # If is there a suite for the given name suite_id will be setted
         # and the id will be deleted from existing_suites_ids
-        existing_suites_ids.delete(suite_id = is_there_suite_with?(suite_data["suite_name"]))
+        existing_suites_ids.delete(suite_id = is_there_suite_with?(suite_data["name"]))
 
         if suite_id # Update
           suite = Kaya::Suites::Suite.get(suite_id)
@@ -79,12 +78,12 @@ module Kaya
         suite.save!
       end
 
-      unless existing_suites_ids.empty?
-        existing_suites_ids.each do |suite_id|
-          suite = Kaya::Suites::Suite.get(suite_id)
-          suite.deactivate!
-        end
-      end
+      # unless existing_suites_ids.empty?
+      #   existing_suites_ids.each do |suite_id|
+      #     suite = Kaya::Suites::Suite.get(suite_id)
+      #     suite.deactivate!
+      #   end
+      # end
     end
 
     def self.is_there_suite_with? name
@@ -104,7 +103,7 @@ module Kaya
     # @return [Fixnum] suite id
     def self.suite_id_for(suite_name, active=nil)
       $K_LOG.debug "Suites:Getting suite id for #{suite_name}" if $K_LOG
-      Kaya::Database::MongoConnector.suite_id_for(suite_name, active)
+      Kaya::Database::MongoConnector.suite_id_for(suite_name)
     end
 
     # Returns the ids for running suites
@@ -115,6 +114,10 @@ module Kaya
       #   suite["status"] == "RUNNING"
       # end.map{|suite| suite["_id"]}
       Kaya::Database::MongoConnector.running_suites
+    end
+
+    def self.execution_running_for_suite suite_name
+      Kaya::Database::MongoConnector.running_for_suite(suite_name).size
     end
 
     def self.reset_statuses

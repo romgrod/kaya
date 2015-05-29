@@ -24,7 +24,7 @@
         <h4 id='started-modal' style='overflow: hidden'></h4>
       </div>
       <div class='modal-footer'>
-        <button type='button' class='btn btn-default' data-dismiss='modal' onclick='goClean();'>Close</button>
+        <button type='button' class='btn btn-default' data-dismiss='modal' onclick='goClean(window.location.pathname);'>Close</button>
       </div>
     </div>
   </div>

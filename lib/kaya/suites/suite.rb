@@ -13,6 +13,8 @@ module Kaya
       :last_result,
       :active
 
+      attr_reader :max_execs
+
       # First, try to get suite info from mongo.
       # If it does not exist creates a new one with default values
       def initialize suite_data = nil
@@ -26,8 +28,9 @@ module Kaya
           @custom         = suite_data["custom"] || []
           @info           = suite_data["info"] || ""
           @last_execution = suite_data["last_execution"]
-          @last_result    = suite_data["last_result"]
+          @last_result    = suite_data["last_result"] || Kaya::Support::Configuration.maximum_execs_per_suite
           @active         = suite_data["active"]
+          @max_execs      = suite_data["maximum_execs"]
 
         else
           $K_LOG.error "Creting suite object. Argument is not a hash" if $K_LOG
@@ -56,14 +59,16 @@ module Kaya
         self.new(Kaya::Database::MongoConnector.suite_data_for_name(name))
       end
 
-      def self.new_suite(suite_name)
+      def self.new_suite(suite_name, maximum_execs=Kaya::Support::Configuration.maximum_execs_per_suite)
+
         $K_LOG.debug "Defining new suite [#{suite_name}]" if $K_LOG
         suite_data = {
           "_id" => Kaya::Database::MongoConnector.generate_id,
           "name" => suite_name,
           "branch" => Kaya::Support::Git.actual_branch,
           "status" => "READY",
-          "active" => true
+          "active" => true,
+          "maximum_execs" => maximum_execs
         }
         self.new(suite_data)
 
@@ -164,11 +169,10 @@ module Kaya
 
       # If test suites ir running
       def check_last_result!
-        if self.is_running? and (result = Results::Result.get(@last_result))
-            $K_LOG.debug "[#{@id}:#{@name}] Checking last result" if $K_LOG
-            self.set_ready! if (result.update_values! or result.finished?)
-            $K_LOG.debug "[#{@id}:#{@name}] Done" if $K_LOG
-        end
+
+        raise "NO SE PUEDE USAR MAS ESTO, AHORA HAY QUE CHEQUEAR POR SEPARADO"
+
+
       end
 
     end

@@ -1,27 +1,37 @@
+<?
+
+  query_string = args[:query_string]
+
+  clean = query_string.clean || false
+
+  modal_type = clean == true ? "simpleAlert" : "my_alert"
+
+  message = query_string.msg ? " onload=\"javascript:#{modal_type}('Attention!','#{query_string.msg}', #{clean});\"" : nil
+
+  title = h1 = section.split.map{|w| w.capitalize}.join " "
+
+  javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
+
+  styles = Mote.parse(File.read("#{Kaya::View.path}/styles.mote"), self, []).call()
+
+  modals = Mote.parse(File.read("#{Kaya::View.path}/modals.mote"), self, []).call()
 
 
-% message = query_string.msg ? " onload=\"javascript:startedAlert('Attention!','#{query_string.msg}');\"" : nil
+  git_information = Mote.parse(File.read("#{Kaya::View.path}/git_information.mote"), self, [:section]).call(section:section)
 
-% title = h1 = section.split.map{|w| w.capitalize}.join " "
+  footer = Mote.parse(File.read("#{Kaya::View.path}/footer.mote"), self, []).call()
 
-% javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
+  template_file_path = File.read("#{Kaya::View.path}/#{Kaya::View::Sections.path_for(section)}.mote")
 
-% styles = Mote.parse(File.read("#{Kaya::View.path}/styles.mote"), self, []).call()
-
-% modals = Mote.parse(File.read("#{Kaya::View.path}/modals.mote"), self, []).call()
+  content = Mote.parse(template_file_path, self, [:args]).call(args:args)
 
 
-% git_information = Mote.parse(File.read("#{Kaya::View.path}/git_information.mote"), self, [:section]).call(section:section)
+  section = section.gsub(" ","_").downcase
 
-% footer = Mote.parse(File.read("#{Kaya::View.path}/footer.mote"), self, []).call()
+  navigation_bar = Mote.parse(File.read("#{Kaya::View.path}/navigation_bar.mote"), self, [:section]).call(section:section)
+?>
 
-% template_file_path = File.read("#{Kaya::View.path}/#{Kaya::View::Sections.path_for(section)}.mote")
 
-% content = Mote.parse(template_file_path, self, [:query_string, :suite_name, :log_name, :ip]).call(query_string:query_string, suite_name:suite_name, log_name:log_name, ip:ip)
-
-% section = section.gsub(" ","_").downcase
-
-% navigation_bar = Mote.parse(File.read("#{Kaya::View.path}/navigation_bar.mote"), self, [:section]).call(section:section)
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns ="http://www.w3.org/1999/xhtml"><head><meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>'
   <head>
@@ -38,10 +48,14 @@
 
   </head>
     <body class='padding-top: 50px;' {{message}}>
+      <div class="bb-alert alert alert-info" style="display:none;">
+        <span>The examples populate this alert with dummy content</span>
+      </div>
 
       {{modals}}
 
       {{navigation_bar}}
+
 
       <div class='container'>
         <br>

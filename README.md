@@ -65,7 +65,7 @@ Start Kaya and follow instructions
     $ kaya start
 
 
-
+  Important: Do not forget to include kaya folder to .gitignore if you will use git
 
 
 How it works

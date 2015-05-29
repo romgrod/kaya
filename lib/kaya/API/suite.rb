@@ -11,12 +11,20 @@ module Kaya
           "message" => nil
         }
         suite = Kaya::Suites::Suite.get(suite_id)
+        $K_LOG.debug "SUITE => #{suite}"
         if suite.nil?
           response["message"] = "Suite not found"
         else
           response["suite"] = suite.api_response
         end
         response
+      end
+
+      def self.info_for_name suite_name
+        $K_LOG.debug "suite_name received on info_for_name #{suite_name}"
+        suite_id = Kaya::Suites.suite_id_for(suite_name)
+        $K_LOG.debug "suite_id obtained on 'Kaya::Suites.suite_id_for' #{suite_id}"
+        self.info(suite_id)
       end
 
 

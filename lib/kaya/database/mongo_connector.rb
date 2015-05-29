@@ -12,6 +12,7 @@ module Kaya
         set_db
         authenticate(opts)
         set_suite_collection
+        set_custom_param_collection
         set_results_collection
         set_commits_collection
         set_documentation_collection
@@ -36,7 +37,12 @@ module Kaya
 
       def set_suite_collection
         @@suites  = @@db.collection("suites")
-        @@suites.ensure_index({"last_result" => 1})
+        @@suites.ensure_index({"name" => 1})
+      end
+
+      def set_custom_param_collection
+        @@custom_params  = @@db.collection("custom_params")
+        @@custom_params.ensure_index({"name" => 1})
       end
 
       def set_commits_collection
@@ -45,8 +51,8 @@ module Kaya
 
       def set_results_collection
         @@results   = @@db.collection("results")
+        @@results.ensure_index({"started_at" => 1})
         @@results.ensure_index({"_id" => 1})
-        @@results.ensure_index({"started_at" => 1, "_id" => 1})
       end
 
       def set_documentation_collection
@@ -111,7 +117,7 @@ module Kaya
 
       # Returns a list of collections
       def self.collections
-        ["suites","results"]
+        ["suites","results","custom_params","commit"]
       end
 
       # Drops all kaya collections
@@ -142,7 +148,7 @@ module Kaya
       # Returns last saved commit info
       # @return [Hash] if exist
       def self.last_commit
-        data = @@commits.find({}).to_a.last
+        data = @@commits.find_one({})
         data["log"] if data
       end
 
@@ -167,44 +173,92 @@ module Kaya
       # @return [Hash] all suite data
       def self.suite_data_for suite_id
         suite_id = suite_id.to_i if suite_id.respond_to? :to_i
-        @@suites.find({"_id" => suite_id}).to_a.first
+        @@suites.find_one({"_id" => suite_id})
       end
 
       def self.suite_data_for_name(suite_name)
-        id = self.suite_id_for(suite_name)
-        @@suites.find({"_id" => id}).to_a.first
+        @@suites.find_one({"name" => suite_name})
       end
 
       # Returns the _id for a given suite name
       # @param [String] suite_name
       # @return [String] _id
-      def self.suite_id_for suite_name, active=nil
-        criteria = {"name" => suite_name}
-        criteria.store("active",true) if active
-        result = @@suites.find(criteria).to_a.first
-        result.nil? ? nil : result["_id"]
+      def self.suite_id_for suite_name
+        res = @@suites.find_one({"name" => suite_name}, {:fields => ["_id"]})
+        res["_id"] if res
       end
 
       def self.suites active=true
-        criteria ={}
-        criteria["active"]=active if active
-       @@suites.ensure_index({"last_result" => 1})
-       @@suites.find(criteria, :sort => ["last_result", -1]).to_a || []
+        @@suites.find({}, :sort => ["last_result", -1]).to_a
       end
 
       # Returns all active suites
       def self.all_suites
-        @@suites.find({"active" => true}).to_a
+        self.suites
       end
 
       def self.running_suites
         @@suites.find({"status" => "RUNNING"}).to_a
       end
 
-      def self.active_suites
-        self.suites true
+      def self.running_for_suite suite_name
+        @@suites.find({"name" => suite_name, "status" => "RUNNING"}).to_a
       end
 
+      def self.active_suites
+        self.all_suites
+      end
+
+    ########################################
+    # CUSTOM PARAMS
+    #
+    #
+    #
+
+    def self.custom_params_list
+      @@custom_params.find({}).to_a
+    end
+
+    def self.insert_custom_param custom_param_data
+      @@custom_params.insert(custom_param_data)
+    end
+
+    # Update record for a given custom param
+    # @param [Hash] custom_param_data
+    def self.update_custom_param custom_param_data
+      id = custom_param_data["_id"].to_i if custom_param_data["_id"].respond_to? :to_i
+      @@custom_params.update( {"_id" => custom_param_data["_id"]}, custom_param_data)
+    end
+
+    # Returns the entire record for a given id
+    # @param [String] custom_param_id
+    # @return [Hash] all custom param data
+    def self.get_custom_param custom_param_id
+      custom_param_id = custom_param_id.to_i if custom_param_id.respond_to? :to_i
+      @@custom_params.find_one({"_id" => custom_param_id})
+    end
+
+    def self.param_id_for_name custom_param_name
+      res = self.custom_param_for_name custom_param_name
+      res["_id"] if res
+    end
+
+    def self.custom_param_for_name custom_param_name
+      @@custom_params.find_one({"name" => custom_param_name})
+    end
+
+    def self.exist_custom_param_name? name
+      !self.param_id_for_name(name).nil?
+    end
+
+    def self.exist_custom_param_id? param_id
+      !@@custom_params.find_one({"_id" => param_id}).nil?
+    end
+
+    def self.delete_custom_param custom_param_id
+      custom_param_id = custom_param_id.to_i if custom_param_id.respond_to? :to_i
+      @@custom_params.remove({"_id" => custom_param_id})
+    end
 
 
     ######################################3
@@ -227,13 +281,7 @@ module Kaya
 
       # Returns all results for a given suite_id
       def self.results_for suite_id
-        @@results.ensure_index({"started_at" => 1, "_id" => 1})
-        res = @@results.find({}, :sort => ["started_at", -1]).to_a
-        unless res.empty?
-          res.select{|result| result["suite"]["id"]==ensure_int(suite_id)}
-        else
-          []
-        end
+        @@results.find({"suite.id" => ensure_int(suite_id)}, :sort => ["started_at", -1]).to_a
       end
 
       # Updates result register with the given data
@@ -247,17 +295,12 @@ module Kaya
         end
       end
 
-      def self.results_for_suite_id_and_ip suite_id, ip
-        results = self.find_results_for_ip(ip)
-        if results
-          results.select{|result| result["suite"]["id"]==suite_id}
-        else
-          []
-        end
+      def self.result_data_for_id(result_id)
+        @@results.find_one({"_id" => ensure_int(result_id)})
       end
 
-      def self.result_data_for_id(result_id)
-        @@results.find({"_id" => ensure_int(result_id)}).to_a.first
+      def self.running_results_for_suite_id suite_id
+        @@results.find({"suite.id" => suite_id, "status" => "running"}, :sort => ["started_at", -1]).to_a
       end
 
 
@@ -271,39 +314,23 @@ module Kaya
       # Returns all result
       # @return [Array] results from results coll
       def self.all_results
-        @@results.ensure_index({"started_at" => 1, "_id" => 1})
-        res = @@results.find({}, :sort => ['_id', -1])
-        if res
-          res.to_a
-        else
-          []
-        end
+        @@results.find({}, :sort => ['_id', -1]).to_a
       end
 
       def self.all_results_ids
-        all_results.map{|res| res['_id']}
+        @@results.find({},{"_id" => 1}, :sort => ['_id', -1]).to_a
       end
 
       def self.find_results_for_key key
-        all_actual_results = self.all_results
-        if !all_actual_results.empty?
-          all_actual_results.select do |result|
-            result["suite"]["name"].include?(key) or result["execution_name"].include?(key) or result["summary"].include?(key) or result["command"].include?(key)
-          end
-        end
+        @@results.find({$or => [{"suite.name" => /#{key}/}, {"execution_name" => /#{key}/ }, {"summary" => /#{key}/ }, {"command" => /#{key}/ }]}).to_a
       end
 
-      def self.find_results_for_ip ip
-        @@results.find({"ip" => ip}, :sort =>["started_at", -1]).to_a
+      def self.last_result_for_suite suite_id
+        @@results.find_one({}, :sort => ['_id', -1])
       end
 
       def self.find_results_for_status status
-        all_actual_results = self.all_results
-        if !all_actual_results.empty?
-          all_actual_results.select do |result|
-            result["summary"].include?(status) or result["status"].include?(status)
-          end.map{|result| result["_id"]}
-        end
+        @@results.find({$or => [{"summary" => /#{status}/}, {"status" => /#{status}/ }]},{"_id" => 1}).to_a
       end
     end
   end

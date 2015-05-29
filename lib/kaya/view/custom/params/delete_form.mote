@@ -1,0 +1,54 @@
+<?
+custom_param = Kaya::Suites::Custom::Param.get(args[:custom_param_id]).structure
+types = Kaya::Suites::Custom::Param.types
+options = custom_param["options"].join(",").gsub("none,","")
+?>
+<nav class="navbar navbar-default">
+  <form name="delete-custom-param" id="delete-custom-param" action="/{{Kaya::Support::Configuration.hostname}}/kaya/delete-custom-param" method="POST">
+    <div class='form-group'>
+      <br>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'>
+        Name
+      </label>
+      <input type="hidden" name="action" id="action" value="delete" />
+      <input type="hidden" name="_id" id="_id" value="{{custom_param["_id"]}}" />
+      <input class='customParam' disabled="disabled" type='text' name='name' id='name'  value="{{custom_param["name"]}}" />
+    </div>
+    <div class='form-group'>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Type</label>
+      <select id='type' name='type' class='customParam' disabled="disabled">
+      % types.each do |type|
+        % selected = 'selected="selected"' if custom_param and (type == custom_param["type"])
+        <option value='{{type}}' {{selected}}>{{type.gsub(/-|_/," ").capitalize}}</option>
+        % end
+      </select>
+    </div>
+    % if custom_param["type"] == "select_list"
+        <div class='form-group'>
+          <label class='col-sm-2 control-label' for='formGroupInputSmall'>Options</label>
+          <textarea class='customParam' type='text' name='options' id='options' disabled="disabled" placeholder='Options for Select list type' >{{options}}</textarea>
+        </div>
+    % elsif custom_param["type"] == "text"
+        <div class='form-group'>
+          <label class='col-sm-2 control-label' for='formGroupInputSmall'>Value</label>
+          <input class='customParam' type='text' name='value' id='value' placeholder='Default value Text type' value="{{custom_param["value"]}}" ></input>
+        </div>
+    % elsif custom_param["type"]=="json"
+      <div class='form-group'>
+        <label class='col-sm-2 control-label' for='formGroupInputSmall'>Value</label>
+        % param_representation = Mote.parse(File.read("#{Kaya::View.path}/custom/params/json.mote"), self, [:param, :no_label]).call(param:custom_param, no_label:true)
+            {{param_representation}}
+      </div>
+    %end
+      <div class='form-group'>
+        <label class='col-sm-2 control-label' for='formGroupInputSmall'>Required</label>
+        <input type="checkbox" name="required" id="required"  disabled="disabled"/ {{'checked' if custom_param["required"]}}>
+      </div>
+    <br>
+    <div class='form-group'>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'></label>
+      <input type="submit" class="btn btn-success" value="Delete" >&nbsp;<a class="btn btn-danger" href="#" onclick="javascript:window.history.back();">Cancel</a>
+    </div>
+    <br>
+  </form>
+</nav>

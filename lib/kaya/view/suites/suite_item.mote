@@ -1,7 +1,7 @@
 <?
-last_result_for_ip = Kaya::Results.results_for_suite_id_and_ip(suite["_id"], ip).first
-status = if last_result_for_ip
-  if last_result_for_ip["status"]=="running"
+last_result = Kaya::Results.running_results_for_suite_id(suite["_id"]).first
+status = if last_result
+  if last_result["status"]=="running"
     "running"
   else
     "finished"
@@ -37,7 +37,7 @@ color = Kaya::View.color(status)
           Information</a>
       % end
       % if status=="running"
-        <a href='#' title='See execution progress' class='label label-warning' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{last_result_for_ip["_id"]}}');">
+        <a href='#' title='See execution progress' class='label label-warning' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{last_result["_id"]}}');">
           See progress</a>
       % end
       </div>

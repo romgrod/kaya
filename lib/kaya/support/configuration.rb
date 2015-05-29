@@ -6,11 +6,6 @@ module Kaya
 
       def self.get
         $K_LOG.debug "Creating configuration object" if $K_LOG
-        if File.exist?("#{Dir.pwd}/kaya_conf")
-          puts "Moving kaya_conf from #{Dir.pwd}/kaya_conf to #{self.path}".colorize(:green)
-          FileUtils.mv("#{Dir.pwd}/kaya_conf", self.path)
-          puts "Done.".colorize(:green)
-        end
 
         if self.config_file_exists?
           @@input = Kaya::Support::Update.kaya_conf
@@ -96,6 +91,10 @@ module Kaya
           :username => self.db_username,
           :pass => self.db_pass
         }
+      end
+
+      def self.maximum_execs_per_suite
+        @@input["MAXIMUM_EXECS_PER_SUITE"] || 3
       end
 
       def self.notification?

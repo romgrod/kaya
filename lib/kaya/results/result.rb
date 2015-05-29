@@ -2,6 +2,7 @@ module Kaya
   module Results
     class Result
 
+
       attr_accessor\
         :id,
         :started_at,
@@ -26,8 +27,7 @@ module Kaya
         :pid,
         :last_check_time,
         :configuration_values,
-        :timeout,
-        :ip
+        :timeout
 
       attr_reader :console_output
 
@@ -66,7 +66,6 @@ module Kaya
           @last_check_time          = now_in_seconds
           @execution_data           = {}
           @configuration_values     = Kaya::Support::Configuration.pretty_configuration_values
-          @ip                       = data_for_result["ip"]
         end
       end
 
@@ -108,8 +107,7 @@ module Kaya
           "pid"                       => pid,
           "last_check_time"           => last_check_time,
           "execution_data"            => execution_data,
-          "configuration_values"      => configuration_values,
-          "ip"                        => ip
+          "configuration_values"      => configuration_values
         }
       end
 
@@ -451,6 +449,16 @@ module Kaya
       end
 
 
+      def check_finished!
+        if self.is_running?
+            self.set_ready! if (self.update_values! or self.finished?)
+        end
+      end
+
+
+      def is_running?
+        @status == "RUNNING"
+      end
 
       # Returns actal timestamp
       # @return [Time]

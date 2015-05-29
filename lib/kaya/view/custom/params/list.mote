@@ -1,0 +1,68 @@
+<?
+  custom_params_list = Kaya::API::CustomParams.list
+?>
+
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><h2>Custom Parameters</h2></div>
+  <div class="panel-body">
+    <p><a class="btn btn-success" href="/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params/new">New Custom Param</a></p>
+  </div>
+
+  <div class="panel-success">
+    <div class="panel-body">
+      <!-- Table -->
+      <table class="table">
+        % unless custom_params_list.empty?
+          <thead>
+            <tr>
+            % custom_params_list.first.keys.select{|key| !(["action","options","value"].include? key)}.each do |header|
+              <td><b>{{header.gsub(/(-|_)/," ").capitalize}}</b></td>
+            % end
+            <td><b>Representation</b></td>
+            <td><b></b></td>
+            </tr>
+          </thead>
+          <tbody>
+          % custom_params_list.each do |custom_param|
+            <tr>
+            % custom_param.select{|key,value| !(["options","value"].include? key)}.each_pair do |key, value|
+              <?
+                value = value.gsub("_"," ").capitalize! if key=="type"
+                if key == "required"
+                  value = (value == true) ? "Yes" : "No"
+                end
+              ?>
+              <td>
+                {{value}}
+              </td>
+            %end
+            <td>
+            % param_representation = Mote.parse(File.read("#{Kaya::View.path}/custom/params/#{custom_param["type"]}.mote"), self, [:param, :no_label]).call(param:custom_param, no_label:true)
+            {{param_representation}}
+            </td>
+            <td>
+              <div class="btn-group">
+                <button type="button" class="btn btn-danger">Action</button>
+                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params/{{custom_param["_id"]}}/edit">Edit</a></li>
+
+                  <li><a href="/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params/{{custom_param["_id"]}}/delete">Delete</a></li>
+
+                </ul>
+              </div>
+            </td>
+            </tr>
+          % end
+          </tbody>
+        % else
+          <h4>There is no Custom Params defined</h4>
+        % end
+      </table>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@ module Kaya
   module API
     module Suites
 
-      # @param [hash] options = {:running, :active, :ip}
+      # @param [hash] options = {:running, :active}
       def self.list(options ={})
 
         start = Time.now.to_f
@@ -25,7 +25,7 @@ module Kaya
         if suites.size.zero?
           response["message"] = options[:running] ? "Running suites not found" : "Suites not found"
         else
-          # Gets the executions for given ip
+
           suites = suites.map do |suite|
             results_for_suite = Kaya::Results.results_ids_for suite["_id"]
             suite["results"]={
@@ -33,15 +33,6 @@ module Kaya
               "ids" => results_for_suite
             }
             suite
-          end
-
-          suites = suites.map do |suite|
-            unless Kaya::Results.results_for_suite_id_and_ip(suite["_id"], options[:ip]).empty?
-              suite["status"]="RUNNING"
-              suite
-            else
-              suite
-            end
           end
 
           response["suites"] = suites

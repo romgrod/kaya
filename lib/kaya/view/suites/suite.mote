@@ -1,14 +1,25 @@
 <?
-last_result_for_ip = Kaya::Results.results_for_suite_id_and_ip(suite["_id"], ip).first
-status = if last_result_for_ip
-   last_result_for_ip["status"]=="running" ? "running" : "finished"
+
+suite = suite_data["suite"]
+
+#suite = Kaya::Suites::Suite.get(suite_name)
+
+
+running_results = Kaya::Results.running_results_for_suite_id suite["_id"]
+
+
+max_number_of_execs_reached = running_results.size == suite["max"]
+
+status = if max_number_of_execs_reached
+  "running"
 else
-  "READY"
+  "ready"
 end
 
-color = Kaya::View.color(status)
+color =  Kaya::View.color(status)
 
 ?>
+
 <div class='starter-template'>
     <div class='panel panel-{{color}}'>
       <div class='panel-heading' data-toggle='collapse' data-target='#{{suite["name"].gsub(' ','')}}'>
@@ -27,23 +38,25 @@ color = Kaya::View.color(status)
         <li class='list-group-item'>
           Command: {{suite["command"]}}
         </li>
-  % if last_result_for_ip
-      % unless status == "running"
-        <li class='list-group-item'>
-          Last result:&nbsp;{{Kaya::View.label_color_for_result_id last_result_for_ip["_id"]}}
-        </li>
-        <li class='list-group-item'>
-          Started on:&nbsp;{{Kaya::Support::TimeHelper.formatted_time_for(Kaya::Results::Result.get(last_result_for_ip["_id"]).started_at)}}
-        </li>
+
+      <!--  Si la suite está en running se muestran las ejecuciones -->
+      % if suite["status"]=="RUNNING"
+      <li class='list-group-item'>
+        &nbsp;&nbsp;&nbsp;Running {{running_results.size}} suites
+        <div class='panel-body'>
+          <div class='list-group'>
+            % running_results.each do |result|
+              <a class='list-group-item' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{result["_id"]}}');">
+                {{Kaya::Support::TimeHelper.formatted_time_for(Kaya::Results::Result.get(result["_id"]).started_at)}}
+                &nbsp; <small>{{result["execution_name"]}}</small>&nbsp;
+                {{Kaya::View.only_label_for result}}
+              </a>
+            % end
+          </div>
+        </div>
+      </li>
       % end
-  % end
-    % if status == "running"
-        <li class='list-group-item'>
-          <a href='#' class='btn btn-info' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{last_result_for_ip["_id"]}}');">
-            See progress
-          </a>
-        </li>
-    % else
+    % unless max_number_of_execs_reached
         <li class='list-group-item'>
           <form name='run' id='{{suite["name"]}}' method='get' action='/{{Kaya::Support::Configuration.hostname}}/kaya/suites/{{suite["name"]}}/run'>
 

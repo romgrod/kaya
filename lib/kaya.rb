@@ -33,6 +33,7 @@ require_relative "kaya/database/mongo_connector"
 # Suites
 require_relative "kaya/suites/suites"
 require_relative "kaya/suites/suite"
+require_relative "kaya/suites/custom/param"
 require_relative "kaya/suites/custom/params"
 
 
@@ -55,6 +56,7 @@ require_relative "kaya/API/result"
 require_relative "kaya/API/results"
 require_relative "kaya/API/error"
 require_relative "kaya/API/execution"
+require_relative "kaya/API/custom_params"
 
 
 # Cucumber relate code
