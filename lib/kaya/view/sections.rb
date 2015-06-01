@@ -15,7 +15,8 @@ module Kaya
         "Edit Custom Param" => "custom/params/edit",
         "Delete Custom Param" => "custom/params/delete",
         "Repo" => "",
-        "Logs" => "logs/log",
+        "Logs" => "logs",
+        "Log" => "logs/log",
         "Help" => ""
       }
 

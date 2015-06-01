@@ -209,6 +209,10 @@ module Kaya
         self.all_suites
       end
 
+      def self.delete_suite suite_id
+        @@suites.remove({"_id" => suite_id})
+      end
+
     ########################################
     # CUSTOM PARAMS
     #

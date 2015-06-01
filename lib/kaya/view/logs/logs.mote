@@ -1,0 +1,6 @@
+<div class="btn-group" role="group" aria-label="...">
+% Kaya::Support::Logs.all.keys.each do |log|
+  <button type="button" class="btn btn-default">Left</button><a href='/{{Kaya::Support::Configuration.hostname}}/kaya/logs/{{log}}'>{{log.split('_').first.capitalize}}</a></li>
+% end
+
+</div>

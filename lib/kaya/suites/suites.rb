@@ -78,12 +78,13 @@ module Kaya
         suite.save!
       end
 
-      # unless existing_suites_ids.empty?
-      #   existing_suites_ids.each do |suite_id|
-      #     suite = Kaya::Suites::Suite.get(suite_id)
-      #     suite.deactivate!
-      #   end
-      # end
+      unless existing_suites_ids.empty?
+        existing_suites_ids.each do |suite_id|
+          # suite = Kaya::Suites::Suite.get(suite_id)
+          # suite.deactivate!
+          Kaya::Suites.delete! suite_id
+        end
+      end
     end
 
     def self.is_there_suite_with? name
@@ -130,6 +131,10 @@ module Kaya
           suite.set_ready!
         end
       end
+    end
+
+    def self.delete! suite_id
+      Kaya::Database::MongoConnector.delete_suite suite_id
     end
 
   end

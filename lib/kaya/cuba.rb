@@ -185,6 +185,13 @@ Cuba.define do
         query_string = Kaya::Support::QueryString.new req
         args = {query_string:query_string, log_name:log_name}
         template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
+        res.write template.call(section:"Log", args:args)
+      end
+
+      on "#{HOSTNAME}/kaya/logs" do
+        query_string = Kaya::Support::QueryString.new req
+        args = {query_string:query_string}
+        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
         res.write template.call(section:"Logs", args:args)
       end
 
