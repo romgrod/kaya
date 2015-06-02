@@ -35,14 +35,14 @@
       window.location.href= url;}
    }
 
-  function simpleAlert(title, text, suiteName){
+  function simpleAlert(title, text, taskName){
     startedInfo(title,text);
     $('#startedModal').modal('show');
   }
 
   function starterLink(formId){
     var form = document.getElementById(formId);
-    var link = window.location.origin + '/{{Kaya::Support::Configuration.hostname}}/kaya/suites/' + formId + '/run?';
+    var link = window.location.origin + '/{{Kaya::Support::Configuration.hostname}}/kaya/tasks/' + formId + '/run?';
     var elements = form.getElementsByClassName('customParam');
     for(i=0; i < elements.length; i++){
       if(elements[i].value.length > 0){

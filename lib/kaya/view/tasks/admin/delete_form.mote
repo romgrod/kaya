@@ -1,0 +1,34 @@
+<?
+task = Kaya::Tasks.get(args[:task_id]).structure
+?>
+<nav class="navbar navbar-default">
+  <form name="delete-task" id="delete-task" action="/{{Kaya::Support::Configuration.hostname}}/kaya/tasks/admin/delete-task" method="POST">
+    <div class='form-group'>
+      <br>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'>
+        Name
+      </label>
+      <input type="hidden" name="action" id="action" value="delete" />
+      <input type="hidden" name="_id" id="_id" value="{{task["_id"]}}" />
+      <input class='customParam' disabled="disabled" type='text' name='name' id='name'  value="{{task["name"]}}" />
+    </div>
+    <div class='form-group'>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Command</label>
+      Aquí va el command
+    </div>
+    <div class='form-group'>
+        <label class='col-sm-2 control-label' for='formGroupInputSmall'>Options</label>
+        <textarea class='customParam' type='text' name='options' id='options' disabled="disabled" placeholder='Options for Select list type' >{{options}}</textarea>
+      </div>
+    <div class='form-group'>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Test</label>
+      <input type="checkbox" name="test" id="test"  disabled="disabled"/ {{'checked' if task["type"]=="test"}}>
+    </div>
+    <br>
+    <div class='form-group'>
+      <label class='col-sm-2 control-label' for='formGroupInputSmall'></label>
+      <input type="submit" class="btn btn-success" value="Delete" >&nbsp;<a class="btn btn-danger" href="/{{Kaya::Support::Configuration.hostname}}/kaya/tasks/admin/edit">Cancel</a>
+    </div>
+    <br>
+  </form>
+</nav>

@@ -1,5 +1,5 @@
 module Kaya
-  module Suites
+  module Tasks
     module Custom
       module Params
         def self.list

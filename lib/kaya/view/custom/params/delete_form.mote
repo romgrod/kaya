@@ -1,6 +1,6 @@
 <?
-custom_param = Kaya::Suites::Custom::Param.get(args[:custom_param_id]).structure
-types = Kaya::Suites::Custom::Param.types
+custom_param = Kaya::Tasks::Custom::Param.get(args[:custom_param_id]).structure
+types = Kaya::Tasks::Custom::Param.types
 options = custom_param["options"].join(",").gsub("none,","")
 ?>
 <nav class="navbar navbar-default">

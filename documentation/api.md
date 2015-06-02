@@ -4,21 +4,21 @@ How do i use the api?
 
 Well, we want to do things as simple as possible, so we are using only GET requests. Everyone has a browser, so everyone has the possiblility to use Kaya.
 
-Returns the list of suites
+Returns the list of tasks
 
-    kaya/api/suites
+    kaya/api/tasks
 
-Returns the list of suites that are running
+Returns the list of tasks that are running
 
-    kaya/api/suites/running
+    kaya/api/tasks/running
 
-Returns the status of the given suite id
+Returns the status of the given task id
 
-    kaya/api/suites/<suite_id>/status
+    kaya/api/tasks/<task_id>/status
 
-Returns the suite structure for the given suite id
+Returns the task structure for the given task id
 
-    kaya/api/suites/<suite_id>
+    kaya/api/tasks/<task_id>
 
 Returns all existing results
 
@@ -32,9 +32,9 @@ Starts an execution
 
   Perform get to:
 
-    kaya/api/suites/<suite_me>/run
+    kaya/api/tasks/<task_me>/run
 
-    # pass custom parameters as query string like vkaya/api/suites/:suite/run?environment=RC&foo=bar
+    # pass custom parameters as query string like vkaya/api/tasks/:task/run?environment=RC&foo=bar
 
     # and if you want identify the execution, you can pass execution_name=your_execution_identification' as query string too.
 

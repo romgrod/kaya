@@ -1,0 +1,97 @@
+<?
+
+task = task_data["task"]
+
+#task = Kaya::Tasks::Task.get(task_name)
+
+
+running_results = Kaya::Results.running_results_for_task_id task["_id"]
+
+
+max_number_of_execs_reached = running_results.size == task["max"]
+
+status = if max_number_of_execs_reached
+  "running"
+else
+  "ready"
+end
+
+color =  Kaya::View.color(status)
+
+?>
+
+<div class='starter-template'>
+    <div class='panel panel-{{color}}'>
+      <div class='panel-heading' data-toggle='collapse' data-target='#{{task["name"].gsub(' ','')}}'>
+        <h4 class='panel-title'>{{task["name"]}}</h4>
+    % if status=="running"
+        <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+    % end
+    </div>
+
+    <div class='panel-body collapse in' id='{{task["name"].gsub(' ','')}}'>
+      <ul class='list-group'>
+        <li class='list-group-item'>
+          Command: {{task["command"]}}
+        </li>
+
+      <!--  Si la task está en running se muestran las ejecuciones -->
+      % if task["status"]=="RUNNING"
+      <li class='list-group-item'>
+        &nbsp;&nbsp;&nbsp;Running {{running_results.size}} tasks
+        <div class='panel-body'>
+          <div class='list-group'>
+            % running_results.each do |result|
+              <a class='list-group-item' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{result["_id"]}}');">
+                {{Kaya::Support::TimeHelper.formatted_time_for(Kaya::Results::Result.get(result["_id"]).started_at)}}
+                &nbsp; <small>{{result["execution_name"]}}</small>&nbsp;
+                {{Kaya::View.only_label_for result}}
+              </a>
+            % end
+          </div>
+        </div>
+      </li>
+      % end
+    % unless max_number_of_execs_reached
+        <li class='list-group-item'>
+          <form name='run' id='{{task["name"]}}' method='get' action='/{{Kaya::Support::Configuration.hostname}}/kaya/tasks/{{task["name"]}}/run'>
+
+      % unless task["custom"].empty?
+        % custom_template = Mote.parse(File.read("#{Kaya::View.path}/custom/params.mote"), self, [:custom_params])
+        {{custom_template.call(custom_params:task["custom"])}}
+      % end
+      <br><br>
+            <input type='submit' class='btn btn-success' value='Execute Task'>&nbsp;
+            <input type='text' name='execution_name' class='customParam' title='This value could be used to identify the result execution from other execution of this task. E.g: You could use the release your are going to test' placeholder='Identify your execution' value='{{Kaya::Support::Configuration.auto_execution_id}}' style='height: 34px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; font-weight:normal;' />
+            <button type='button' class='btn btn-default' aria-label='Left Align' data-toggle='modal' data-target='#myModal' onclick='javascript:starterLink("{{task["name"]}}");'>
+              <span class='glyphicon glyphicon-star' aria-hidden='true'>
+                Link
+              </span>
+            </button>
+            % unless task["info"].empty?
+            <div style="text-align:right">
+              <a href='#'><span title='{{task["info"]}}' class='glyphicon glyphicon-info-sign' aria-hidden='true' data-toggle='modal' data-target='#myModal' onclick="javascript:info('Information about {{task["name"]}}','{{task["info"].gsub('\n','<br>')}}', null);"></span>
+             </a><b>Information</b>&nbsp;&nbsp;
+            </div>
+            % end
+
+          </form>
+        </li>
+    % end
+        </li>
+      </ul>
+
+  % if task["last_result"] # There is at least one result
+    % if task["results"]["size"] > 0
+      <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/task/{{task["name"].gsub(' ','%20')}}' class='btn btn-default pull-center'>All results({{task["results"]["size"]}})</a>
+    % end
+  % else
+      &nbsp;
+  % end
+    </div>
+  </div>
+</div>

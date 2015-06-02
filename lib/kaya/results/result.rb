@@ -7,8 +7,8 @@ module Kaya
         :id,
         :started_at,
         :saw,
-        :suite,
-        :suite_name,
+        :task,
+        :task_name,
         :execution_name,
         :command,
         :custom_params,
@@ -33,7 +33,7 @@ module Kaya
 
 
       #  data_for_result = {
-      #      "suite" => {"name":String, "id":Fixnum},
+      #      "task" => {"name":String, "id":Fixnum},
       #      "execution_name" => String
       #      "type" => String}
       def initialize data_for_result
@@ -45,7 +45,7 @@ module Kaya
 
         else # It comes from a new execution request
           @id = Kaya::Database::MongoConnector.generate_id
-          @suite                    = data_for_result['suite']
+          @task                    = data_for_result['task']
           @execution_name           = data_for_result["execution_name"] || ""
           @custom_params            = data_for_result["custom_params"]
           @git_log                  = data_for_result["git_log"]
@@ -57,11 +57,11 @@ module Kaya
           @html_report              = ""
           @summary                  = "Not available yet"
 
-          # Save suite info
-          suite_data                = Kaya::Database::MongoConnector.suite_data_for(@suite["id"])
+          # Save task info
+          task_data                = Kaya::Database::MongoConnector.task_data_for(@task["id"])
           @command                  = data_for_result['command']
-          @suite_name               = suite_data["name"]
-          @command                  = suite_data["command"]
+          @task_name               = task_data["name"]
+          @command                  = task_data["command"]
           @console_output           = ""
           @last_check_time          = now_in_seconds
           @execution_data           = {}
@@ -86,7 +86,7 @@ module Kaya
       def result_data_structure
         {
           "_id"                       => id,
-          "suite"                     => @suite,
+          "task"                     => @task,
           "execution_name"            => execution_name,
           "command"                   => command,
           "custom_params"             => custom_params,
@@ -146,12 +146,12 @@ module Kaya
         self.save!
       end
 
-      def suite_id
-        @suite["id"]
+      def task_id
+        @task["id"]
       end
 
-      # def suite_name
-      #   @suite["name"]
+      # def task_name
+      #   @task["name"]
       # end
 
       # Gets all the console log, status, etc values and update itself

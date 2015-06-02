@@ -3,7 +3,12 @@ module Kaya
     class Sections
 
       @@sections = {
-        "Test Suites" => "suites/suites",
+        "Edit Tasks" => "tasks/admin/list",
+        "Add Task" => "tasks/admin/new",
+        "Edit Task" => "tasks/admin/edit",
+        "Delete Task" => "tasks/admin/delete",
+        "Tests" => "tasks/tasks",
+        "Tasks" => "tasks/tasks",
         "Features" => "features/features",
         "Feature" => "features/feature",
         "Results"=>  "results/results",

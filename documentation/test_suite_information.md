@@ -1,9 +1,9 @@
-How to provide information about a test suite?
+How to provide information about a test task?
 ==============
 
-You can provide some information about a test suite by adding info value to each suite you need
+You can provide some information about a test task by adding info value to each task you need
 
-      #cucumber.yml 
-      regression: -t @regression info=[This is to execute a regression tests suite]
+      #cucumber.yml
+      regression: -t @regression info=[This is to execute a regression tests task]
 
-This value `info=[Explaining text]` will show the icon <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> where you can mouse over and read the text 
+This value `info=[Explaining text]` will show the icon <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> where you can mouse over and read the text

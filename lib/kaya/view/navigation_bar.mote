@@ -15,10 +15,10 @@
     <div class='collapse navbar-collapse'>
       <ul class='nav navbar-nav'>
         <li class='{{'active' if section =~ /test/}}'>
-          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/suites'>Tests</a>
+          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/tasks'>Tests</a>
         </li>
         <li class='{{'active' if section =~ /task/}}'>
-          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/suites'>Tasks</a>
+          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/tasks'>Tasks</a>
         </li>
         <li class='{{'active' if section == "features"}}'>
           <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/features'>Features</a>

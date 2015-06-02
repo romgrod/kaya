@@ -11,7 +11,7 @@ module Kaya
         set_client(opts)
         set_db
         authenticate(opts)
-        set_suite_collection
+        set_task_collection
         set_custom_param_collection
         set_results_collection
         set_commits_collection
@@ -35,9 +35,9 @@ module Kaya
         @@auth = @@db.authenticate(opts[:username], opts[:pass]) if opts[:username] and opts[:pass]
       end
 
-      def set_suite_collection
-        @@suites  = @@db.collection("suites")
-        @@suites.ensure_index({"name" => 1})
+      def set_task_collection
+        @@tasks  = @@db.collection("tasks")
+        @@tasks.ensure_index({"name" => 1})
       end
 
       def set_custom_param_collection
@@ -117,7 +117,7 @@ module Kaya
 
       # Returns a list of collections
       def self.collections
-        ["suites","results","custom_params","commit"]
+        ["tasks","results","custom_params","commit"]
       end
 
       # Drops all kaya collections
@@ -156,61 +156,69 @@ module Kaya
       # SUITES
       #
 
-      # Inserts a suite in suites collection
-      # @param [Hash] suite_data (see suite_data_structure method)
-      def self.insert_suite suite_data
-        @@suites.insert(suite_data)
+      # Inserts a task in tasks collection
+      # @param [Hash] task_data (see task_data_structure method)
+      def self.insert_task task_data
+        @@tasks.insert(task_data)
       end
 
-      # Update record for a given suite
-      # @param [Hash] suite_data
-      def self.update_suite suite_data
-        @@suites.update( {"_id" => suite_data["_id"]}, suite_data)
+      # Update record for a given task
+      # @param [Hash] task_data
+      def self.update_task task_data
+        @@tasks.update( {"_id" => task_data["_id"]}, task_data)
       end
 
-      # Returns the entire record for a given suite name
-      # @param [String] suite_name
-      # @return [Hash] all suite data
-      def self.suite_data_for suite_id
-        suite_id = suite_id.to_i if suite_id.respond_to? :to_i
-        @@suites.find_one({"_id" => suite_id})
+      # Returns the entire record for a given task name
+      # @param [String] task_name
+      # @return [Hash] all task data
+      def self.task_data_for task_id
+        task_id = task_id.to_i if task_id.respond_to? :to_i
+        @@tasks.find_one({"_id" => task_id})
       end
 
-      def self.suite_data_for_name(suite_name)
-        @@suites.find_one({"name" => suite_name})
+      def self.task_data_for_name(task_name)
+        @@tasks.find_one({"name" => task_name})
       end
 
-      # Returns the _id for a given suite name
-      # @param [String] suite_name
+      # Returns the _id for a given task name
+      # @param [String] task_name
       # @return [String] _id
-      def self.suite_id_for suite_name
-        res = @@suites.find_one({"name" => suite_name}, {:fields => ["_id"]})
+      def self.task_id_for task_name, type=nil
+        criteria = {"name" => task_name}
+        criteria["type"] = type if type
+        res = @@tasks.find_one(criteria, {:fields => ["_id"]})
         res["_id"] if res
       end
 
-      def self.suites active=true
-        @@suites.find({}, :sort => ["last_result", -1]).to_a
+      def self.tasks type=nil
+        criteria = {}
+        criteria["type"]=type if type
+        @@tasks.find(criteria, :sort => ["last_result", -1]).to_a
       end
 
-      # Returns all active suites
-      def self.all_suites
-        self.suites
+      # Returns all active tasks
+      def self.all_tasks
+        self.tasks
       end
 
-      def self.running_suites
-        @@suites.find({"status" => "RUNNING"}).to_a
+      def self.all_tests
+        self.tasks "test"
       end
 
-      def self.running_for_suite suite_name
-        @@suites.find({"name" => suite_name, "status" => "RUNNING"}).to_a
+      def self.running_tasks
+        @@tasks.find({"status" => "RUNNING"}).to_a
       end
 
-      def self.active_suites
-        self.all_suites
+      def self.running_for_task task_name
+        @@tasks.find({"name" => task_name, "status" => "RUNNING"}).to_a
       end
 
-      def self.delete_suite suite_id
-        @@suites.remove({"_id" => suite_id})
+      def self.active_tasks
+        self.all_tasks
+      end
+
+      def self.delete_task task_id
+        @@tasks.remove({"_id" => task_id})
       end
 
     ########################################
@@ -283,9 +291,9 @@ module Kaya
         end
       end
 
-      # Returns all results for a given suite_id
-      def self.results_for suite_id
-        @@results.find({"suite.id" => ensure_int(suite_id)}, :sort => ["started_at", -1]).to_a
+      # Returns all results for a given task_id
+      def self.results_for task_id
+        @@results.find({"task.id" => ensure_int(task_id)}, :sort => ["started_at", -1]).to_a
       end
 
       # Updates result register with the given data
@@ -303,8 +311,8 @@ module Kaya
         @@results.find_one({"_id" => ensure_int(result_id)})
       end
 
-      def self.running_results_for_suite_id suite_id
-        @@results.find({"suite.id" => suite_id, "status" => "running"}, :sort => ["started_at", -1]).to_a
+      def self.running_results_for_task_id task_id
+        @@results.find({"task.id" => task_id, "status" => "running"}, :sort => ["started_at", -1]).to_a
       end
 
 
@@ -326,10 +334,10 @@ module Kaya
       end
 
       def self.find_results_for_key key
-        @@results.find({$or => [{"suite.name" => /#{key}/}, {"execution_name" => /#{key}/ }, {"summary" => /#{key}/ }, {"command" => /#{key}/ }]}).to_a
+        @@results.find({$or => [{"task.name" => /#{key}/}, {"execution_name" => /#{key}/ }, {"summary" => /#{key}/ }, {"command" => /#{key}/ }]}).to_a
       end
 
-      def self.last_result_for_suite suite_id
+      def self.last_result_for_task task_id
         @@results.find_one({}, :sort => ['_id', -1])
       end
 

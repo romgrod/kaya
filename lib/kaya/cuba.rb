@@ -4,7 +4,7 @@ include Mote::Helpers
 
 Cuba.define do
 
-  $suites_counter = 0
+  $tasks_counter = 0
 
   request = Kaya::Support::Request.new(req)
 
@@ -128,10 +128,10 @@ Cuba.define do
         res.redirect "/#{HOSTNAME}/kaya/results?msg=#{result['message']}"
       end
 
-      on "#{HOSTNAME}/kaya/results/suite/:suite_name" do |suite_name|
+      on "#{HOSTNAME}/kaya/results/task/:task_name" do |task_name|
         query_string = Kaya::Support::QueryString.new req
-        suite_name.gsub!("%20"," ")
-        args = {suite_name:suite_name, query_string:query_string}
+        task_name.gsub!("%20"," ")
+        args = {task_name:task_name, query_string:query_string}
         template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
         res.write template.call(section:"Results", args:args)
       end
@@ -150,42 +150,133 @@ Cuba.define do
         res.write template.call(section:"Results", args:args)
       end
 
-      on "#{HOSTNAME}/kaya/suites/:suite/run" do |suite_name|
+## ========================================================================
+# TASKS CRUD
+#
+#
+#
+
+      on "#{HOSTNAME}/kaya/tasks/admin/list" do
+        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
+        res.write template.call(section:"Edit Tasks", args:{:query_string => Kaya::Support::QueryString.new(req)})
+      end
+
+      on "#{HOSTNAME}/kaya/tasks/admin/:task_id/edit" do |task_id|
+        # query_string = Kaya::Support::QueryString.new req
+        # args = {query_string:query_string}
+        # template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
+        # res.write template.call(section:"Edit Task", args:args)
+        res.write "EDITING #{task_id} TASK"
+
+      end
+
+      on "#{HOSTNAME}/kaya/tasks/admin/add" do
+        # query_string = Kaya::Support::QueryString.new req
+        # args = {query_string:query_string}
+        # template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
+        # res.write template.call(section:"Add Task", args:args)
+        res.write "ADDING A NEW TASK"
+      end
+
+      on "#{HOSTNAME}/kaya/tasks/admin/:task_id/delete" do |task_id|
+        # query_string = Kaya::Support::QueryString.new req
+        # args = {query_string:query_string}
+        # template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
+        # res.write template.call(section:"Delete Task", args:args)
+        res.write "DELETING TASK WITH ID: #{task_id}"
+      end
+
+## ===============================================
+# TASKS
+#
+#
+
+      on "#{HOSTNAME}/kaya/tasks/:task/run" do |task_name|
         query_string = Kaya::Support::QueryString.new req
-        suite_name.gsub!("%20"," ")
-        result = Kaya::API::Execution.start suite_name, query_string.values
+        task_name.gsub!("%20"," ")
+        result = Kaya::API::Execution.start task_name, query_string.values
         path = if result["error"]
           "/#{HOSTNAME}/kaya/error"
         else
-         "/#{HOSTNAME}/kaya/suites/#{suite_name}"
+         "/#{HOSTNAME}/kaya/tasks/#{task_name}"
         end
         path += "?msg=#{result['message']}. " if result["message"]
         path += "Execution id=#{result["execution_id"]}" if result["execution_id"]
         res.redirect path
       end
 
-      on "#{HOSTNAME}/kaya/suites/:suite_name" do |suite_name|
+      on "#{HOSTNAME}/kaya/tasks/:task_name" do |task_name|
         query_string = Kaya::Support::QueryString.new req
-        $K_LOG.debug "suite_name => #{suite_name}"
-        suite_name.gsub!("%20"," ")
-        args = {query_string:query_string, suite_name:suite_name}
+        task_name.gsub!("%20"," ")
+        args = {query_string:query_string, task_name:task_name}
         template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
-        res.write template.call(section:"Test Suites", args:args)
+        res.write template.call(section:"Tasks", args:args)
       end
 
-      on "#{HOSTNAME}/kaya/suites" do
+      on "#{HOSTNAME}/kaya/tasks" do
         query_string = Kaya::Support::QueryString.new req
-        Kaya::Suites.update_suites
+        # Kaya::Tasks.update_tasks
+        #
+        $K_LOG.debug "PENDING: RETRIEVE TASKS FROM MONGO (Before: update_suites) #{__FILE__}:#{__LINE__}"
+        #
         args = {query_string:query_string}
         template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
-        res.write template.call(section:"Test Suites", args:args)
+        res.write template.call(section:"Tasks", args:args)
       end
+
+## ========================================================================
+# TESTS
+#
+#
+#
+
+      on "#{HOSTNAME}/kaya/tests/:task/run" do |task_name|
+        query_string = Kaya::Support::QueryString.new req
+        task_name.gsub!("%20"," ")
+        result = Kaya::API::Execution.start task_name, query_string.values, "test"
+        path = if result["error"]
+          "/#{HOSTNAME}/kaya/error"
+        else
+         "/#{HOSTNAME}/kaya/tests/#{task_name}"
+        end
+        path += "?msg=#{result['message']}. " if result["message"]
+        path += "Execution id=#{result["execution_id"]}" if result["execution_id"]
+        res.redirect path
+      end
+
+      on "#{HOSTNAME}/kaya/tests/:task_name" do |task_name|
+        query_string = Kaya::Support::QueryString.new req
+        $K_LOG.debug "task_name => #{task_name}"
+        task_name.gsub!("%20"," ")
+        args = {query_string:query_string, task_name:task_name}
+        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
+        res.write template.call(section:"Tests", args:args)
+      end
+
+      on "#{HOSTNAME}/kaya/tests" do
+        query_string = Kaya::Support::QueryString.new req
+        #Kaya::Tasks.update_tasks
+        #
+        $K_LOG.debug "PENDING: RETRIEVE TASKS FROM MONGO (Before: update_suites) #{__FILE__}:#{__LINE__}"
+        #
+        args = {query_string:query_string}
+        template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
+        res.write template.call(section:"Tests", args:args)
+      end
+
+
+## ========================================================================
+# LOGS
+#
+#
+
+
 
       on "#{HOSTNAME}/kaya/logs/:log_name" do |log_name|
         query_string = Kaya::Support::QueryString.new req
         args = {query_string:query_string, log_name:log_name}
         template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
-        res.write template.call(section:"Log", args:args)
+        res.write template.call(section:"Loggit", args:args)
       end
 
       on "#{HOSTNAME}/kaya/logs" do
@@ -204,7 +295,7 @@ Cuba.define do
 
       on "#{HOSTNAME}/kaya/custom/params/:custom_id/edit" do |custom_param_id|
         query_string = Kaya::Support::QueryString.new req
-        res.redirect "/#{HOSTNAME}/kaya/custom/params?msg=Could not find Custom Parameter" if Kaya::Suites::Custom::Params.exist? custom_param_id
+        res.redirect "/#{HOSTNAME}/kaya/custom/params?msg=Could not find Custom Parameter" if Kaya::Tasks::Custom::Params.exist? custom_param_id
         args = {query_string:query_string, custom_param_id:custom_param_id, action:"edit"}
         template = Mote.parse(File.read("#{Kaya::View.path}/body.mote"),self, [:section, :args])
         res.write template.call(section:"Edit Custom Param", args:args)
@@ -285,41 +376,41 @@ Cuba.define do
         res.write result.to_json
       end
 
-      on "#{HOSTNAME}/kaya/api/suites/:suite/run" do |suite_name|
+      on "#{HOSTNAME}/kaya/api/tasks/:task/run" do |task_name|
         query_string = Kaya::Support::QueryString.new req
-        result = Kaya::API::Execution.start suite_name, query_string.values
+        result = Kaya::API::Execution.start task_name, query_string.values
         res.write result.to_json
       end
 
-      on "#{HOSTNAME}/kaya/api/suites/:id/status" do |suite_id|
-        output = Kaya::API::Suite.status(suite_id.to_i)
+      on "#{HOSTNAME}/kaya/api/tasks/:id/status" do |task_id|
+        output = Kaya::API::Task.status(task_id.to_i)
         res.write output.to_json
       end
 
-      on "#{HOSTNAME}/kaya/api/suites/running" do
-        output = Kaya::API::Suites.list({running:true})
+      on "#{HOSTNAME}/kaya/api/tasks/running" do
+        output = Kaya::API::Tasks.list({running:true})
         res.write output.to_json
       end
 
-      on "#{HOSTNAME}/kaya/api/suites/active" do
-        output = Kaya::API::Suites.list({"active" => true})
+      on "#{HOSTNAME}/kaya/api/tasks/active" do
+        output = Kaya::API::Tasks.list({"active" => true})
         res.write output.to_json
       end
 
-      on "#{HOSTNAME}/kaya/api/suites/unactive" do
-        output = Kaya::API::Suites.list({"active" => false})
+      on "#{HOSTNAME}/kaya/api/tasks/unactive" do
+        output = Kaya::API::Tasks.list({"active" => false})
         res.write output.to_json
       end
 
-      on "#{HOSTNAME}/kaya/api/suites/:id" do |suite_id|
-        output = Kaya::API::Suite.info(suite_id)
+      on "#{HOSTNAME}/kaya/api/tasks/:id" do |task_id|
+        output = Kaya::API::Task.info(task_id)
         res.write output.to_json
       end
 
-      on "#{HOSTNAME}/kaya/api/suites" do
+      on "#{HOSTNAME}/kaya/api/tasks" do
         (Kaya::Support::Git.reset_hard and Kaya::Support::Git.pull) if Kaya::Support::Configuration.use_git?
-        Kaya::Suites.update_suites
-        output = Kaya::API::Suites.list({})
+        Kaya::Tasks.update_tasks
+        output = Kaya::API::Tasks.list({})
         res.write output.to_json
       end
 
@@ -379,7 +470,7 @@ Cuba.define do
 #
       on "#{HOSTNAME}/kaya/clean" do
         Kaya::Support::Clean.start
-        res.redirect "/#{HOSTNAME}/kaya/suites?msg=Suites and results cleanned"
+        res.redirect "/#{HOSTNAME}/kaya/tasks?msg=Tasks and results cleanned"
       end
 
 # ========================================================================
@@ -399,11 +490,11 @@ Cuba.define do
       end
 
       on "#{HOSTNAME}/kaya/:any" do
-          res.redirect("/#{HOSTNAME}/kaya/suites")
+          res.redirect("/#{HOSTNAME}/kaya/tests")
       end
 
       on "#{HOSTNAME}/kaya" do
-        res.redirect "/#{HOSTNAME}/kaya/suites"
+        res.redirect "/#{HOSTNAME}/kaya/tasks"
       end
 
       on "favicon" do
@@ -411,7 +502,7 @@ Cuba.define do
       end
 
       on "#{HOSTNAME}" do
-        res.redirect "/#{HOSTNAME}/kaya/suites"
+        res.redirect "/#{HOSTNAME}/kaya/tasks"
       end
 
       on root do

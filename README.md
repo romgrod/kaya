@@ -83,7 +83,7 @@ The file config.ru has the needed code to start the service (DO NOT MODIFY IT)
 
 After configuring kaya_conf file you are able to run `kaya start`
 
-After starting Kaya you can go to Help section and see all what you need to know to work with kaya regarding to set up test suites, custom parameters and so.
+After starting Kaya you can go to Help section and see all what you need to know to work with kaya regarding to set up test tasks, custom parameters and so.
 
 Enjoy it!
 
@@ -154,7 +154,7 @@ This file is where you can configure:
 	"FOOTER" : (String) A text you want to see at the footer like "Tests by a great team (team_name@domain.com"
 
   "AUTO_EXECUTION_ID" : (JSON) If you want to use a simple execution id given by the actual time you can set the value of "datetime" to true (Boolean), with this option you can use a strftime format and it will put the execution id automatically.
-  If you set "datetime" to false (Boolean) you can use "default" value. Setting "datetime" as false and "default" as null you will have to (if you need it) set the execution id manually each time you run a suite.
+  If you set "datetime" to false (Boolean) you can use "default" value. Setting "datetime" as false and "default" as null you will have to (if you need it) set the execution id manually each time you run a task.
 
   "HEADLESS" (JSON) : Set active as true to use headless mode
 
@@ -170,13 +170,13 @@ Available Commands
 
     $ kaya start
 
-- To clear all suites and results collection. To erase all data from database
+- To clear all tasks and results collection. To erase all data from database
 
     $ kaya reset
 
-- To clear all suites collection only. To erase all suites data from database
+- To clear all tasks collection only. To erase all tasks data from database
 
-    $ kaya reset_suites
+    $ kaya reset_tasks
 
 - to shut down kaya
 
@@ -190,13 +190,13 @@ Available Commands
 Get (what you need!)
 ---------------------
 
-- /kaya/suites
+- /kaya/tasks
 
-- /kaya/suites/`<suite_name>`/run
+- /kaya/tasks/`<task_name>`/run
 
 - /kaya/results
 
-- /kaya/results/`<suite_name>`
+- /kaya/results/`<task_name>`
 
 - /kaya/results/`<result_id>`/log
 
@@ -218,21 +218,21 @@ In this example we use the port 8080. This command will give you the app that is
 API
 =======
 
-Returns the list of suites
+Returns the list of tasks
 
-    kaya/api/suites
+    kaya/api/tasks
 
-Returns the list of suites that are running
+Returns the list of tasks that are running
 
-    kaya/api/suites/running
+    kaya/api/tasks/running
 
-Returns the status of the given suite id
+Returns the status of the given task id
 
-    kaya/api/suites/<suite_id>/status
+    kaya/api/tasks/<task_id>/status
 
-Returns the suite structure for the given suite id
+Returns the task structure for the given task id
 
-    kaya/api/suites/<suite_id>
+    kaya/api/tasks/<task_id>
 
 Returns all existing results
 

@@ -17,7 +17,7 @@ require_relative "kaya/commands/stop"
 require_relative "kaya/commands/restart"
 require_relative "kaya/commands/bye"
 require_relative "kaya/commands/reset"
-require_relative "kaya/commands/reset_suites"
+require_relative "kaya/commands/reset_tasks"
 require_relative "kaya/commands/help"
 
 
@@ -30,11 +30,11 @@ require_relative "kaya/custom/execution_data"
 require_relative "kaya/database/mongo_connector"
 
 
-# Suites
-require_relative "kaya/suites/suites"
-require_relative "kaya/suites/suite"
-require_relative "kaya/suites/custom/param"
-require_relative "kaya/suites/custom/params"
+# Tasks
+require_relative "kaya/tasks/tasks"
+require_relative "kaya/tasks/task"
+require_relative "kaya/tasks/custom/param"
+require_relative "kaya/tasks/custom/params"
 
 
 # Results
@@ -50,8 +50,8 @@ require_relative "kaya/view/parser"
 
 
 # API
-require_relative "kaya/API/suite"
-require_relative "kaya/API/suites"
+require_relative "kaya/API/task"
+require_relative "kaya/API/tasks"
 require_relative "kaya/API/result"
 require_relative "kaya/API/results"
 require_relative "kaya/API/error"
@@ -162,9 +162,9 @@ Could not find kaya folder on root project folder. You can use `kaya install`
       end
     end
 
-    desc "reset_suites","Reset all suites registers. This command is to purge all suites from db"
-    def reset_suites
-      Kaya::Commands.reset_suites
+    desc "reset_tasks","Reset all tasks registers. This command is to purge all tasks from db"
+    def reset_tasks
+      Kaya::Commands.reset_tasks
     end
 
     desc "Say bye to kaya", ""

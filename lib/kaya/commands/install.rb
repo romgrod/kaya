@@ -15,7 +15,7 @@ module Kaya
         Thanks
         "
 
-        puts "You don't have defined a cucumber.yml file. YOU SHOULD TO USE KAYA :)" if Kaya::Suites.cucumber_yml.empty?
+        puts "You don't have defined a cucumber.yml file. YOU SHOULD TO USE KAYA :)" if Kaya::Tasks.cucumber_yml.empty?
         puts "Now, you can run bundle install and then `kaya start` command"
 
       rescue => e

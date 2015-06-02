@@ -2,7 +2,7 @@ Results and details about them.
 ==============
 
 Each Test Suite execution creates a result. You can see them in Results section.
-You will see each Test Suite box with its results. If a Test Suite has more than three results, you'll see a green button that says `All results` for this test suite to see all results for that test suite
+You will see each Test Suite box with its results. If a Test Suite has more than three results, you'll see a green button that says `All results` for this test task to see all results for that test task
 A result line looks like:
 
 <div class="panel panel-primary">
@@ -81,10 +81,10 @@ A result line looks like:
   </table>
   <div class="text-center">
     <a class="btn btn-info">
-      Go to suite
+      Go to task
     </a>
-    <a href="/kaya/results/suite/multi" class="btn btn-default">
-      &nbsp;&nbsp;All results for this suite&nbsp;
+    <a href="/kaya/results/task/multi" class="btn btn-default">
+      &nbsp;&nbsp;All results for this task&nbsp;
       <span class="label label-info label-as-badge">
         3
       </span>
@@ -114,6 +114,6 @@ You can click on summary description like this to see the cucumber report.
 
 ---------------------------------------
 
-When an execution is stopped you'll see this in All Results section you'll see all execution results for all test suites. You can find a specific result by typing a keyword or selecting a status and pressing Search
+When an execution is stopped you'll see this in All Results section you'll see all execution results for all test tasks. You can find a specific result by typing a keyword or selecting a status and pressing Search
 
 <span class="label label-danger">Suite execution stopped!</span>

@@ -21,11 +21,11 @@ module Kaya
 
             Kaya::Support::Git.pull
 
-            Kaya::Suites.update_suites
+            Kaya::Tasks.update_tasks
 
         else # NO GIT USAGE
 
-          Kaya::Suites.update_suites
+          Kaya::Tasks.update_tasks
 
         end
 

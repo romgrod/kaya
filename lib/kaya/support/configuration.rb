@@ -93,7 +93,7 @@ module Kaya
         }
       end
 
-      def self.maximum_execs_per_suite
+      def self.maximum_execs_per_task
         @@input["MAXIMUM_EXECS_PER_SUITE"] || 3
       end
 

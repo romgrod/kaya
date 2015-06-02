@@ -18,7 +18,7 @@ module Kaya
       # @param [Kaya::Results::Result] result object
       # @return [String] the html to be added
       def self.kaya_info(result)
-        info  = "<h2><strong>Suite:</strong> #{result.suite_name}</h2>"
+        info  = "<h2><strong>Task:</strong> #{result.task_name}</h2>"
         info += "<h4>Execution name: #{result.execution_name.gsub('-_-',' ')}</h4>" unless result.execution_name.empty?
         info += "<h4>Command: #{result.command}</h4>"
         info += "<h4>Custom Params: #{result.custom_params_values.split('=').last}</h4>"

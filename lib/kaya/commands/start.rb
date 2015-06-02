@@ -60,11 +60,11 @@ or set HEADLESS active value as false if you do not use browser in your tests."
         Kaya::Support::FilesCleanner.clear_sidekiq_log
         $K_LOG.debug "Sidekiq log file cleanned" if $K_LOG
 
-        # To prevent showing suites as runnnig when service started recently reset all suites
-        $K_LOG.debug "Reseting suites statuses" if $K_LOG
-        Kaya::Suites.reset_statuses
-        $K_LOG.debug "Suites statuses reseted" if $K_LOG
-        puts "\n* Suites Status: Reseted"
+        # To prevent showing tasks as runnnig when service started recently reset all tasks
+        $K_LOG.debug "Reseting tasks statuses" if $K_LOG
+        Kaya::Tasks.reset_statuses
+        $K_LOG.debug "Tasks statuses reseted" if $K_LOG
+        puts "\n* Tasks Status: Reseted"
 
         # Force results to reset or finished status
         $K_LOG.debug "Reseting defunct executions" if $K_LOG

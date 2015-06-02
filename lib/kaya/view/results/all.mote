@@ -10,7 +10,7 @@
     results_list.select! do |result_data|
       result_data["execution_name"].downcase.include? keyword or
       result_data["summary"].downcase.include? keyword or
-      result_data["suite"].inspect.downcase.include? keyword or
+      result_data["task"].inspect.downcase.include? keyword or
       result_data["command"].downcase.include? keyword or
       result_data["execution_data"].inspect.downcase.include? keyword or
       result_data["custom_params"].inspect.downcase.include? keyword

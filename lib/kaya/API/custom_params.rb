@@ -12,11 +12,11 @@ module Kaya
 
         response = case data["action"]
         when "new"
-          Kaya::Suites::Custom::Param.validate_and_create(data)
+          Kaya::Tasks::Custom::Param.validate_and_create(data)
         when "edit"
-          Kaya::Suites::Custom::Param.validate_and_update(data)
+          Kaya::Tasks::Custom::Param.validate_and_update(data)
         when "delete"
-          Kaya::Suites::Custom::Param.delete_this(data)
+          Kaya::Tasks::Custom::Param.delete_this(data)
         end
         response
       end

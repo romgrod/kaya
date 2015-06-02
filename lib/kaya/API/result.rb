@@ -1,22 +1,22 @@
 module Kaya
   module API
     class Result
-      def self.get_for_suite(suite_id)
-        suite = Kaya::Suites::Suite.get(suite_id)
-        if suite
+      def self.get_for_task(task_id)
+        task = Kaya::Tasks::Task.get(task_id)
+        if task
           {
             "project_name" => Dir.pwd.split("/").last,
-            "suite" => {id:suite.id, name:suite.name},
-            "results" => results_list_for(suite.id)
+            "task" => {id:task.id, name:task.name},
+            "results" => results_list_for(task.id)
           }
         else
           {"results" => results_list}
         end
       end
 
-      def self.results_list_for(suite_id)
-        suite_results = Kaya::Results.results_ids_for(suite_id)
-        suite_results.map do |result_id|
+      def self.results_list_for(task_id)
+        task_results = Kaya::Results.results_ids_for(task_id)
+        task_results.map do |result_id|
           info(result_id)
         end
       end

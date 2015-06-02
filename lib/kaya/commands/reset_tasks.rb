@@ -1,6 +1,6 @@
 module Kaya
   module Commands
-    def self.reset_suites
+    def self.reset_tasks
       $K_LOG.debug "#{self}:#{__method__}" if $K_LOG
       begin
 
@@ -8,7 +8,7 @@ module Kaya
 
         Kaya::Database::MongoConnector.new(Kaya::Support::Configuration.db_connection_data)
 
-        print "\nCleanning suites from database..."
+        print "\nCleanning tasks from database..."
 
         Kaya::Database::MongoConnector.drop_collections
         print "Done!\n\n"
@@ -22,11 +22,11 @@ module Kaya
 
           Kaya::Support::Git.pull
 
-          Kaya::Suites.update_suites
+          Kaya::Tasks.update_tasks
 
         else # NO GIT USAGE
 
-          kaya::Suites.update_suites
+          kaya::Tasks.update_tasks
 
         end
 

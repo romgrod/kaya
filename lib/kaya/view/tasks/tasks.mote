@@ -1,0 +1,29 @@
+<?
+  if args[:task_name]
+    raise Kaya::Error::TaskNotFound.new("Could not find task with name #{args[:task_name]}") unless Kaya::Tasks.is_there_task_with? args[:task_name]
+    template = Mote.parse(File.read("#{Kaya::View.path}/tasks/task.mote"), self, [:task_data])
+    task_data = Kaya::API::Task.info_for_name(args[:task_name])
+    content = template.call(task_data:task_data)
+  else
+    template = Mote.parse(File.read("#{Kaya::View.path}/tasks/task_item.mote"), self, [:task])
+    tasks_list = Kaya::API::Tasks.list
+
+  end
+
+?>
+
+% unless args[:task_name]
+  % number_of_tasks = tasks_list["tasks"].size
+  <div class="bs-callout bs-callout-danger">
+    <h4>&nbsp;&nbsp;&nbsp;Showing {{number_of_tasks}} tasks<small>&nbsp;&nbsp;Click on any task to open it</small></h4>
+  </div>
+% end
+% if args[:task_name]
+  {{content}}
+% else
+
+  % tasks_list = tasks_list["tasks"]
+  % tasks_list.each do |task_data|
+    {{template.call(task:task_data)}}
+  % end
+% end

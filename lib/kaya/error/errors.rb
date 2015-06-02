@@ -1,11 +1,11 @@
 module Kaya
   module Error
-    # Raised when there is an error related to Suites.
-    class Suite < StandardError
-      attr_reader :suite_name
+    # Raised when there is an error related to Tasks.
+    class Task < StandardError
+      attr_reader :task_name
 
-      def initialize(suite_name, message=nil)
-        @suite_name = suite_name
+      def initialize(task_name, message=nil)
+        @task_name = task_name
         message = message
         super(message)
       end
@@ -35,9 +35,9 @@ module Kaya
       end
     end
 
-    class SuiteNotFound < StandardError
+    class TaskNotFound < StandardError
       def initialize(message=nil)
-        message ="Suite not foun" if message.nil?
+        message ="Task not foun" if message.nil?
         super(message)
       end
     end

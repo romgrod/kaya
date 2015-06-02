@@ -3,7 +3,7 @@ module Kaya
 
 
     # Run/Execute the commmand
-    # @param [Hash] execution_data = { :suite_id, :label }
+    # @param [Hash] execution_data = { :task_id, :label }
     def self.run! execution_request_data
 
       if Kaya::Support::Configuration.use_git?

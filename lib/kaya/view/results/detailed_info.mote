@@ -10,13 +10,16 @@
           <tbody>
             <tr>
               <th style="width:130px;">
-                <small>Suite name</small>
+                <small>Task name</small>
               </th>
               <th>
-                {{result["suite"]["name"]}}
+                {{result["task"]["name"]}}
                 <small>
-                  (Suite id: {{result["suite"]["id"]}})
+                  (Task id: {{result["task"]["id"]}})
                 </small>
+                % if result["task"]["type"]=="test"
+                  <span class="label label-primary">Test</span>
+                % end
               </th>
             </tr>
 

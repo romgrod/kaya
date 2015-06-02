@@ -2,12 +2,12 @@
 % args["action"]="edit"
 <div class="panel panel-info">
   <!-- Default panel contents -->
-  <div class="panel-heading"><h2>New Custom Parameter</h2></div>
+  <div class="panel-heading"><h2>Edit Custom Parameter</h2></div>
   <div class="panel-body">
-    <h4>Create your own custom parameter to use on tasks</h4>
+    <h4>Edit custom parameter</h4>
   </div>
 
-  <div class="panel-success">
+  <div class="panel-warning">
     <div class="panel-body">
 
       {{form_template.call(args:args)}}

@@ -1,17 +1,17 @@
-How to pass parameters to a test suite execution?
+How to pass parameters to a test task execution?
 ==============
 
-As Kaya retrieve information from suite's file called cucumber.yml allocated on projet root folder.
+As Kaya retrieve information from task's file called cucumber.yml allocated on projet root folder.
 
-You can send parameters to a test suite execution and your tests can take that data to run in a certain way you need or want.
+You can send parameters to a test task execution and your tests can take that data to run in a certain way you need or want.
 
-To ask for parameters into a test suite you have to set them up in cucumber.yml file.
+To ask for parameters into a test task you have to set them up in cucumber.yml file.
 
-There are basically two types of fields you can show in test suites (text field and select list).
+There are basically two types of fields you can show in test tasks (text field and select list).
 
 This fields can be setted as required values and or with a default value.
 
-All custom parameters must be defined on each test suite you need by using the custom parameter:
+All custom parameters must be defined on each test task you need by using the custom parameter:
 
       #cucumber.yml
 
@@ -61,7 +61,7 @@ You can also define the parameter as required and with a default value by using:
 Select List
 ---------------------
 
-To provide a certain set of possible values that a test suite can use, you can provide a custom parameter as a select list
+To provide a certain set of possible values that a test task can use, you can provide a custom parameter as a select list
 It is like a text field but just use () to provide the possible values separated by | (pipe char).
 
       regression: -t @regression runnable=true custom=[environment:(RC|IC|BETA|PROD)]

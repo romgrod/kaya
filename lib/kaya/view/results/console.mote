@@ -17,7 +17,7 @@ end
 size_of_lines = text.split("</p>").size
 
 
-suite = Kaya::Suites::Suite.get(result.suite_id)
+task = Kaya::Tasks::Task.get(result.task_id)
 
 custom_params = result.custom_params.empty? ? 'Not Defined' : result.custom_params_values.gsub('kaya_custom_params=',"")
 
@@ -36,7 +36,7 @@ javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, [
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <meta http-equiv='refresh' content='{{Kaya::Support::Configuration.refresh_time}}'>
     <link rel='icon' href='../../favicon.ico'>
-    <title>Result for {{result.suite_name}}</title>
+    <title>Result for {{result.task_name}}</title>
     <!-- Bootstrap core CSS -->
     <link href='https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css' rel='stylesheet'>
     <!-- Custom styles for this template -->
@@ -48,7 +48,7 @@ javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, [
   <body>
     <div class='container'>
       <div class='well'>
-        <h3>Result for <b>{{result.suite_name}}</b> execution {{result.stopped? ? '(Stopped)' : ''}}</h3>
+        <h3>Result for <b>{{result.task_name}}</b> execution {{result.stopped? ? '(Stopped)' : ''}}</h3>
         <h6><b>Result ID:</b> {{result.id}}</h6>
       % if Kaya::Support::Configuration.use_git?
         <h6><b>Git log:</b> {{git_log}}</h6>

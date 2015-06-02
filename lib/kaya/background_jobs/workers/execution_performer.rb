@@ -53,7 +53,7 @@ module Kaya
           result.save!
           $K_LOG.debug "[result:#{result.id}] Process => #{result.pid}(PID) | command => saved | result as => running" if $K_LOG
 
-          # suite = Kaya::Suites::Suite.get(result.suite_id)
+          # task = Kaya::Tasks::Task.get(result.task_id)
           begin
             result.check_finished!
             sleep 2

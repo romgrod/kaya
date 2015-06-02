@@ -1,18 +1,18 @@
 module Kaya
   module Results
 
-    def self.all_results_for suite_id
-      Kaya::Database::MongoConnector.results_for suite_id
+    def self.all_results_for task_id
+      Kaya::Database::MongoConnector.results_for task_id
     end
 
-    def self.results_ids_for suite_id
-      all_results_for(suite_id).map do |result|
+    def self.results_ids_for task_id
+      all_results_for(task_id).map do |result|
         result["_id"]
       end
     end
 
-    def self.running_results_for_suite_id suite_id
-      Kaya::Database::MongoConnector.running_results_for_suite_id suite_id
+    def self.running_results_for_task_id task_id
+      Kaya::Database::MongoConnector.running_results_for_task_id task_id
     end
 
     def self.all_results_ids
