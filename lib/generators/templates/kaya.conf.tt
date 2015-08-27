@@ -16,6 +16,8 @@
 
   "MAXIMUM_EXECS_PER_SUITE" : 3,
 
+  "EXECUTION_CHECK_TIME" : 5,
+
   "PROJECT_NAME" : "Awesome Project",
 
   "PROJECT_URL" : "http://your.project.url",

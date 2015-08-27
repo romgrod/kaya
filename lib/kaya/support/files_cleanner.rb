@@ -112,7 +112,7 @@ module Kaya
       end
 
       def self.clear_kaya_log
-        kaya_log_file_path = "#{Dir.pwd}/kaya/kaya_log"
+        kaya_log_file_path = "#{Dir.pwd}/kaya/logs/kaya.log"
         if File.exist? kaya_log_file_path
           File.delete(kaya_log_file_path)
           File.open(kaya_log_file_path, "a+"){}

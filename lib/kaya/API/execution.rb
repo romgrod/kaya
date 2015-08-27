@@ -29,20 +29,24 @@ module Kaya
 
           task_id = task.id
 
-          # if Kaya::Tasks.execution_running_for_task(task_name) < task.maximum_execs
-          if Kaya::Tasks.execution_running_for_task(task_name) < 3 # HARDCODED
+          type = task.type
 
-            $K_LOG.debug "Task #{task_name} is ready to run" if $K_LOG
+          if Kaya::Tasks.number_of_running_executions_for_task(task_name) < task.max_execs
+
+            $K_LOG.debug "#{task.type.capitalize} #{task_name} is ready to run" if $K_LOG
 
             execution_request_data = {
-              "type"            => "cucumber",
-              "task"           => {"id" => task.id, "name" => task.name},
+              "platform"        => task.platform,
+              "task"            => {"id" => task.id, "name" => task.name, "type" => task.type, "cucumber" => task.cucumber, "platform" => task.platform},
               "execution_name"  => execution_name,
               "custom_params"   => custom_params,
-              "git_log"         => git_log
+              "git_log"         => git_log,
+              "started_message" => "#{task.type.capitalize} #{task.name} started"
             }
 
-            task.last_result = Kaya::Execution.run!(execution_request_data) # Returns result_id
+            execution_id = Kaya::Execution.run!(execution_request_data)
+
+            task.push_exec execution_id
 
             task.set_running!
 
@@ -50,20 +54,20 @@ module Kaya
 
             $K_LOG.debug "Task #{task_name} setted as running" if $K_LOG
 
-
-            execution_id = task.last_result
             started = true
-            message = "Task%20#{task.name}%20started"
+            message = "#{task.type.capitalize} #{task.name} started"
             status = 200
-            $K_LOG.debug "Task #{task.name} started" if $K_LOG
+            $K_LOG.debug "#{task.type.capitalize} #{task.name} started" if $K_LOG
 
           else
 
             execution_id = nil
             started = false
             status = 423
-            message = "Max number of concurrent execution reached. Please wait until one is finalized"
-            $K_LOG.error "Cannot run more than #{task.maximum_execs} executions simultaneously" if $K_LOG
+            message = "Max number of concurrent execution reached.
+            Cannot run more than #{task.max_execs} executions simultaneously.
+            Please wait until one is finalized"
+            $K_LOG.error "Cannot run more than #{task.max_execs} executions simultaneously" if $K_LOG
           end
 
         else # No task for  task_name
@@ -78,7 +82,8 @@ module Kaya
             "task" => {
               "name" => task_name,
               "id" => task_id,
-              "started" => started
+              "started" => started,
+              "type" => type
               },
             "execution_id" => execution_id,
             "message" => message,
@@ -102,9 +107,11 @@ module Kaya
 
           if result.process_running? or !result.finished? or !result.stopped?
             begin
-              Kaya::Support::Processes.kill_by_result_id(result.id)
-              killed = true
-              $K_LOG.debug "Execution (id=#{results.id}) killed"
+              if result.pid
+                Kaya::Support::Processes.kill_p(result.pid)
+                killed = true
+                $K_LOG.debug "Execution (id=#{result.id}) killed"
+              end
             rescue => e
               $K_LOG.error "#{e}#{e.backtrace}"
             end
@@ -116,15 +123,14 @@ module Kaya
             rescue
             end
 
-            result.append_result_to_console_output!
-            result.save_report!
+            result.save_report
             result.reset!("forced"); $K_LOG.debug "Execution stopped! Kaya restarted"
             result.show_as = "pending"
             result.save!
-            # Reset if task is setted as "RUNNING" and its result_id value corresponds to the result reset request
-            task.set_ready! if task.last_result == result.id
+
+            task.set_ready! if Kaya::Results.is_there_running_executions_for? task.name
             if killed and cleanned
-              {"message" => "Execution stopped"}
+              {"message" => "Execution:Stopped - Process:Killed - Files:Cleanned"}
             else
               {"message" => "Could not stop execution. Process killing: #{killed}. Files cleanned: #{celanned}"}
             end

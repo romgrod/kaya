@@ -2,43 +2,22 @@ module Kaya
   class Execution
 
 
-    # Run/Execute the commmand
-    # @param [Hash] execution_data = { :task_id, :label }
+
     def self.run! execution_request_data
 
       if Kaya::Support::Configuration.use_git?
         Kaya::Support::Git.reset_hard and Kaya::Support::Git.pull
         $K_LOG.debug "Git pulled" if $K_LOG
       end
-
-
         result = Kaya::Results::Result.new(execution_request_data)
         $K_LOG.debug "Result created with id => #{result.id}" if $K_LOG
 
-        result_id = result.id
         result.save!
 
-      if execution_request_data["type"] == "cucumber"
-        $K_LOG.debug "Execution type: Cucumber" if $K_LOG
-        Kaya::Cucumber::Task.run(result)
-
-        $K_LOG.debug "Task started" if $K_LOG
-
-        result_id
-
-      else # ANOTHER TYPE OF EXECUTION
-        $K_LOG.debug "Execution type: #{execution_request_data[:type]}" if $K_LOG
-        puts "TODO: Another type of execution (no cucumber execution)"
-
-        Time.now.to_i # must return an id number
-
-      end
+        $K_LOG.debug "Execution type #{result.task_type}" if $K_LOG
+        Kaya::Workers::Executor.perform_async(result.id)
+        $K_LOG.debug "#{result.task_type.capitalize}(#{result.id}) started" if $K_LOG
+        result.id
     end
-
-
-
-
-
-
   end
 end

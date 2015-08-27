@@ -1,29 +1,34 @@
 
 <?
-text = ""
-text += result.bundle_output.split("\n").join("</p><p>") if result.bundle_output
-text += result.console_output.split("\n").join("</p><p>") if result.console_output
-if text.empty?
-  lines = []
-  begin
-    File.open("ls_#{result.id}.out","r").each_line do |line|
-      lines << line
-    end
-  rescue
-    lines << "Wait..."
-  end
-  text = lines.join("</small></p><p><small>")
+result = Kaya::Results::Result.get(result_id)
+if result
+  result.mark_as_saw! if (result.finished? or result.stopped?)
+  text = ""
+  #text += result.bundle_output.split("\n").join("</p><p>") if result.bundle_output
+  text += result.console_output.split("\n").join("</p><p>") if result.console_output
+  #if text.empty?
+  #  lines = []
+  #  begin
+  #    File.open("ls_#{result.id}.out","r").each_line do |line|
+  #      lines << line
+  #    end
+  #  rescue
+  #    lines << "Wait..."
+  #  end
+  #  text = lines.join("</small></p><p><small>")
+  #end
+  size_of_lines = text.split("</p>").size
+
+  task = Kaya::Tasks::Task.get(result.task_id)
+
+  custom_params = result.custom_params.empty? ? 'Not Defined' : result.custom_params_values.gsub('kaya_custom_params=',"")
+
+  execution_name = result.execution_name.empty? ? 'Not Defined' : result.execution_name.gsub('-_-',' ')
+
+  git_log = result.git_log.split('Author').first
+else
+
 end
-size_of_lines = text.split("</p>").size
-
-
-task = Kaya::Tasks::Task.get(result.task_id)
-
-custom_params = result.custom_params.empty? ? 'Not Defined' : result.custom_params_values.gsub('kaya_custom_params=',"")
-
-execution_name = result.execution_name.empty? ? 'Not Defined' : result.execution_name.gsub('-_-',' ')
-
-git_log = result.git_log.split('Author').first
 
 javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, []).call()
 
@@ -46,63 +51,67 @@ javascript = Mote.parse(File.read("#{Kaya::View.path}/javascript.mote"), self, [
   </head>
 
   <body>
-    <div class='container'>
-      <div class='well'>
-        <h3>Result for <b>{{result.task_name}}</b> execution {{result.stopped? ? '(Stopped)' : ''}}</h3>
-        <h6><b>Result ID:</b> {{result.id}}</h6>
-      % if Kaya::Support::Configuration.use_git?
-        <h6><b>Git log:</b> {{git_log}}</h6>
-      % end
-        <h6><b>Status: </b>{{result.status}}</h6>
-      % if result.timeout
-        <h6><b>Timeout:</b> Stopped After {{result.timeout}} seconds</h6>
-      % end
-      % if result.started_at
-        <h6><b>Duration:</b> {{result.elapsed_time}} seconds</h6>
-      % end
-        <h6><b>Execution Name: </b>{{execution_name}}</h6>
-        <h6><b>Custom parameters:</b>{{custom_params}}</h6>
-        <h6>&nbsp;</h6>
-        <h6>
-          <div>
-            <a href='#' class='label label-default' onclick='window.close();'>
-              Close this window</a>
-            <a href='#' class='label label-info' onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result.id}}', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-default'>
-              Result Data</a>
-            <a href='#' class='label label-warning' onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result.id}}/data', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-default'>
-              Execution Data</a>
-          % unless result.status =~ /finished|stopped/
-
-            <a href='#' onclick="getAndClose('/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result.id}}/reset');" class='label label-danger'>
-              Stop execution
-            </a>
-
-          % end
-          </div>
-        </h6>
-
-      </div>
-      <div>
-        <div class='page-header'>
-          <h4>Console Output</h4>
-        </div>
-        % if size_of_lines > 15
-          <button type='button' class='btn btn-default' title='Go down' onclick='goToBottom()' style='float: right'><span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span> Go down</button>
+    % if result
+      <div class='container'>
+        <div class='well'>
+          <h3>Result for <b>{{result.task_name}}</b> execution {{result.stopped? ? '(Stopped)' : ''}}</h3>
+          <h6><b>Result ID:</b> {{result.id}}</h6>
+        % if Kaya::Support::Configuration.use_git?
+          <h6><b>Git log:</b> {{git_log}}</h6>
         % end
-        <h6>
-          <small style='color:DarkSlateGray '>{{text}}</small>
-        </h6>
-      % if size_of_lines > 15
-        <button type='button' class='btn btn-default' title='Go up' onclick='goToTop()' style='float: right'><span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span> Go up</button><br><br>
-      % end
+          <h6><b>Status: </b>{{result.status}}</h6>
+        % if result.timeout
+          <h6><b>Timeout:</b> Stopped After {{result.timeout}} seconds</h6>
+        % end
+        % if result.started_at
+          <h6><b>Duration:</b> {{result.elapsed_time}} seconds</h6>
+        % end
+          <h6><b>Execution Name: </b>{{execution_name}}</h6>
+          <h6><b>Custom parameters:</b>{{custom_params}}</h6>
+          <h6>&nbsp;</h6>
+          <h6>
+            <div>
+              <a href='#' class='label label-default' onclick='window.close();'>
+                Close this window</a>
+              <a href='#' class='label label-info' onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result.id}}', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-default'>
+                Result Data</a>
+              <a href='#' class='label label-warning' onclick="window.open('/{{Kaya::Support::Configuration.hostname}}/kaya/api/results/{{result.id}}/data', '_blank', 'toolbar=no, scrollbars=yes, resizable=yes, top=300, left=300, width=800, height=600');" class='btn btn-default'>
+                Execution Data</a>
+            % unless result.status =~ /finished|stopped/
+              <a href='#' onclick="getAndClose('/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result.id}}/reset');" class='label label-danger'>
+                Stop execution
+              </a>
+            % end
+            </div>
+          </h6>
+        </div>
+        <div>
+          <div class='page-header'>
+            <h4>Console Output</h4>
+          </div>
+          % if size_of_lines > 15
+            <button type='button' class='btn btn-default' title='Go down' onclick='goToBottom()' style='float: right'><span class='glyphicon glyphicon-chevron-down' aria-hidden='true'></span> Go down</button>
+          % end
+          <h6>
+            <small style='color:DarkSlateGray '>{{text}}</small>
+          </h6>
+        % if size_of_lines > 15
+          <button type='button' class='btn btn-default' title='Go up' onclick='goToTop()' style='float: right'><span class='glyphicon glyphicon-chevron-up' aria-hidden='true'></span> Go up</button><br><br>
+        % end
+        </div>
+        <div>
+          <a href='#' class='label label-default' onclick='window.close();'>Close this window</a>
+        </div>
+          <br>
+          <br>
       </div>
-      <div>
-        <a href='#' class='label label-default' onclick='window.close();'>Close this window</a>
+    % else
+      <div class='container'>
+        <div class='well'>
+          <h3>There is no result with id <b>{{result_id}}</b></h3>
+        </div>
       </div>
-
-      <br>
-      <br>
-    </div>
+    % end
   </body>
 </html>
 

@@ -18,20 +18,6 @@ module Kaya
         Kaya::Support::FilesCleanner.start!
         print "Done!\n\n"
 
-        if Kaya::Support::Configuration.use_git?
-
-          Kaya::Support::Git.pull
-
-          Kaya::Tasks.update_tasks
-
-        else # NO GIT USAGE
-
-          kaya::Tasks.update_tasks
-
-        end
-
-        puts "PROFILES LOADED CORRECTLY \n\nRun `kaya start`"
-
       rescue => e
         puts "CANNOT CLEAN SYSTEM\n#{e}\n\n#{e.backtrace}"
       end

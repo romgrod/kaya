@@ -62,13 +62,13 @@ or set HEADLESS active value as false if you do not use browser in your tests."
 
         # To prevent showing tasks as runnnig when service started recently reset all tasks
         $K_LOG.debug "Reseting tasks statuses" if $K_LOG
-        Kaya::Tasks.reset_statuses
+        Kaya::Tasks.reset!
         $K_LOG.debug "Tasks statuses reseted" if $K_LOG
         puts "\n* Tasks Status: Reseted"
 
         # Force results to reset or finished status
         $K_LOG.debug "Reseting defunct executions" if $K_LOG
-        Kaya::Results.reset_defuncts
+        Kaya::Results.reset!
         $K_LOG.debug "Defunct execution reseted" if $K_LOG
         puts "\n* Results: Reseted".green
 

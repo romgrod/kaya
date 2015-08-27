@@ -1,4 +1,4 @@
-api Execution Data
+Execution
 ============================
 
 
@@ -25,7 +25,7 @@ Before, you have to add it to your Gemfile
 
 After adding the gem to your project, you can do:
 
-    Kaya::Custom::ExecutionData.add("my_data_key", "some value for data key")
+    Kaya::Custom::Execution.add_data("my_data_key", "some value for data key")
 
 
 Once the execution it is finished, you can see the values through:
@@ -45,3 +45,12 @@ And you'll see something like:
 
 
 Think about this for integration tests.
+
+---------------------------------------
+
+Path to output dir
+============================
+
+If you want to save files you should use Kaya output dir path by using
+
+    "#{Kaya::Custom::Execution.output_path}/<your_file_name.extension>"

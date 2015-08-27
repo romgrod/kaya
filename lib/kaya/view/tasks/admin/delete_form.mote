@@ -1,34 +1,94 @@
 <?
-task = Kaya::Tasks.get(args[:task_id]).structure
+
+query_string = args[:query_string]
+
+task = Kaya::Tasks::Task.get(args[:task_id]).task_data_structure
+
+
 ?>
-<nav class="navbar navbar-default">
-  <form name="delete-task" id="delete-task" action="/{{Kaya::Support::Configuration.hostname}}/kaya/tasks/admin/delete-task" method="POST">
-    <div class='form-group'>
-      <br>
-      <label class='col-sm-2 control-label' for='formGroupInputSmall'>
-        Name
-      </label>
-      <input type="hidden" name="action" id="action" value="delete" />
-      <input type="hidden" name="_id" id="_id" value="{{task["_id"]}}" />
-      <input class='customParam' disabled="disabled" type='text' name='name' id='name'  value="{{task["name"]}}" />
-    </div>
-    <div class='form-group'>
-      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Command</label>
-      Aquí va el command
-    </div>
-    <div class='form-group'>
-        <label class='col-sm-2 control-label' for='formGroupInputSmall'>Options</label>
-        <textarea class='customParam' type='text' name='options' id='options' disabled="disabled" placeholder='Options for Select list type' >{{options}}</textarea>
-      </div>
-    <div class='form-group'>
-      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Test</label>
-      <input type="checkbox" name="test" id="test"  disabled="disabled"/ {{'checked' if task["type"]=="test"}}>
-    </div>
-    <br>
-    <div class='form-group'>
-      <label class='col-sm-2 control-label' for='formGroupInputSmall'></label>
-      <input type="submit" class="btn btn-success" value="Delete" >&nbsp;<a class="btn btn-danger" href="/{{Kaya::Support::Configuration.hostname}}/kaya/tasks/admin/edit">Cancel</a>
-    </div>
-    <br>
-  </form>
-</nav>
+
+<form name="custom-param" id="custom-param" action="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/tasks/delete" method="POST">
+  <nav class="navbar navbar-default">
+  <table width="100%">
+    <tr>
+      <td>
+        <!--name-->
+            <div class='form-group'>
+              <br>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>
+                Name
+              </label>
+              <input type="hidden" name="task_id" id="task_id" value="{{task["_id"]}}" />
+              <input class='customParam' type='text' name='name' id='name' value="{{task["name"]}}" disabled="disabled" />
+            </div>
+
+        <!-- command -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>Command</label>
+              <input class='customParam' type='text' name='command' id='command'  value="{{task["command"]}}" disabled="disabled" />
+            </div>
+
+        <!-- type -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>Execution type</label>
+              <select name="type" id="type" class='customParam' disabled="disabled">
+                <option>{{task["type"]}}</option>
+              </select>
+            </div>
+
+
+        <!-- platform -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>Platform</label>
+              <select name="platform" id="platform" class='customParam' disabled="disabled">
+                <option value="other">{{task["platform"]}}</option>
+              </select>
+            </div>
+
+        <!-- Max exec per suite -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall' title="Use this number to limit the number of simultaneous executions for this task">Max No. executions</label>
+              <input class='customParam' type="number" name="max_execs" id="max_execs" min="1" max="5" value="{{task["max_execs"]}}" disabled="disabled"/>
+            </div>
+        <!-- information -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>Information</label>
+              <textarea class='taskInformationField' type='text' name='information' id='information' disabled="disabled"  >{{task["information"]}}</textarea>
+            </div>
+        <!-- Cucumber -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>Cucumber test</label>
+              <input type="checkbox" name="cucumber" id="cucumber" {{"checked" if task["cucumber"]}}/>
+            </div>
+      </td>
+      <td>
+        <br>
+        <br>
+        <table>
+          <tr>
+          <td>
+          % custom_param_selection_box = Mote.parse(File.read("#{Kaya::View.path}/custom/params/custom_param_task_deleting_box.mote"), self, [:custom_params]).call(custom_params:task["custom_params"])
+          {{custom_param_selection_box}}
+          </td>
+          </tr>
+          </table>
+      </td>
+    </tr>
+    <tr>
+    <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>
+        <div class='form-group'>
+        <center>
+
+          <input type="submit" class="btn btn-success" value="Delete">&nbsp;
+          <a class="btn btn-danger" href="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/tasks/list">Cancel</a>
+          </center>
+        </div>
+      </td>
+    </tr>
+
+  </table>
+  </nav>
+</form>

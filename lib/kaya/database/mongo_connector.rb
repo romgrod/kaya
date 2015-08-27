@@ -121,9 +121,13 @@ module Kaya
       end
 
       # Drops all kaya collections
-      def self.drop_collections
+      def self.drop_collections hard=false
         db = self.kaya_db
-        collections.each do |collection|
+        collections_to_drop = collections
+        unless hard
+          ["custom_params","tasks"].each{|col| collections_to_drop.delete(col)}
+        end
+        collections_to_drop.each do |collection|
           db.drop_collection(collection) if collection != "documentation"
         end
       end
@@ -206,7 +210,15 @@ module Kaya
       end
 
       def self.running_tasks
-        @@tasks.find({"status" => "RUNNING"}).to_a
+        self.running "task"
+      end
+
+      def self.running_tests
+        self.running "test"
+      end
+
+      def self.running type
+        @@tasks.find({"status" => "RUNNING", "type" => type}).to_a
       end
 
       def self.running_for_task task_name
@@ -218,7 +230,9 @@ module Kaya
       end
 
       def self.delete_task task_id
-        @@tasks.remove({"_id" => task_id})
+        task_id = task_id.to_i if task_id.respond_to? :to_i
+        res = @@tasks.remove({"_id" => task_id})
+        res["n"]==1
       end
 
     ########################################
@@ -272,6 +286,10 @@ module Kaya
       @@custom_params.remove({"_id" => custom_param_id})
     end
 
+    def self.required_params_ids
+      @@custom_params.find({"required" => true},{:fields => ["_id"]})
+    end
+
 
     ######################################3
     # RESULTS
@@ -312,7 +330,11 @@ module Kaya
       end
 
       def self.running_results_for_task_id task_id
-        @@results.find({"task.id" => task_id, "status" => "running"}, :sort => ["started_at", -1]).to_a
+        @@results.find({"task.id" => task_id, "status" => /running|started/}, :sort => ["started_at", -1]).to_a
+      end
+
+      def self.running_results
+        @@results.find({"status" => /running|started/}).to_a
       end
 
 

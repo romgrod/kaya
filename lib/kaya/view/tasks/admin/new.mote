@@ -1,10 +1,13 @@
 % form_template = Mote.parse(File.read("#{Kaya::View.path}/tasks/admin/create_edit_form.mote"), self, [:args])
-% args["action"]="edit"
+% args["action"]="add"
 <div class="panel panel-info">
   <!-- Default panel contents -->
   <div class="panel-heading"><h2>New Task</h2></div>
   <div class="panel-body">
     <h4>Create your own task</h4>
+    <h4><small>A task is a command you can expose. You can set a task as a test to identify those kind of execution.<br>
+    You can add a command line to be executed by someone.<br>
+    Input parameters are custom values that users can pass to the execution</small></h4>
   </div>
 
   <div class="panel-success">

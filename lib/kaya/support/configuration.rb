@@ -11,7 +11,7 @@ module Kaya
           @@input = Kaya::Support::Update.kaya_conf
         else
           @@input = self.default_input
-          puts "Error loading kaya_conf. Using default values".colorize(:red)
+          puts "Error loading kaya configuration file. Using default values".colorize(:red)
         end
       end
 
@@ -21,11 +21,11 @@ module Kaya
       end
 
       def self.path
-        "#{Dir.pwd}/kaya/kaya_conf"
+        "#{Dir.pwd}/kaya/conf/kaya.conf"
       end
 
       def self.path_template
-        File.expand_path("../../", __FILE__) + "/generators/templates/kaya_conf.tt"
+        File.expand_path("../../../", __FILE__) + "/generators/templates/kaya.conf.tt"
       end
 
       def self.project_name
@@ -93,8 +93,16 @@ module Kaya
         }
       end
 
+      def self.execution_check_time
+        self.is_a_number?(@@input["EXECUTION_CHECK_TIME"]) ? @@input["EXECUTION_CHECK_TIME"] : 5
+      end
+
       def self.maximum_execs_per_task
-        @@input["MAXIMUM_EXECS_PER_SUITE"] || 3
+        self.is_a_number?(@@input["MAXIMUM_EXECS_PER_SUITE"]) ? @@input["MAXIMUM_EXECS_PER_SUITE"] : 3
+      end
+
+      def self.max_execs
+        self.maximum_execs_per_task
       end
 
       def self.notification?

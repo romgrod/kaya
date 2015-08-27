@@ -6,112 +6,117 @@ require 'github/markup'
 require 'redis'
 require 'sidekiq'
 require 'mote'
+require 'base64'
+require 'require_all'
 
-require_relative "generators/task_rack"
+require_rel 'kaya'
+require_rel 'generators'
 
-
-# Commands
-require_relative "kaya/commands/install"
-require_relative "kaya/commands/start"
-require_relative "kaya/commands/stop"
-require_relative "kaya/commands/restart"
-require_relative "kaya/commands/bye"
-require_relative "kaya/commands/reset"
-require_relative "kaya/commands/reset_tasks"
-require_relative "kaya/commands/help"
+# require_relative "generators/task_rack"
 
 
-# Custom params
-require_relative "kaya/custom/params"
-require_relative "kaya/custom/execution_data"
+# # Commands
+# require_relative "kaya/commands/install"
+# require_relative "kaya/commands/start"
+# require_relative "kaya/commands/stop"
+# require_relative "kaya/commands/restart"
+# require_relative "kaya/commands/bye"
+# require_relative "kaya/commands/reset"
+# require_relative "kaya/commands/reset_tasks"
+# require_relative "kaya/commands/help"
 
 
-# Database
-require_relative "kaya/database/mongo_connector"
+# # Custom params
+# require_relative "kaya/custom/params"
+# require_relative "kaya/custom/execution"
 
 
-# Tasks
-require_relative "kaya/tasks/tasks"
-require_relative "kaya/tasks/task"
-require_relative "kaya/tasks/custom/param"
-require_relative "kaya/tasks/custom/params"
+# # Database
+# require_relative "kaya/database/mongo_connector"
 
 
-# Results
-require_relative "kaya/results/results"
-require_relative "kaya/results/result"
+# # Tasks
+# require_relative "kaya/tasks/tasks"
+# require_relative "kaya/tasks/task"
+# require_relative "kaya/tasks/custom/param"
+# require_relative "kaya/tasks/custom/params"
 
 
-# View
-require_relative "kaya/view/view"
-require_relative "kaya/view/sections"
-require_relative "kaya/view/parser"
-require_relative "kaya/view/parser"
+# # Results
+# require_relative "kaya/results/results"
+# require_relative "kaya/results/result"
 
 
-# API
-require_relative "kaya/API/task"
-require_relative "kaya/API/tasks"
-require_relative "kaya/API/result"
-require_relative "kaya/API/results"
-require_relative "kaya/API/error"
-require_relative "kaya/API/execution"
-require_relative "kaya/API/custom_params"
+# # View
+# require_relative "kaya/view/view"
+# require_relative "kaya/view/sections"
+# require_relative "kaya/view/parser"
+# require_relative "kaya/view/parser"
 
 
-# Cucumber relate code
-require_relative "kaya/cucumber/features"
-require_relative "kaya/cucumber/task"
+# # API
+# require_relative "kaya/API/path"
+# require_relative "kaya/API/task"
+# require_relative "kaya/API/tasks"
+# require_relative "kaya/API/result"
+# require_relative "kaya/API/results"
+# require_relative "kaya/API/error"
+# require_relative "kaya/API/execution"
+# require_relative "kaya/API/custom_params"
 
 
-# Error
-require_relative "kaya/error/errors"
+# # Cucumber relate code
+# require_relative "kaya/cucumber/features"
 
 
-# Support code
-require_relative "kaya/support/logo"
-require_relative "kaya/support/configuration"
-require_relative "kaya/support/clean"
-require_relative "kaya/support/documentation"
-require_relative "kaya/support/console"
-require_relative "kaya/support/notification"
-require_relative "kaya/support/processes"
-require_relative "kaya/support/error_handler_helper"
-require_relative "kaya/support/update"
-require_relative "kaya/support/risk"
-require_relative "kaya/support/request"
-require_relative "kaya/support/files_cleanner"
-require_relative "kaya/support/git"
-require_relative "kaya/support/query_string"
-require_relative "kaya/support/if_config"
-require_relative "kaya/support/time_helper"
-require_relative "kaya/support/logs"
-require_relative "kaya/support/change_inspector"
+# # Error
+# require_relative "kaya/error/errors"
+
+# # Platforms
+# require_relative "kaya/platforms/ruby"
 
 
-# Background jobs
-require_relative "kaya/background_jobs/workers/execution_performer"
-require_relative "kaya/background_jobs/workers/garbage_cleaner"
-require_relative "kaya/background_jobs/sidekiq"
+# # Support code
+# require_relative "kaya/support/logo"
+# require_relative "kaya/support/configuration"
+# require_relative "kaya/support/clean"
+# require_relative "kaya/support/documentation"
+# require_relative "kaya/support/console"
+# require_relative "kaya/support/notification"
+# require_relative "kaya/support/processes"
+# require_relative "kaya/support/error_handler_helper"
+# require_relative "kaya/support/update"
+# require_relative "kaya/support/risk"
+# require_relative "kaya/support/request"
+# require_relative "kaya/support/files_cleanner"
+# require_relative "kaya/support/git"
+# require_relative "kaya/support/query_string"
+# require_relative "kaya/support/if_config"
+# require_relative "kaya/support/time_helper"
+# require_relative "kaya/support/logs"
+# require_relative "kaya/support/change_inspector"
 
 
-# Main
-require_relative "kaya/execution"
-require_relative "kaya/cuba"
+# # Background jobs
+# require_relative "kaya/background_jobs/workers/executor"
+# require_relative "kaya/background_jobs/workers/garbage_cleaner"
+# require_relative "kaya/background_jobs/sidekiq"
 
 
-
+# # Main
+# require_relative "kaya/execution"
+# require_relative "kaya/cuba"
 
 module Kaya
 
 
-  if Dir.exist? "#{Dir.pwd}/kaya"
+  if Dir.exist? "#{Dir.pwd}/kaya/logs"
 
     # Creates kaya_log if it does not exist
-    File.open("#{Dir.pwd}/kaya/kaya_log","a+"){} unless File.exist? "#{Dir.pwd}/kaya/kaya_log"
+    File.open("#{Dir.pwd}/kaya/logs/kaya.log","a+"){} unless File.exist? "#{Dir.pwd}/kaya/logs/kaya.log"
 
     # Set global conf
-    $K_LOG ||= Logger.new("#{Dir.pwd}/kaya/kaya_log",1,1024*1024)
+    $K_LOG ||= Logger.new("#{Dir.pwd}/kaya/logs/kaya.log",1,1024*1024)
     Kaya::Support::Configuration.get
     $NOTIF ||= Support::Notification.new("#{Dir.pwd.split("/").last}", "#{Kaya::Support::IfConfig.ip}:#{Kaya::Support::Configuration.port}")
 
@@ -134,7 +139,7 @@ module Kaya
     option :nodemon, :required =>false, :type => :boolean, :desc => "Add this flag to no demon use."
     def start
       if Dir.exist? "#{Dir.pwd}/kaya"
-        $K_LOG = Logger.new("#{Dir.pwd}/kaya/kaya_log",1,1024*1024)
+        $K_LOG = Logger.new("#{Dir.pwd}/kaya/logs/kaya.log",1,1024*1024)
         Kaya::Commands.start(options["nodemon"])
       else
         puts "

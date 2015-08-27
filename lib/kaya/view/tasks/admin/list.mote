@@ -1,56 +1,78 @@
 <?
   tasks_list = Kaya::API::Tasks.list["tasks"]
 
+  if (available_custom_params = Kaya::Tasks::Custom::Params.list)
+    custom_params_hash = available_custom_params.inject({}) do |res,custom|
+      res[custom["_id"]]=custom
+      res
+    end
+  else
+    custom_params_hash = {}
+  end
+
+
+
 ?>
+
 
 <div class="panel panel-success">
   <!-- Default panel contents -->
   <div class="panel-heading"><h2>Tasks Edition Panel</h2></div>
   <div class="panel-body">
-    <p><a class="btn btn-success" href="/{{Kaya::Support::Configuration.hostname}}/kaya/tasks/admin/new">New Task</a></p>
+    <p><a class="btn btn-success" href="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/tasks/new">New Task</a></p>
   </div>
+    <div class="panel-success">
+      <div class="panel-body">
+      <!-- Table -->
+        <table class="table">
+          % unless tasks_list.empty?
+            <thead>
+              <tr>
+                <td><b>Name</b></td>
+                <td><b>Command</b></td>
+                <td><b>Task Type</b></td>
+                <td><b>Custom Parameters</b></td>
+                <td><b>Information</b></td>
+                <td><b>Actions</b></td>
+              </tr>
+            </thead>
+            <tbody>
+            % tasks_list.each do |task|
+              <? #transforms some strings
 
-   <!-- Table -->
-      <table class="table">
-        % unless tasks_list.empty?
-          <thead>
-            <tr>
-              <td>Name</td>
-              <td>Command</td>
-              <td>Type</td>
-              <td>Input Parameters</td>
-              <td>Information</td>
-              <td>Options</td>
-            </tr>
-          </thead>
-          <tbody>
-          % tasks_list.each do |task|
-            % info = task["info"].size > 30 ? task["info"][0..30]+"..." : task["info"]
-            <tr>
-              <td>{{task["name"]}}<small>{{task["_id"]}}</small></td>
-              <td>{{task["command"]}}</td>
-              <td>{{task["type"]}}</td>
-              <td>{{task["custom_params"]}}</td>
-              <td>{{info}}</td>
-              <td>
-                <div class="btn-group">
-                  <button type="button" class="btn btn-danger">Action</button>
-                  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params/{{task["_id"]}}/edit">Edit</a></li>
-                    <li><a href="/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params/{{task["_id"]}}/delete">Delete</a></li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
+                info = if task["information"]
+                  task["information"][0..30]
+                else
+                  ""
+                end
+                task_type = task["type"]=="test" ? '<span class="label label-success">Test</span>' : '<span class="label label-primary">Task</span>'
+                task["custom_params"]=[] if task["custom_params"].nil?
+
+              ?>
+              <tr>
+                <td>{{task["name"]}}</td>
+                <td>{{task["command"]}}</td>
+                <td>{{task_type}}</td>
+                <td>{{task["custom_params"].empty? ? "No" : "Yes" }}</td>
+                <td>{{info}}</td>
+                <td>
+                  <div class="input-group">
+                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Options <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/tasks/{{task["_id"]}}/view">View</a></li>
+                      <li><a href="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/tasks/{{task["_id"]}}/edit">Edit</a></li>
+                      <li><a href="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/tasks/{{task["_id"]}}/delete">Delete</a></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            % end
+            </tbody>
+          % else
+            <h4>There is no Tasks defined</h4>
           % end
-          </tbody>
-        % else
-          <h4>There is no Tasks defined</h4>
-        % end
-      </table>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

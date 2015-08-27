@@ -6,17 +6,17 @@ module Kaya
     end
 
     def self.label_color_for result
-      if result["summary"]
-        label_color = color result["summary"]
-        "<a class='label label-#{label_color}' #{access_report?(result)}>#{result['summary'].capitalize}</a>"
+      if result["status"]
+        label_color = color result["status"]
+        "<a class='label label-#{label_color}' #{access_report?(result)}>#{result['status'].capitalize}</a>"
       else
         "<a href='#' class='label label-default' >No summary</a>"
       end
     end
 
     def self.only_label_for result
-      label_color = color result["summary"]
-      "<div class='label label-#{label_color}'>#{result['summary'].capitalize}</div>"
+      label_color = color result["status"]
+      "<div class='label label-#{label_color}'>#{result['status'].capitalize}</div>"
     end
 
     def self.color value

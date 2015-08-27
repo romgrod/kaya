@@ -35,7 +35,7 @@ types.unshift("Select...") unless types.include? "Select..."
 
 
 <nav class="navbar navbar-default">
-  <form name="custom-param" id="custom-param" action="/{{Kaya::Support::Configuration.hostname}}/kaya/custom-param" method="POST">
+  <form name="custom-param" id="custom-param" action="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/custom-param" method="POST">
     <div class='form-group'>
       <br>
       <label class='col-sm-2 control-label' for='formGroupInputSmall'>
@@ -73,7 +73,7 @@ types.unshift("Select...") unless types.include? "Select..."
     <br>
     <div class='form-group'>
       <label class='col-sm-2 control-label' for='formGroupInputSmall'></label>
-      <input type="submit" class="btn btn-success" value="Save">&nbsp;<a class="btn btn-danger" href="/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params">Cancel</a>
+      <input type="submit" class="btn btn-success" value="Save">&nbsp;<a class="btn btn-danger" href="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/custom/params">Cancel</a>
     </div>
     <br>
   </form>

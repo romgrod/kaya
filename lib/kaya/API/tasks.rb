@@ -2,6 +2,29 @@ module Kaya
   module API
     module Tasks
 
+      def self.set data
+
+        data = self.sanitize data
+
+        response = case data["action"]
+        when "new"
+          Kaya::Tasks::Task.validate_and_create(data)
+        when "edit"
+          Kaya::Tasks::Task.validate_and_update(data)
+        when "delete"
+          Kaya::Tasks::Task.delete_this(data)
+        end
+        response
+      end
+
+      def self.sanitize data
+        data["max_execs"] = data["max_execs"].to_i if data["max_execs"].respond_to? :to_i
+        data["cucumber"] = data["cucumber"] == "on"
+        data["cucumber_report"] = data["cucumber_report"] == "on"
+        data["information"] = nil if data["information"].size.zero?
+        data
+      end
+
       # @param [hash] options = {:running, :active}
       def self.list(options ={})
 
@@ -14,8 +37,13 @@ module Kaya
           "message" => nil
         }
         tasks = if options[:running]
-          response["request"] = "Running Tasks"
-          Kaya::Tasks.running_tasks
+          type = options[:type]
+          response["request"] = "Running #{type.capitalize}"
+          if type == "task"
+            Kaya::Tasks.running_tasks
+          else
+            Kaya::Tasks.running_tests
+          end
         else
           response["request"] = options[:type] ? "#{options[:type].capitalize} Tasks" : "Tasks"
           Kaya::Tasks.tasks options[:type]
@@ -42,6 +70,7 @@ module Kaya
         end
         response
       end
+
     end
   end
 end

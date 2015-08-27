@@ -1,0 +1,30 @@
+<?
+
+# This template is used by task deleting form where user can see custom params for the given task
+
+?>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">Custom parameters</h3>
+  </div>
+  <div class="panel-body">
+  <table>
+    %unless custom_params.empty?
+      % custom_params.each do |custom_param_id|
+        % custom_param = Kaya::Tasks::Custom::Param.get(custom_param_id).structure
+        <tr>
+          <td>
+            <label class='control-label' for='formGroupInputSmall'>{{custom_param['name']}}</label>&nbsp;
+          </td>
+          <td>
+            % custom_param_template = Mote.parse(File.read("#{Kaya::View.path}/custom/params/#{custom_param["type"]}.mote"), self, [:param, :no_label, :task_form])
+            {{custom_param_template.call(param:custom_param, no_label:true, task_form:true)}}
+          </td>
+        </tr>
+      % end
+    % else
+      <tr><td>Not defined for this task</td></tr>
+    % end
+  </table>
+  </div>
+</div>

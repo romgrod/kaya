@@ -1,9 +1,13 @@
 module Kaya
   module Custom
-    class ExecutionData
+    class Execution
 
       # This class is used from execution code. It means that user can call this method to store information
       # during exdecution.
+      #
+      def self.output_path
+        "#{Dir.pwd}/kaya/out/ENV['_id']"
+      end
 
       # Returns execution id
       def self.id
@@ -18,7 +22,7 @@ module Kaya
       # @param [String or Symbol] key
       # @param [Any] value
       # @return hash if stored, nil if not
-      def self.add key=nil, value=nil
+      def self.add_data key=nil, value=nil
         self.ensure_db_connection
         if self.is_there_result?
           result = self.get_result

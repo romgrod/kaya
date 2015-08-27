@@ -2,12 +2,12 @@ module Kaya
   module Support
     class Update
 
-      @gem_folder = File.expand_path("../../../../", __FILE__) + "/lib/generators/templates/"
-      @project_folder = "#{Dir.pwd}/kaya/"
+      @@project_folder = "#{Dir.pwd}/kaya/"
 
+      # @gem_folder = File.expand_path("../../../../", __FILE__) + "/lib/generators/templates/"
       # Returns the most updated version of kaya_conf file, and updates the file if neded
       def self.kaya_conf
-        update_json_file "kaya_conf"
+        update_json_file "conf/kaya.conf"
       end
 
       # Returns the updated version of a json file, and writes it in the disk
@@ -17,7 +17,7 @@ module Kaya
       # It also removes all keys not longer present in the template file.
 
       def self.update_json_file name
-        file = JSON.parse(IO.read(@project_folder + name))
+        file = JSON.parse(IO.read(@@project_folder + name))
         # template = JSON.parse(IO.read(@gem_folder + name + ".tt"))
 
         # modified = false

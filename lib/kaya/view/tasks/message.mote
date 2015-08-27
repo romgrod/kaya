@@ -1,0 +1,36 @@
+<?
+  title = "<p>Oops!</p><p> What are you looking for?</p>"
+  alert = "danger"
+  buttons = "<a href='/#{Kaya::Support::Configuration.hostname}/kaya/tasks' class='btn btn-info' >Go to Tasks</a>"
+
+  result_id = args[:result_id]
+  result = Kaya::Results::Result.get(result_id)
+
+  if result
+    type = result.task_type.capitalize
+    task_name = result.task_name
+
+    if result.has_started_message?
+      title = result.get_started_message!
+
+      alert = "success"
+      buttons = "
+        <a href='/#{Kaya::Support::Configuration.hostname}/kaya/#{type.downcase}s/#{task_name}' class='btn btn-info' >Go to '#{task_name}'</a>
+        <a href='/#{Kaya::Support::Configuration.hostname}/kaya/#{type.downcase}s' class='btn btn-default' >Go to #{type.capitalize}s</a>
+      "
+    end
+
+  end
+?>
+
+<div class="alert alert-{{alert}}" role="alert">
+
+  <H3>
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>&nbsp;{{title}}
+  </H3>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>
+    {{buttons}}
+  </p>
+</div>

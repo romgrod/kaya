@@ -1,6 +1,7 @@
 module Kaya
   module Support
     class Processes
+
       def self.kill_by_result_id(result_id)
 
         pid = pid_for(result_id)
@@ -56,12 +57,13 @@ module Kaya
 
       #Recibe un PID y devuelve un array con los PID de sus hijos
       def self.process_childs(pid)
-        Kaya::Support::Console.execute("ps -fea | grep #{pid} | grep -v grep | awk '$2!=#{pid} && $8!~/awk/ && $3==#{pid}{print $2}'").split("\n")
+        res = Kaya::Support::Console.execute("ps -fea | grep #{pid} | grep -v grep | awk '$2!=#{pid} && $8!~/awk/ && $3==#{pid}{print $2}'")
+        File.open("#{__FILE__}#{__LINE__}","a+"){|f| f.write res}
+        res
       end
 
       def self.kaya_pids
         res = Kaya::Support::Console.execute "ps -fea | grep 'unicorn.rb -p #{Kaya::Support::Configuration.port}'"
-
         res.split("\n").select{|lines| !lines.include? "grep"}.map{|line| line.split[1]}
       end
 
@@ -90,6 +92,7 @@ module Kaya
       def self.fork_this command
         fork{exec("#{command}")}
       end
+
 
     end
   end

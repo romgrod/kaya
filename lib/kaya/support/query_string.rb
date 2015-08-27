@@ -10,6 +10,11 @@ module Kaya
         @values = Rack::Utils.parse_nested_query(req.query_string.split("/").last)
       end
 
+      def raw
+        return nil if @values.empty?
+        @values.keys.first
+      end
+
       def value_for key
         @values[key]
       end

@@ -23,6 +23,17 @@ module Kaya
 
     end
 
+    class ExecutionTimeoutError < StandardError
+      attr_reader :id, :message
+
+      def initialize(id, message=nil)
+        @id = id
+        @message = message
+        super message
+
+      end
+    end
+
     class KayaFile < StandardError
       def initialize file_path
         super("Could not find '#{file_path} file" )

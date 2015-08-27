@@ -4,9 +4,7 @@
 
   clean = query_string.clean || false
 
-  modal_type = clean == true ? "simpleAlert" : "my_alert"
-
-  message = query_string.msg ? " onload=\"javascript:#{modal_type}('Attention!','#{query_string.msg}', #{clean});\"" : nil
+  message = section =~ /message/i ? " onload=\"javascript:startTimer();\"" : nil
 
   title = h1 = section.split.map{|w| w.capitalize}.join " "
 
@@ -16,6 +14,8 @@
 
   modals = Mote.parse(File.read("#{Kaya::View.path}/modals.mote"), self, []).call()
 
+
+  args[:section] = section
 
   git_information = Mote.parse(File.read("#{Kaya::View.path}/git_information.mote"), self, [:section]).call(section:section)
 
@@ -29,8 +29,7 @@
 
   navigation_bar = Mote.parse(File.read("#{Kaya::View.path}/navigation_bar.mote"), self, [:section]).call(section:section)
 ?>
-
-
+{{section}}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns ="http://www.w3.org/1999/xhtml"><head><meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>'
   <head>
     <title>{{Kaya::Support::Configuration.project_name}} through Kaya - {{title}}</title>
@@ -39,27 +38,29 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <link rel='shortcut icon' href='/favicon'>
     <link href='https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
     {{javascript}}
+
+
 
     {{styles}}
 
   </head>
-    <body class='padding-top: 50px;' {{message}}>
-      <div class="bb-alert alert alert-info" style="display:none;">
-        <span>The examples populate this alert with dummy content</span>
-      </div>
 
+    <body class='padding-top: 50px;' {{message}}>
       {{modals}}
 
       {{navigation_bar}}
 
 
-      <div class='container'>
-        <br>
-        {{git_information}}
 
-{{section}}
+      <div class='container'>
+      <br>
+      {{git_information}}
+      </div>
+      <div class='container'>
+
         <p>{{content}}</p>
 
         {{footer}}

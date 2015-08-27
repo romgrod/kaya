@@ -1,45 +1,12 @@
 <style>
+  label{
+    font-family: Verdana;
+    text-vertical-align: center;
+  }
   th{
     font-weight: normal;
   }
-  .spinner {
-      margin: 0px 0px 0;
-      width: 100%;
-      text-align: right;
-    }
-  .spinner > div {
-    width: 8px;
-    height: 8px;
-    background-color: #5CB85C;
-    border-radius: 100%;
-    display: inline-block;
-    -webkit-animation: bouncedelay 1.4s infinite ease-in-out;
-    animation: bouncedelay 1.4s infinite ease-in-out;
-    /* Prevent first frame from flickering when animation starts */
-    -webkit-animation-fill-mode: both;
-    animation-fill-mode: both;
-  }
-  .spinner .bounce1 {
-    -webkit-animation-delay: -0.32s;
-    animation-delay: -0.32s;
-  }
-  .spinner .bounce2 {
-    -webkit-animation-delay: -0.16s;
-    animation-delay: -0.16s;
-  }
-  @-webkit-keyframes bouncedelay {
-    0%, 80%, 100% { -webkit-transform: scale(0.0) }
-    40% { -webkit-transform: scale(1.0) }
-  }
-  @keyframes bouncedelay {
-    0%, 80%, 100% {
-      transform: scale(0.0);
-      -webkit-transform: scale(0.0);
-    } 40% {
-      transform: scale(1.0);
-      -webkit-transform: scale(1.0);
-    }
-  }
+
   .list-group-item {
     position: relative;
     display: block;
@@ -70,6 +37,36 @@
     max-height: 500px;
     min-height: 34px;
     min-width: 212px;
+    font-weight:normal;
+  }
+
+  .bigCheckbox {
+    text-align: right;
+    font-size: 14px;
+    color: #555;
+    background-color: #ccc;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 24px;
+    min-width: 106px;
+    font-weight:normal;
+  }
+
+  .taskInformationField {
+    height: 120px;
+    width: 212px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-width: 80%;
+    max-height: 500px;
+    min-height: 34px;
     font-weight:normal;
   }
 </style>

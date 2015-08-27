@@ -30,10 +30,23 @@ module Kaya
         end
       end
 
-      def self.data result_id
+      # query_string is like "first.object.in.a.json"
+      def self.data result_id, query_string=nil
         result = self.info result_id
-        {"type" => "result", "_id" => result["_id"], "status" => result["status"], "execution_data" => result["execution_data"]}
+        if query_string
+          {"execution_data" =>Kaya::API::Path.data(result["execution_data"], query_string)}
+        else
+          {"type" => "result", "_id" => result["_id"], "status" => result["status"], "execution_data" => result["execution_data"]}
+        end
       end
+
+      # def self.path_data data, query_string
+      #     query_string.split(".").each do |key|
+      #       key = key.to_i if key =~ /^\d+$/
+      #       data = data[key]
+      #     end
+      #     data
+      # end
 
       def self.status result_id
         result = self.info result_id

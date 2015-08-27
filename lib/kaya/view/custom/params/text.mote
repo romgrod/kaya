@@ -1,11 +1,16 @@
+<?
+  # no_label: used in section custom params > list (representation)
+?>
 % disabled = 'disabled="disabled"' if no_label
-<div class='form-group-sm'>
-  % unless no_label
-    <label class='col-sm-2 control-label' for='formGroupInputSmall'>
-      {{param['name']}}
-    </label>
+<div class='form-group'>
+   % unless no_label
+    <label class='col-sm-2 control-label' for='formGroupInputSmall'>{{param["name"]}}</label>
   % end
-  <textarea {{disabled}} class='customParam' {{"required title='#{param['name']} is Required!'" if param["required"]}} type='text' name='{{param['name']}}' placeholder='{{"Enter value here" if param["required"]}}' style='height: 34px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; max-width: 70%; max-height: 500px; min-height: 34px; min-width: 212px; font-weight:normal;' />{{"#{param["value"]}"}}</textarea>
+  % if task_form
+    <textarea {{disabled}} class='customParam' {{"required title='#{param['name']} is Required!'" if param["required"]}} type='text' placeholder='{{"Enter value here" if param["required"]}}'  />{{"#{param["value"]}"}}</textarea>
+  % else
+    <textarea {{disabled}} class='customParam' {{"required title='#{param['name']} is Required!'" if param["required"]}} type='text' name='{{param['name']}}' placeholder='{{"Enter value here" if param["required"]}}'  />{{"#{param["value"]}"}}</textarea>
+  % end
   % if param["required"]
     *
   % end

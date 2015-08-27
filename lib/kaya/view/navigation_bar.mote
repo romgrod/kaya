@@ -15,7 +15,7 @@
     <div class='collapse navbar-collapse'>
       <ul class='nav navbar-nav'>
         <li class='{{'active' if section =~ /test/}}'>
-          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/tasks'>Tests</a>
+          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/tests'>Tests</a>
         </li>
         <li class='{{'active' if section =~ /task/}}'>
           <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/tasks'>Tasks</a>
@@ -40,10 +40,12 @@
             Admin
           </a>
           <ul class='dropdown-menu' role='menu'>
-            <li><a href='/{{Kaya::Support::Configuration.hostname}}/kaya/tasks'>Tasks</a></li>
-            <li><a href='/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params'>Custom Parameters</a></li>
-            <li><a href='/{{Kaya::Support::Configuration.hostname}}/kaya/logs'>Logs</a>
-            </li>
+            <li><a href='/{{Kaya::Support::Configuration.hostname}}/kaya/admin/tasks/list'>Tasks</a></li>
+            <li><a href='/{{Kaya::Support::Configuration.hostname}}/kaya/admin/custom/params'>Custom Parameters</a></li>
+            <li role="presentation" class="divider"></li>
+            <li><a href='/{{Kaya::Support::Configuration.hostname}}/kaya/logs/kaya_log'>Kaya Log</a>
+            <li><a href='/{{Kaya::Support::Configuration.hostname}}/kaya/logs/sidekiq_log'>Sidekiq Log</a>
+            <li role="presentation" class="divider"></li>
             <li><a href='#'>Configuration</a></li>
           </ul>
         </li>

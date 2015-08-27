@@ -1,9 +1,14 @@
+<?
+  all_custom_params = Kaya::Tasks::Custom::Params.list
+  custom_params_objects = all_custom_params.select{|custom| custom_params.include? custom["_id"]}
+?>
 <h4 title='This parameters will be passed to the test task execution'>&nbsp;&nbsp;&nbsp;Custom Parameters</h4>
 <div class='container' style='width: inherit'>
   <li class='list-group-item' style='position:relative; with=100%'>
-    % custom_params.each do |custom_param|
-    % custom = Mote.parse(File.read("#{Kaya::View.path}/custom/params/#{custom_param["type"]}.mote"), self, [:param])
-      {{custom.call(param:custom_param)}}
+    <br>
+    % custom_params_objects.each do |custom_param|
+    % custom = Mote.parse(File.read("#{Kaya::View.path}/custom/params/#{custom_param["type"]}.mote"), self, [:param, :no_label, :task_form])
+      {{custom.call(param:custom_param, no_label:false, task_form:false)}}
     % end
   </li>
 </div>

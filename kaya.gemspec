@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version                = Kaya::VERSION
   spec.authors                = ["Roman Rodriguez"]
   spec.email                  = ["roman.g.rodriguez@gmail.com"]
-  spec.summary                = %q{Exposes Cucumber tasks in a web service to make them run}
-  spec.description            = %q{You can run your cucumber tasks easily, save and see the execution results}
+  spec.summary                = %q{Kaya lets you expose executions easily}
+  spec.description            = %q{Exposes executions easily}
   spec.homepage               = "https://github.com/romgrod/kaya"
   spec.license                = "MIT"
   spec.required_ruby_version  = ">= 2.0.0"
@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'redcarpet'
   spec.add_dependency 'gmail'
   spec.add_dependency 'mote'
+  spec.add_dependency 'require_all'
 
 
 

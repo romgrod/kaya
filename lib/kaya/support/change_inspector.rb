@@ -25,13 +25,6 @@ module Kaya
         end
       end
 
-      def self.is_there_gemfile_lock?
-        begin
-          IO.read("#{Dir.pwd}/Gemfile.lock")
-        rescue
-          false
-        end
-      end
     end
   end
 end

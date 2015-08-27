@@ -1,5 +1,5 @@
-<div class="well">
-  <footer>
+<footer>
+  <div class="well">
     <div style='width: 100%; display: table;'>
       <div style='display: table-row'>
         <div style='width: 600px; display: table-cell;'>{{Kaya::Support::Configuration.company}}</div>
@@ -8,5 +8,5 @@
         </div>
       </div>
     </div>
+  </div>
   </footer>
-</div>

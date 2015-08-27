@@ -14,6 +14,10 @@ module Kaya
           Kaya::Database::MongoConnector.exist_custom_param_id? param_id
         end
 
+        def self.all_required_ids
+          Kaya::Database::MongoConnector.required_params_ids
+        end
+
       end
     end
   end

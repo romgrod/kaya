@@ -56,9 +56,9 @@ Then bundle it
 
     $ bundle install
 
-Configure a JSON file called kaya_conf with the values you need
+Configure a JSON file called kaya.conf with the values you need
 
-    /kaya_conf
+    kaya/conf/kaya.conf
 
 Start Kaya and follow instructions
 
@@ -77,11 +77,11 @@ When you run `kaya install` command, kaya will do:
 
 - Creates a folder on your root project folder with some files on it. Those files are used by kaya to work.
 
-The file called kaya_conf has some configuration that you can/must modify ( or see at least). You should only use kaya_conf and some logs files (kaya_log & sidekiq_log)
+The file called kaya.conf in conf/ folder has some configuration that you can/must modify ( or see at least). You should only use conf/kaya.conf and some logs files (logs/kaya.log & logs/sidekiq.log)
 
 The file config.ru has the needed code to start the service (DO NOT MODIFY IT)
 
-After configuring kaya_conf file you are able to run `kaya start`
+After configuring kaya.conf file you are able to run `kaya start`
 
 After starting Kaya you can go to Help section and see all what you need to know to work with kaya regarding to set up test tasks, custom parameters and so.
 
@@ -92,7 +92,7 @@ Take it easy!
 
 Reference about configuration
 
-kaya/kaya_conf file reference:
+kaya/conf/kaya.conf file reference:
 
     {
     "USE_GIT" : true,

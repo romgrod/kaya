@@ -6,7 +6,7 @@
   <!-- Default panel contents -->
   <div class="panel-heading"><h2>Custom Parameters</h2></div>
   <div class="panel-body">
-    <p><a class="btn btn-success" href="/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params/new">New Custom Param</a></p>
+    <p><a class="btn btn-success" href="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/custom/params/new">New Custom Param</a></p>
   </div>
 
   <div class="panel-success">
@@ -38,20 +38,20 @@
               </td>
             %end
             <td>
-            % param_representation = Mote.parse(File.read("#{Kaya::View.path}/custom/params/#{custom_param["type"]}.mote"), self, [:param, :no_label]).call(param:custom_param, no_label:true)
+            % param_representation = Mote.parse(File.read("#{Kaya::View.path}/custom/params/#{custom_param["type"]}.mote"), self, [:param, :no_label, :task_form]).call(param:custom_param, no_label:true, task_form:false)
             {{param_representation}}
             </td>
             <td>
               <div class="btn-group">
                 <button type="button" class="btn btn-danger">Action</button>
-                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li><a href="/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params/{{custom_param["_id"]}}/edit">Edit</a></li>
+                  <li><a href="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/custom/params/{{custom_param["_id"]}}/edit">Edit</a></li>
 
-                  <li><a href="/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params/{{custom_param["_id"]}}/delete">Delete</a></li>
+                  <li><a href="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/custom/params/{{custom_param["_id"]}}/delete">Delete</a></li>
 
                 </ul>
               </div>

@@ -10,7 +10,8 @@ if action=="edit"
   value = task["value"]
   options = task["options"]
   required = task["required"]
-
+  information = task["information"]
+  command = task["command"]
   value = if value.is_a? Hash
     value.to_json
   else
@@ -26,50 +27,116 @@ options = query_string.options if query_string.options
 value = query_string.value if query_string.value
 type = query_string.type if query_string.type
 required = query_string.required if query_string.required
-
+information = query_string.information if query_string.information
+command = query_string.required if query_string.command
 types = Kaya::Tasks::Custom::Param.types
 types.unshift("Select...") unless types.include? "Select..."
 
 
 ?>
 
+<form name="custom-param" id="custom-param" action="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/tasks/add-edit" method="POST">
+  <nav class="navbar navbar-default">
+  <table width="100%">
+    <tr>
+      <td>
+        <!--name-->
+            <div class='form-group'>
+              <br>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>
+                Name
+              </label>
+              <input type="hidden" name="action" id="action" value="{{action}}" />
+              % if action=="edit"
+                <input type="hidden" name="_id" id="_id" value="{{task["_id"]}}" />(*)
+              % end
+              <input class='customParam' {{"required title='This value is Required!'"}} type='text' name='name' id='name' placeholder='{{"Enter value here"}}'  value="{{name}}" /> *
+            </div>
 
-<nav class="navbar navbar-default">
-  <form name="custom-param" id="custom-param" action="/{{Kaya::Support::Configuration.hostname}}/kaya/tasks/admin/add-edit" method="POST">
-    <div class='form-group'>
-      <br>
-      <label class='col-sm-2 control-label' for='formGroupInputSmall'>
-        Name
-      </label>
-      <input type="hidden" name="action" id="action" value="{{action}}" />
-      % if action=="edit"
-        <input type="hidden" name="_id" id="_id" value="{{task["_id"]}}" />
-      % end
-      <input class='customParam' {{"required title='This value is Required!'"}} type='text' name='name' id='name' placeholder='{{"Enter value here"}}'  value="{{name}}" />
-    </div>
-    <div class='form-group'>
-      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Command</label>
-      <input class='customParam' {{"required title='This value is Required!'"}} type='text' name='command' id='command' placeholder='{{"Enter value here"}}'  value="{{command}}" />
-    </div>
-    <div class='form-group'>
-      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Value for text/JSON type</label>
-      <textarea class='customParam' type='text' name='value' id='value' placeholder='Default value Text type'  >{{value}}</textarea>
-    </div>
-    <div class='form-group'>
-      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Options for Select list type</label>
-      %  options = ((action == "edit") and (options.is_a? Array)) ? "#{options.join(",").gsub('none,','')}" : ""
-      <textarea class='customParam' type='text' name='options' id='options' placeholder='Options for Select list type' >{{options}}</textarea>
-    </div>
+        <!-- command -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>Command</label>
+              <input class='customParam' {{"required title='This value is Required!'"}} type='text' name='command' id='command' placeholder='{{"Enter value here"}}'  value="{{command}}" /> *
+            </div>
 
-    <div class='form-group'>
-      <label class='col-sm-2 control-label' for='formGroupInputSmall'>Test</label>
-      <input type="checkbox" name="test" id="test" />
-    </div>
-    <br>
-    <div class='form-group'>
-      <label class='col-sm-2 control-label' for='formGroupInputSmall'></label>
-      <input type="submit" class="btn btn-success" value="Save">&nbsp;<a class="btn btn-danger" href="/{{Kaya::Support::Configuration.hostname}}/kaya/custom/params">Cancel</a>
-    </div>
-    <br>
-  </form>
-</nav>
+        <!-- type -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>Execution type</label>
+              <select name="type" id="type" class='customParam'>
+                <option value="test">Test</option>
+                <option value="task">Task</option>
+              </select>
+            </div>
+
+
+        <!-- platform -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>Platform</label>
+              <select name="platform" id="platform" class='customParam'>
+                <option value="ruby">Ruby</option>
+                <option value="java">Java</option>
+                <option value="scala">Scala</option>
+                <option value="groovy">Groovy</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+        <!-- Max exec per suite -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall' title="Use this number to limit the number of simultaneous executions for this task">Max No. executions</label>
+              <input class='customParam' type="number" name="max_execs" id="max_execs" min="1" max="5"/>
+            </div>
+        <!-- information -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>Information</label>
+              <textarea class='taskInformationField' type='text' name='information' id='information' placeholder='Explain what is this task made for'  >{{information}}</textarea>
+            </div>
+        <!-- Cucumber -->
+            <div class='form-group'>
+              <label class='col-sm-3 control-label' for='formGroupInputSmall'>Cucumber test</label>
+              <input type="checkbox" name="cucumber" id="cucumber" /> <a href="#" title="Click here to know what this checkbox means" class="label label-info" aria-hidden="true" data-toggle="modal" data-target="#myModal" onclick="javascript:info('Are you using this task to run Cucumber features?','If you check this value you will be able to use some features related to Cucumber like autogenerated html reports.', null);">
+          ?</a>
+            </div>
+
+      </td>
+      <td>
+        <br>
+        <br>
+        <table>
+          <tr>
+          <td>
+          % custom_param_selection_box = Mote.parse(File.read("#{Kaya::View.path}/custom/params/custom_param_selection_box.mote"), self, []).call()
+          {{custom_param_selection_box}}
+          </td>
+          </tr>
+          </table>
+      </td>
+    </tr>
+    <tr>
+    <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>
+      <div class='form-group'>
+        <label class='col-sm-6 control-label' for='formGroupInputSmall'>* Required values</label>
+      </div>
+      </td>
+    </tr>
+    <tr>
+    <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>
+        <div class='form-group'>
+        <center>
+
+          <input type="submit" class="btn btn-success" value="Save">&nbsp;
+          <a class="btn btn-danger" href="/{{Kaya::Support::Configuration.hostname}}/kaya/admin/tasks/list">Cancel</a>
+          </center>
+        </div>
+      </td>
+    </tr>
+
+  </table>
+  </nav>
+</form>

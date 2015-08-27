@@ -163,7 +163,7 @@ module Kaya
 
           def self.remote_url
 
-            res = Kaya::Support::Console.execute("git config --get remote.origin.url").gsub(":","/").gsub("git@", 'http://').chop
+            res = Kaya::Support::Console.execute("git config --get remote.origin.url").split("\n").first.gsub(":","/").gsub("git@", 'http://').chop
             res[0..-5] if res.end_with? ".git"
           end
 

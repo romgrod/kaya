@@ -36,16 +36,12 @@ module Kaya
     end
 
     # Resets all results with running status
-    def self.reset_defuncts
-      Kaya::Database::MongoConnector.all_results.select do |result|
-        ["started","running"].include? result["status"]
-      end.each do |result|
-        Kaya::Support::Processes.kill_by_result_id(result["_id"])
-      end.each do |result|
-        result = Kaya::Results::Result.get(result["_id"])
-        result.reset!
-
+    def self.reset!
+      Kaya::Database::MongoConnector.running_results.each do |result|
+        Kaya::Support::Processes.kill_p(result["pid"])
+        Kaya::Results::Result.get(result["_id"]).reset!
       end
     end
+
   end
 end
