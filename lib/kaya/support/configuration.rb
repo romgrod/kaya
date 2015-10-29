@@ -42,7 +42,7 @@ module Kaya
       end
 
       def self.hostname
-        @@input['HOSTNAME'] || 'localhost'
+        @@input['APP_NAME'] || 'localhost'
       end
 
       # Returns the configured port. If it isn't a number, port 8080 will be returned by defualt
@@ -170,12 +170,12 @@ module Kaya
       end
 
       def self.formatted_datetime
-        @@input['FORMAT_DATETIME'] || "%d/%m/%Y %H:%M:%S"
+        @@input['DATETIME_FORMAT'] || "%d/%m/%Y %H:%M:%S"
       end
 
       def self.company
-        if @@input['FOOTER'].is_a? String
-          @@input['FOOTER']
+        if @@input['FOOTER_TEXT'].is_a? String
+          @@input['FOOTER_TEXT']
         else
           ""
         end
@@ -200,11 +200,11 @@ module Kaya
       end
 
       def self.auto_execution_id
-        if @@input.has_key? "AUTO_EXECUTION_ID"
-          if @@input["AUTO_EXECUTION_ID"]["datetime"]
-            Time.now.strftime(@@input["AUTO_EXECUTION_ID"]["format"])
+        if @@input.has_key? "EXECUTION_TAG_PLACEHOLDER"
+          if @@input["EXECUTION_TAG_PLACEHOLDER"]["datetime"]
+            Time.now.strftime(@@input["EXECUTION_TAG_PLACEHOLDER"]["format"])
           else
-            @@input["AUTO_EXECUTION_ID"]["default"]
+            @@input["EXECUTION_TAG_PLACEHOLDER"]["default"]
           end
         end
       end

@@ -25,14 +25,17 @@ module Kaya
         data
       end
 
-      # @param [hash] options = {:running, :active}
+      # @param [hash] options = {:running, :active, :type}
       def self.list(options ={})
+
+        type = options[:type]
 
         start = Time.now.to_f
 
         response = {
           "project_name" => Dir.pwd.split("/").last,
           "size" => 0,
+          "type" => type,
           "tasks" => [],
           "message" => nil
         }

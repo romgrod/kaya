@@ -96,7 +96,7 @@ kaya/conf/kaya.conf file reference:
 
     {
     "USE_GIT" : true,
-    "HOSTNAME" : "your-host-name",
+    "APP_NAME" : "your-app-name",
     "APP_PORT" : 8080,
     "DATABASE" : {
     "TYPE" : "mongodb",
@@ -108,7 +108,7 @@ kaya/conf/kaya.conf file reference:
     "PROJECT_URL" : "http://your.project.url",
     "INACTIVITY_TIMEOUT" : 60,
     "KILL_INACTIVE_EXECUTIONS_AFTER" : 300,
-    "FORMAT_DATETIME" : "%d/%m/%Y %H:%M:%S",
+    "DATETIME_FORMAT" : "%d/%m/%Y %H:%M:%S",
     "REFRESH_TIME" : 10,
     "NOTIFICATION" : {
     "USE_GMAIL" : false,
@@ -117,8 +117,8 @@ kaya/conf/kaya.conf file reference:
     "RECIPIENTS" : "your@email.com",
     "ATTACH_REPORT" : false
     },
-    "FOOTER" : "Tests by a great and funny team",
-    "AUTO_EXECUTION_ID" : {
+    "FOOTER_TEXT" : "Tests by a great and funny team",
+    "EXECUTION_TAG_PLACEHOLDER" : {
     "datetime" : true,
     "format" : "%d%^b%y-%H%M",
     "default" : null
@@ -145,15 +145,15 @@ This file is where you can configure:
 
   "KILL_INACTIVE_EXECUTIONS_AFTER" : (Fixnum/Int) The time in seconds to wait for killing automatically those inactive executions
 
-  "FORMAT_DATETIME" : "%d/%m/%Y %H:%M:%S"
+  "DATETIME_FORMAT" : "%d/%m/%Y %H:%M:%S"
 
   "REFRESH_TIME" : (Fixnum/Int) The time in seconds to refresh result window in console view
 
   "NOTIFICATION" : (Boolean) This is a flag to use notifications through gmail service. You should have a gmail account to use it.
 
-	"FOOTER" : (String) A text you want to see at the footer like "Tests by a great team (team_name@domain.com"
+	"FOOTER_TEXT" : (String) A text you want to see at the footer like "Tests by a great team (team_name@domain.com"
 
-  "AUTO_EXECUTION_ID" : (JSON) If you want to use a simple execution id given by the actual time you can set the value of "datetime" to true (Boolean), with this option you can use a strftime format and it will put the execution id automatically.
+  "EXECUTION_TAG_PLACEHOLDER" : (JSON) If you want to use a simple execution id given by the actual time you can set the value of "datetime" to true (Boolean), with this option you can use a strftime format and it will put the execution id automatically.
   If you set "datetime" to false (Boolean) you can use "default" value. Setting "datetime" as false and "default" as null you will have to (if you need it) set the execution id manually each time you run a task.
 
   "HEADLESS" (JSON) : Set active as true to use headless mode

@@ -1,6 +1,21 @@
+
+% type = "tasks"
+{{args}}
 % tasks_list = Kaya::API::Tasks.list({})
 % $K_LOG.debug "Results for task name #{args[:task_name]}" if $K_LOG and args[:task_name]
+% type = args[:type] || "all"
 % unless tasks_list["tasks"].empty?
+
+  <div class='form-group'>
+
+    <label class='control-label' for='formGroupInputSmall'>Type</label>
+    <select id='type' name='type' class='customParam' >
+      <option value='all'>All</option>
+      <option value='tests' {{selected if type=="tests"}}>Tests</option>
+      <option value='tasks' {{selected if type=="tasks"}}>Tasks</option>
+  </select>
+</div>
+
   % tasks_list["tasks"].select!{|task| task["name"]==args[:task_name]} if args[:task_name]
   % tasks_list["tasks"].each do |task|
     % results_list = Kaya::API::Result.results_list_for(task["_id"])
@@ -38,7 +53,7 @@
                 </a>
               % unless args[:task_name]
                 <a href="/{{Kaya::Support::Configuration.hostname}}/kaya/results/task/{{task["name"]}}" class="btn btn-default">
-                  &nbsp;&nbsp;All results for this task&nbsp;
+                  &nbsp;&nbsp;All results for this {{args[:type]}}&nbsp;
                   <span class="label label-info label-as-badge">
                     {{results_list_size}}
                   </span>

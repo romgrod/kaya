@@ -24,7 +24,9 @@
           <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/features'>Features</a>
         </li>
         <li class='{{'active' if section == "results"}}'>
-          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results'>Results</a>
+          <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results?type=all'>
+            Results
+          </a>
         </li>
         <li class='{{'active' if section == "all_results"}}'>
           <a href='/{{Kaya::Support::Configuration.hostname}}/kaya/results/all'>All Results</a>

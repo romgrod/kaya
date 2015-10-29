@@ -2,7 +2,7 @@
 
   "USE_GIT" : true,
 
-  "HOSTNAME" : "your-host-name",
+  "APP_NAME" : "your-host-name",
 
   "APP_PORT" : 8080,
 
@@ -26,7 +26,7 @@
 
   "KILL_INACTIVE_EXECUTIONS_AFTER" : 300,
 
-  "FORMAT_DATETIME" : "%d/%m/%Y %H:%M:%S",
+  "DATETIME_FORMAT" : "%d/%m/%Y %H:%M:%S",
 
   "REFRESH_TIME" : 10,
 
@@ -38,9 +38,9 @@
     "ATTACH_REPORT" : false
   },
 
-  "FOOTER" : "Tests by a great and funny team",
+  "FOOTER_TEXT" : "The text to display on footer",
 
-  "AUTO_EXECUTION_ID" : {
+  "EXECUTION_TAG_PLACEHOLDER" : {
     "datetime" : true,
     "format" : "%d%^b%y-%H%M",
     "default" : null

@@ -45,7 +45,7 @@ color =  Kaya::View.color(status)
         <div class='panel-body'>
           <div class='list-group'>
             % running_results.each do |result|
-              <a class='list-group-item' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/log/{{result["_id"]}}');">
+              <a class='list-group-item' onclick="refreshAndOpen('/{{Kaya::Support::Configuration.hostname}}/kaya/results/{{result["_id"]}}log/');">
                 {{Kaya::Support::TimeHelper.formatted_time_for(Kaya::Results::Result.get(result["_id"]).started_at)}}
                 &nbsp; <small>{{result["execution_name"]}}</small>&nbsp;
                 {{Kaya::View.only_label_for result}}
